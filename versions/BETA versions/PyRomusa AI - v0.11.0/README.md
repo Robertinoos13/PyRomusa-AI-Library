@@ -1,13 +1,11 @@
-# muri_ai — v0.10.0 🤖
+# PyRomusa_AI — v0.11.0 🤖
 
 **Version type:** BETA  
-**Release date:** 2026-01-11 
+**Release date:** 2026-01-17
 
 ---
 
 ## Overview
-
-This is the **first public version ever** of the `muri_ai` library.
 
 This version/library focuses on creating a **very simple, beginner-friendly chatbot system**, built with custom logic instead of real machine learning models.
 
@@ -29,14 +27,16 @@ What makes it different:
 
 ## Files Included
 
-- `muri_ai.py` — Full implementation of the library for this version  
+- `PyRomusa_AI.py` — Full implementation of the library for this version  
 - `README.md` — Documentation for this specific version  
 
 ---
 
 ## What's New
 
-- Nothing, just the initial BETA version
+- 2 functions in the Help class were completed, without replacing their real context with 'pass'
+- **FUNCTION NAME CHANGED:** 
+`bot.responding_at()` -> `bot.reply_at()`
 
 ⚠️ **BETA notice:**
 - API may change in future versions
@@ -48,10 +48,10 @@ What makes it different:
 
 ### 1. Creating your first functional chatbot ever
 ```python
-from muri_ai import Chatbot
+from PyRomusa_AI import Chatbot
 
 # Create a chatbot
-bot = Chatbot(chatbot_name="MuriBot")
+bot = Chatbot(chatbot_name="RomusaBot")
 
 # Add training data
 bot.trainer.add_data("Hello!", "Hi there!")
@@ -61,14 +61,14 @@ bot.trainer.add_data("Bye!", "Goodbye!")
 bot.trainer.start()
 
 # Get a response
-print(bot.responding_at("Hello!"))
+print(bot.reply_at("Hello!"))
 ```
 ---
 
 ### 2. Learn to start using the library
 
 ```python
-from muri_ai import Chatbot
+from PyRomusa_AI import Chatbot
 
 # Create a chatbot
 bot = Chatbot()

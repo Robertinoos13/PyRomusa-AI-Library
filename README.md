@@ -1,9 +1,10 @@
-# muri_ai 🤖
+# PyRomusa_AI 🤖
 
-**muri_ai** is a lightweight Python library for creating simple AI chatbots with minimal code.  
+**PyRomusa_AI** is a lightweight Python library for creating simple AI chatbots with minimal code.  
 It is designed for learning purposes, rapid prototyping, and experimentation with basic AI concepts.
 
 ---
+
 
 ## Key Features 🔑
 - Create a chatbot in just a few lines of Python  
@@ -17,13 +18,13 @@ It is designed for learning purposes, rapid prototyping, and experimentation wit
 All versions of the library are stored inside the `versions/` folder.
 
 `versions/`
-- `BETA versions/` - muri_ai - 0.X.0
-- `EXPERIMENTAL versions/` - muri_ai 0.0.X
-- `STABLE versions/` - muri_ai - X.Y.Z
+- `BETA versions/` - _PyRomusa_AI_ - 0.X.0
+- `EXPERIMENTAL versions/` - _PyRomusa_AI_ - 0.0.X
+- `STABLE versions/` - _PyRomusa_AI_ - X.Y.Z
 
 
 Each version folder contains:
-- A full `muri_ai.py` file  
+- A full `PyRomusa_AI.py` file  
 - A dedicated `README.md` for that version  
 
 ---
@@ -43,20 +44,20 @@ Each version folder contains:
 
 ---
 
-## Complete Code Example Using muri_ai
+## Complete Code Example Using PyRomusa_AI
 
 ```python
 """
 This code works correctly with the following versions:
-BETA - 0.11.0
-STABLE - (no versions available at the moment)
+BETA - v0.11.0
+STABLE - v1.00.00
 EXPERIMENTAL - (no versions available at the moment)
 """
 
-from muri_ai import Chatbot
+from PyRomusa_AI import Chatbot
 
-# Create a chatbot named "MuriBot"
-bot = Chatbot(chatbot_name="MuriBot")
+# Create a chatbot named "RomusaBot"
+bot = Chatbot(chatbot_name="RomusaBot")
 
 # Add some input/output training data
 bot.trainer.add_data(
@@ -74,5 +75,7 @@ bot.trainer.start()
 
 # Generate a response to a user input
 print(bot.reply_at("Hello chatbot!"))
+```
 
-
+**Note:** Versions prior to `BETA 0.10.0` were initially released under the name `muri_ai`.
+**The project has been renamed to `PyRomusa_AI` to avoid naming conflicts and for better branding.**

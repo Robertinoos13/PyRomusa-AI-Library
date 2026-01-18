@@ -1,12 +1,12 @@
-# muri_ai — EXPERIMENTAL Versions 🧪
+# PyRomusa_AI — EXPERIMENTAL Versions 🧪
 
-This folder contains **EXPERIMENTAL versions** of the `muri_ai` library.
+This folder contains **EXPERIMENTAL versions** of the `PyRomusa_AI` library.
 
 ---
 
 ## What does EXPERIMENTAL mean here?
 
-In `muri_ai`, **EXPERIMENTAL versions are not dangerous or unusable**.
+In `PyRomusa_AI`, **EXPERIMENTAL versions are not dangerous or unusable**.
 
 They are versions that:
 - focus more on **testing new ideas** than on fixing every bug
@@ -56,7 +56,7 @@ Despite this, the library should remain **usable for learning and testing**.
 
 - For structured learning → **BETA versions**
 - For curiosity and early ideas → **EXPERIMENTAL versions**
-- For long-term reliability → **STABLE versions (when available)**
+- For long-term reliability → **STABLE versions**
 
 ---
 
