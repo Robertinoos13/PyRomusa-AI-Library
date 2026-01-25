@@ -5,12 +5,35 @@ It is designed for learning purposes, rapid prototyping, and experimentation wit
 
 ---
 
+## Quick Navigation 🌐
+
+This README.md file seems a bit long, right? 
+
+Well, just click on the section (the blue text) below that interests you and you'll be taken directly there! 👇
+
+- [Key Features 🔑](#key-features-) 
+    - Are you new and still don't know what you can do and what capabilities PyRomusa AI has? Discover what you can do with this and what capabilities `PyRomusa AI` has.
+- [Repository Structure 📁](#repository-structure-)
+    - Are you new at this repository? Learn a little about the structure of this repository to find what you need.
+- [Version Types Explained](#version-types-explained)
+    -  Here you will find several versions of PyRomusa AI, each placed in a specific category, depending on how stable it is, how much effort has been put into fixing bugs, and what the respective version was released for.
+- [Complete Code Example Using PyRomusa_AI](#complete-code-example-using-pyromusa_ai)
+    - Do you want to see what code using the PyRomusa AI library would look like or do you want some ready-to-copy-paste code to see how it works? Well, this is the section you should come to.
+- [About Prepared Datasets 🗄️](#about-prepared-datasets-️)
+    - Did you know that you can use ready-to-use training datasets to save time creating input-output examples of a chatbot from scratch? Find here all available datasets, their specifications, and a complete example script with loading a dataset.
+- [Contact us 📩🌐](#contact-us-)
+    - Do you want to talk to the person/team that created this library called `PyRomusa AI`? Here you will find all the available possibilities to contact us!
+- [More ➕](#more-) 
+    - Still haven't found what you need? You'll probably find it here.
+
+---
 
 ## Key Features 🔑
 - Create a chatbot in just a few lines of Python  
 - Simple training process (no heavy frameworks involved)  
 - Multiple version types: Stable, Beta, and Experimental  
 - Beginner-friendly and easy to understand  
+- No high-end GPU required
 
 ---
 
@@ -87,7 +110,7 @@ print(bot.reply_at("Hello chatbot!"))
 ---
 ## About Prepared Datasets 🗄️
 
-Did you know that from PyRomusa AI you can load a ready-made training dataset to the model? Well, here's an example below:
+Did you know that from `PyRomusa AI` you can load a ready-made training dataset to the model? Well, here's an example below:
 ``` python
 from PyRomusa_AI import Chatbot
 
@@ -142,6 +165,22 @@ _(Some values ​​in the `"Vocabulary"` and `"Number of examples"` columns may
     - **Perfectly** - The examples in the dataset are 100% human-made, and also has verified information
 
     By the way: The datasets that are mostly human-made, the examples from them were added progressively, thus the chatbot "learns" from mistakes.
+---
+
+## Contact us 📩🌐
+
+Do you want to give us a new idea for functionality for `PyRomusa AI`, have you detected a bug in a particular version, want to ask us something, give us feedback, or just want to say hello? Anything friendly message and about `PyRomusa AI` is welcome!
+
+e-mail: pyromusa.ai@gmail.com
+
+---
+
+## More ➕
+
+### 1. When will you be able to install the library with just `pip install PyRomusa_AI` from bash?
+
+An exact date for this has not yet been decided, but it is planned for this to happen in the near future, when `PyRomusa AI` will evolve further and have a minimum community.
+
 ---
 
 **Note:** Versions prior to `BETA 0.10.0` were initially released under the name `muri_ai`.
