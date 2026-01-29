@@ -16,7 +16,7 @@ To select the library version, **you need to browse the** `versions` **folder an
 
 Once you've selected the version type, find the more specific version you want to use.
 
->Want a version recommendation? Try this tutorial with the newest version in STABLE (e.g. v1.00.1 on January 25, 2026)
+>Want a version recommendation? Try this tutorial with the newest version in STABLE (e.g. v0.1.1 on January 25, 2026)
 
 ---
 
@@ -30,28 +30,28 @@ a) **Copy the code:**
 2. Go to your IDE and create a folder
 3. In that folder you created, create 2 more Python scripts, in which:
 ``` 
-    Your Folder/
+    📁 Your Folder/
 
-        *script 1* - Here you paste (Ctrl + V) the version code of the     
+        🐍 *script 1* - Here you paste (Ctrl + V) the version code of the     
         PyRomusa AI library that you selected in the previous step
 
-        *script 2* - Here you will use the PyRomusa AI functions you need
+        🐍 *script 2* - Here you will use the PyRomusa AI functions you need
 ```
 
 Real example (with names):
 
-        AI Library Folder/
+        📁 AI Library Folder/
 
-            PyRomusa_AI.py
-            practice_PyRomusa.py
+            🐍 PyRomusa_AI.py
+            🐍 practice_PyRomusa.py
 
 ---
 
 b) **Install the library code directly:**
 
 1. Install the script directly from GitHub
-2. Most likely, your browser places the installed files in a folder called 'Downloads' or something similar. Go there, select the downloaded file with a single click and press the key combination Ctrl + X.
-3. Put it in a new folder (with Ctrl + V) and open it in your IDE
+2. Most likely, your browser places the installed files in a folder called 'Downloads' or something similar. Go there, select the downloaded file with a single click and press the key combination `Ctrl + X`.
+3. Put it in a new folder (with `Ctrl + X` and `Ctrl + V`) and open it in your IDE
 4. Also, put your Python file (i.e. in the new folder from step 3) where you want to use PyRomusa AI.
 
 ---
@@ -82,6 +82,6 @@ print(bot.reply_at(prompt="Salut!"))
 
 ---
 
-**tutorial last updated:** 24th January 2026
+**tutorial last updated:** 29th January 2026
 
 _(Remember: the more outdated the file, the greater the chances that this tutorial will not be 100% functional.)_

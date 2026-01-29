@@ -1,7 +1,7 @@
-# PyRomusa_AI — v1.00.1 🤖
+# PyRomusa_AI — v0.1.0 🤖
 
 - **Version type:** STABLE
-- **Release date:** 2026-01-24
+- **Release date:** 2026-01-18
 
 ---
 
@@ -34,7 +34,7 @@ What makes it different:
 
 ## What's New
 
-- New prepared dataset, ready to use: _**High Quality, Low Quantity Romanian Dataset**_
+- Nothing, just the first STABLE version ever
 
 ✅ **STABLE release notice:**
 

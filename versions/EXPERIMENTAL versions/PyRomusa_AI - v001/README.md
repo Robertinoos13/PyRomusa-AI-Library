@@ -1,7 +1,7 @@
-# PyRomusa_AI — v1.00.00 🤖
+# PyRomusa_AI — v001 🤖
 
-- **Version type:** STABLE
-- **Release date:** 2026-01-18
+- **Version type:** EXPERIMENTAL
+- **Release date:** 2026-01-29
 
 ---
 
@@ -27,21 +27,39 @@ What makes it different:
 
 ## Files Included
 
-- `PyRomusa_AI.py` — Full implementation of the library for this version  
-- `README.md` — Documentation for this specific version  
+
+`📁PyRomusa_AI - vX.Y.Z/` — The main folder containing everything for that version of the library (full library code + README.md)
+
+ - `📄README.md` — Documentation for this specific version 
+
+- `📁PyRomusa_AI/` — The secondary folder, which only has all the code that contributes to the 100% functional PyRomusa AI
+
+    - `🐍PyRomusa_AI.py` — **PyRomusa AI library main code** of this version  
+
+    - `📁Datasets/` - Folder with some optional code for the main library code (PyRomusa_AI.py) for ready-made data to train your chatbot
+
+        - more Python files...
+   
 
 ---
 
-## What's New
+## The objective of this EXPERIMENTAL version
 
-- Nothing, just the first STABLE version ever
+### The logic for generating a reply (`bot.reply_at()`) has changed. **Is the new logic in this function better than the one in older versions or not?**
 
-✅ **STABLE release notice:**
 
-- The API is considered stable and ready for regular use
-- Core logic is implemented and tested
-- Behaviour is consistent across typical use cases
-- Minor bugs may still exist, but no breaking changes are expected
+
+
+## 🔬 EXPERIMENTAL release notice:
+- The API is experimental and under active development
+
+- New features and ideas are being tested and may change
+
+- Behaviour may be unstable or inconsistent across use cases
+
+- Bugs, breaking changes, or incomplete functionality are expected
+
+- Use this version mainly for testing, learning, and experimentation
 
 ## Quick Usage Examples
 

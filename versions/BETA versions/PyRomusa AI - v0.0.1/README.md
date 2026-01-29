@@ -1,4 +1,4 @@
-# PyRomusa_AI — v0.10.0 🤖
+# PyRomusa_AI — v0.0.1 🤖
 
 **Version type:** BETA  
 **Release date:** 2026-01-11 
