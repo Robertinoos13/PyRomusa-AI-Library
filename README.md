@@ -1,6 +1,6 @@
-# PyRomusa_AI 🤖
+# `PyRomusa AI` 🤖
 
-**PyRomusa_AI** is a lightweight Python library for creating simple AI chatbots with minimal code.  
+**`PyRomusa AI`** is a lightweight Python library for creating simple AI chatbots with minimal code.  
 It is designed for learning purposes, rapid prototyping, and experimentation with basic AI concepts.
 
 ---
@@ -21,6 +21,8 @@ Well, just click on the section (the blue text) below that interests you and you
     - Do you want to see what code using the `PyRomusa AI` library would look like or do you want some ready-to-copy-paste code to see how it works? Well, this is the section you should come to.
 - [About Prepared Datasets 🗄️](#about-prepared-datasets-️)
     - Did you know that you can use ready-to-use training datasets to save time creating input-output examples of a chatbot from scratch? Find here all available datasets, their specifications, and a complete example script with loading a dataset.
+- [About Reply Engines](#about-reply-engines)
+    - Does your chatbot seem to not understand the prompt you wrote or is writing extremely unclearly? This can probably be solved by changing the engine. Click here if you want to learn more about these engines.
 - [Contact us 📩🌐](#contact-us-)
     - Do you want to talk to the person/team that created this library called `PyRomusa AI`? Here you will find all the available possibilities to contact us!
 - [More ➕](#more-) 
@@ -59,6 +61,7 @@ Each version folder contains:
 
 `📁 tutorials/` - This is a folder where all sorts of tutorials will be written to use the library.
 
+`📁 important updates/` - This folder will provide a more detailed description of all the important updates that `PyRomusa AI` has had so far.
 
 ---
 
@@ -83,7 +86,7 @@ Each version folder contains:
 """
 This code works correctly with the following versions:
 BETA - v0.0.2
-STABLE - v0.1.0, v0.1.1
+STABLE - v0.1.0, v0.1.1, v0.2.0
 EXPERIMENTAL - v001
 """
 
@@ -111,7 +114,7 @@ print(bot.reply_at("Hello chatbot!"))
 ```
 
 ---
-## About Prepared Datasets 🗄️
+## About **Prepared Datasets** 🗄️
 
 Did you know that from `PyRomusa AI` you can load a ready-made training dataset to the model? Well, here's an example below:
 ``` python
@@ -135,13 +138,14 @@ print(bot.reply_at(prompt="Salut!"))
 
 ### Info of All Prepared Datasets Available
 
-|Dataset Name|Vocabulary|Number of examples|Word to acces it|Language|Naturalness|Focus on same questions|Avaiable in|
-|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-|**Default Romanian Dataset: LOW-END**|3625|250|'low'|Romanian|Critically Low|No Effort|**BETA v0.0.1** or newer|
-|**Default Romanian Dataset: MID-RANGE**|8242|500|'mid'|Romanian|Critically Low|No Effort|**BETA v0.0.1** or newer|
-|**Default Romanian Dataset: HIGH-END**|11581|1000|'high'|Romanian|Critically Low|No Effort|**BETA v0.0.1** or newer|
-|**High Quality, Very Low Quantity Romanian Dataset**|496|50|'high-quality-very-low-quantity'|Romanian|Very High|Very Low|**STABLE v0.1.1** or newer|
-|**High Quality, Low Quantity Romanian Datatset**|874|100|'high-quality-low-quantity'|Romanian|High|Very Low|**EXPERIMENTAL v001** or newer|
+|Dataset Name|Vocabulary|Number of examples|Word to acces it|Language|Naturalness|Focus on same questions|Planned to be updated|Avaiable in|
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+|**Default Romanian Dataset: LOW-END**|3625|250|'low'|Romanian|Critically Low|No Effort|NO ❌|**BETA v0.0.1** or newer|
+|**Default Romanian Dataset: MID-RANGE**|8242|500|'mid'|Romanian|Critically Low|No Effort|NO ❌|**BETA v0.0.1** or newer|
+|**Default Romanian Dataset: HIGH-END**|11581|1000|'high'|Romanian|Critically Low|No Effort|NO ❌|**BETA v0.0.1** or newer|
+|**High Quality, Very Low Quantity Romanian Dataset**|496|50|'high-quality-very-low-quantity'|Romanian|Very High|Very Low|NO ❌|**STABLE v0.1.1** or newer|
+|**High Quality, Low Quantity Romanian Dataset**|874|100|'high-quality-low-quantity'|Romanian|High|Very Low|NO ❌|**EXPERIMENTAL v001** or newer|
+|**Teacher for PyRomusa AI**|397|110|'pyromusa-ai-teacher'|Romanian|Very High|High|YES 👍|**STABLE v0.2.0** or newer|
 
 _(Some values ​​in the `"Vocabulary"` and `"Number of examples"` columns may be approximate.)_
 
@@ -179,9 +183,75 @@ _(Some values ​​in the `"Vocabulary"` and `"Number of examples"` columns may
     - **High**
     - **Very High** - best value
 
+- _Planned to be updated_ - **This column will have only one of the 3 values: YES, NO or MAYBE.** This column shows whether the prepared dataset will be updated in the future. If YES, the dataset specifications vary depending on the version of `PyRomusa AI`.
+
 - _Avaiable In_ - **Here you will find in which oldest version this dataset started appearing in.** It is important to know which version to look for in the `versions/` folder if you want to use a specific dataset.
 ---
 
+## About **Reply Engines** 
+**Did you know that you can change the logic in which the chatbot will generate a response?** Well, that's a new concept in the `STABLE 0.2.0` release!
+
+**But why was this new concept added?** Well, it **was observed that with a changed logic for generating responses, the chatbot responds more chaotically, more stably, or more precisely to a certain length of the prompt**, so that's how the concept of engines was born: _to optimize the goal of your chatbot._
+
+### Engines available in the latest version of `PyRomusa AI`:
+
+|Engine Name|Advantages|Disadvantages|
+|:---------:|:---------|:------------|
+|  stable   |In general, it writes more correctly in terms of word order, and the chatbot's response is also much easier to read and understand.|High chances of not understanding an extremely short prompt (e.g. a word or three), even if it has it as an example in training, also returning a fairly easy fallback message.|
+|  chaos    |Makes more of an effort to understand a message, so the chances of returning an automatic fallback message are lower.|In general, he writes some strange and quite difficult to understand messages, often not knowing what the chatbot meant. It can also write too many or too few words, thus compounding the difficulty of fully understanding what the chatbot meant.|
+
+
+### Short tutorial/code: **How to use an engine of your choice?**
+
+---
+
+_By the way_: This is a complete tutorial. **If you are only interested in how to select the engine when you want to generate a response, then skip to step 5.**
+
+---
+
+1. First, import the Chatbot from PyRomusa AI
+
+``` python
+from PyRomusa_AI import Chatbot
+```
+
+2. Create an instance of the chatbot
+
+``` python
+bot = Chatbot(chatbot_name="test")
+```
+
+3. Add training examples or upload a prepared dataset
+
+``` python
+bot.trainer.add_data(
+                    training_input_example= "...",
+                    training_output_example= "..."
+                    )
+
+# AND / OR...
+
+bot.prepared_datasets.romanian.load_prepared_dataset(
+                                                    dataset_name="..."
+                                                    )
+```
+
+4. Start the training
+
+``` python
+bot.trainer.start()
+```
+
+5. Generate the answer... **choosing the engine you want**
+``` python
+print(bot.reply_at(
+    prompt="Hey Chatbot!",
+    engine_name="chaos" # Here you write the name of the desired engine
+))
+```
+
+
+---
 ## Contact us 📩🌐
 
 Do you want to give us a new idea for functionality for `PyRomusa AI`, have you detected a bug in a particular version, want to ask us something, give us feedback, need help, a tutorial from `📁tutorials/` is not cleary or just want to say hello? Anything friendly message and/or about `PyRomusa AI` is welcome!
