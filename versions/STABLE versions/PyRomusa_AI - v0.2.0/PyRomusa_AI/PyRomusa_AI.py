@@ -169,8 +169,8 @@ class Chatbot:
                 
                 # Dataset 6
                 # NAME: --- Teacher for PyRomusa AI ---
-                # TOTAL NUMBER OF EXAMPLES: aprox. 100
-                # TOTAL VOCABULARY: aprox. 874 elements (words)
+                # TOTAL NUMBER OF EXAMPLES: aprox. 110
+                # TOTAL VOCABULARY: aprox. 397 elements (words)
                 if dataset_name.lower() in ('teacher', 'pyromusa ai tutorial', 'pyromusa ai teacher', 'pyromusa-ai-teacher', 'pyromusa-ai-tutorial'):
 
                     try:
