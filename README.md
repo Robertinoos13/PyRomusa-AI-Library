@@ -124,7 +124,7 @@ from PyRomusa_AI import Chatbot
 bot = Chatbot(chatbot_name="MyChatbot")
 
 # 2. Load a prepared dataset (in this example, you load the smallest default dataset in Romanian)
-bot.prepared_datasets.romanian(dataset_name="low")
+bot.prepared_datasets.romanian.load_prepared_dataset(dataset_name="low")
 
 # 3. Start training
 bot.trainer.start()
