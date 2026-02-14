@@ -1,32 +1,76 @@
 # `PyRomusa AI` 🤖
 
-**`PyRomusa AI`** is a lightweight Python library for creating simple AI chatbots with minimal code.  
-It is designed for learning purposes, rapid prototyping, and experimentation with basic AI concepts.
+**`PyRomusa AI`** is a lightweight Python framework for creating simple AI chatbots with minimal code.  
+
+
+
+![PyRomusa AI logo](images/PyRomusa_AI_logo.png)
 
 ---
-
 ## Quick Navigation 🌐
 
 This README.md file seems a bit long, right? 
 
 Well, just click on the section (the blue text) below that interests you and you'll be taken directly there! 👇
 
-- [Key Features 🔑](#key-features-) 
-    - Are you new and still don't know what you can do and what capabilities `PyRomusa AI` has? Discover what you can do with this and what capabilities `PyRomusa AI` has.
-- [Repository Structure 📁](#repository-structure-)
-    - Are you new at this repository? Learn a little about the structure of this repository to find what you need.
-- [Version Types Explained](#version-types-explained)
-    -  Here you will find several versions of `PyRomusa AI`, each placed in a specific category, depending on how stable it is, how much effort has been put into fixing bugs, and what the respective version was released for.
 - [Complete Code Example Using PyRomusa_AI](#complete-code-example-using-pyromusa_ai)
     - Do you want to see what code using the `PyRomusa AI` library would look like or do you want some ready-to-copy-paste code to see how it works? Well, this is the section you should come to.
+
+- [Key Features 🔑](#key-features-) 
+    - Are you new and still don't know what you can do and what capabilities `PyRomusa AI` has? Discover what you can do with this and what capabilities `PyRomusa AI` has.
+
+- [Repository Structure 📁](#repository-structure-)
+    - Are you new at this repository? Learn a little about the structure of this repository to find what you need.
+
+- [Version Types Explained](#version-types-explained)
+    -  Here you will find several versions of `PyRomusa AI`, each placed in a specific category, depending on how stable it is, how much effort has been put into fixing bugs, and what the respective version was released for.
+
 - [About Prepared Datasets 🗄️](#about-prepared-datasets-️)
     - Did you know that you can use ready-to-use training datasets to save time creating input-output examples of a chatbot from scratch? Find here all available datasets, their specifications, and a complete example script with loading a dataset.
+
 - [About Reply Engines](#about-reply-engines)
     - Does your chatbot seem to not understand the prompt you wrote or is writing extremely unclearly? This can probably be solved by changing the engine. Click here if you want to learn more about these engines.
+
 - [Contact us 📩🌐](#contact-us-)
     - Do you want to talk to the person/team that created this library called `PyRomusa AI`? Here you will find all the available possibilities to contact us!
+
 - [More ➕](#more-) 
     - Still haven't found what you need? You'll probably find it here.
+
+---
+
+## Complete Code Example Using PyRomusa_AI
+
+```python
+"""
+This code works correctly with the following versions:
+BETA - v0.0.2
+STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0
+EXPERIMENTAL - v001, v002
+"""
+
+from PyRomusa_AI import Chatbot
+
+# Create a chatbot named "RomusaBot"
+bot = Chatbot(chatbot_name="RomusaBot")
+
+# Add some input/output training data
+bot.trainer.add_data(
+    "Hello chatbot!",
+    "Hello human, how can I help you today?"
+)
+
+bot.trainer.add_data(
+    "Bye chatbot!",
+    "Bye human, see you next time!"
+)
+
+# Start the training process
+bot.trainer.start()
+
+# Generate a response to a user input
+print(bot.reply_at("Hello chatbot!"))
+```
 
 ---
 
@@ -63,6 +107,8 @@ Each version folder contains:
 
 `📁 important updates/` - This folder will provide a more detailed description of all the important updates that `PyRomusa AI` has had so far.
 
+`📁 images/` - In this folder you will find all the images that the repository usually uses in README.md files.
+
 ---
 
 ## Version Types Explained
@@ -80,40 +126,6 @@ Each version folder contains:
 
 ---
 
-## Complete Code Example Using PyRomusa_AI
-
-```python
-"""
-This code works correctly with the following versions:
-BETA - v0.0.2
-STABLE - v0.1.0, v0.1.1, v0.2.0
-EXPERIMENTAL - v001, v002
-"""
-
-from PyRomusa_AI import Chatbot
-
-# Create a chatbot named "RomusaBot"
-bot = Chatbot(chatbot_name="RomusaBot")
-
-# Add some input/output training data
-bot.trainer.add_data(
-    "Hello chatbot!",
-    "Hello human, how can I help you today?"
-)
-
-bot.trainer.add_data(
-    "Bye chatbot!",
-    "Bye human, see you next time!"
-)
-
-# Start the training process
-bot.trainer.start()
-
-# Generate a response to a user input
-print(bot.reply_at("Hello chatbot!"))
-```
-
----
 ## About **Prepared Datasets** 🗄️
 
 Did you know that from `PyRomusa AI` you can load a ready-made training dataset to the model? Well, here's an example below:
@@ -256,7 +268,9 @@ print(bot.reply_at(
 
 Do you want to give us a new idea for functionality for `PyRomusa AI`, have you detected a bug in a particular version, want to ask us something, give us feedback, need help, a tutorial from `📁tutorials/` is not cleary or just want to say hello? Anything friendly message and/or about `PyRomusa AI` is welcome!
 
-e-mail: pyromusa.ai@gmail.com
+- e-mail: pyromusa.ai@gmail.com
+
+- TikTok: <span style="color:lightblue">@pyromusa_ai</span>
 
 ---
 
