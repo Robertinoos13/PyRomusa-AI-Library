@@ -13,7 +13,7 @@ This README.md file seems a bit long, right?
 
 Well, just click on the section (the blue text) below that interests you and you'll be taken directly there! 👇
 
-- [Complete Code Example Using PyRomusa_AI](#complete-code-example-using-pyromusa_ai)
+- [Complete Code Example Using PyRomusa AI](#complete-code-example-using-pyromusa_ai)
     - Do you want to see what code using the `PyRomusa AI` library would look like or do you want some ready-to-copy-paste code to see how it works? Well, this is the section you should come to.
 
 - [Key Features 🔑](#key-features-) 
@@ -39,13 +39,13 @@ Well, just click on the section (the blue text) below that interests you and you
 
 ---
 
-## Complete Code Example Using PyRomusa_AI
+## Complete Code Example Using `PyRomusa AI`
 
 ```python
 """
 This code works correctly with the following versions:
 BETA - v0.0.2
-STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0
+STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0
 EXPERIMENTAL - v001, v002
 """
 
@@ -157,7 +157,7 @@ print(bot.reply_at(prompt="Salut!"))
 |**Default Romanian Dataset: HIGH-END**|11581|1000|'high'|Romanian|Critically Low|No Effort|NO ❌|**BETA v0.0.1** or newer|
 |**High Quality, Very Low Quantity Romanian Dataset**|496|50|'high-quality-very-low-quantity'|Romanian|Very High|Very Low|NO ❌|**STABLE v0.1.1** or newer|
 |**High Quality, Low Quantity Romanian Dataset**|874|100|'high-quality-low-quantity'|Romanian|High|Very Low|NO ❌|**EXPERIMENTAL v001** or newer|
-|**Teacher for PyRomusa AI**|_397_ - _534_|_110_ - _160_|'pyromusa-ai-teacher'|Romanian|Very High|High|YES 👍|**STABLE v0.2.0** or newer|
+|**Teacher for PyRomusa AI**|_397_ - _659_|_110_ - _200_|'pyromusa-ai-teacher'|Romanian|Very High|High|YES 👍|**STABLE v0.2.0** or newer|
 
 _(Some values ​​in the `"Vocabulary"` and `"Number of examples"` columns may be approximate.)_
 
@@ -209,8 +209,9 @@ _(Some values ​​in the `"Vocabulary"` and `"Number of examples"` columns may
 
 |Engine Name|Advantages|Disadvantages|
 |:---------:|:---------|:------------|
-|  stable   |In general, it writes more correctly in terms of word order, and the chatbot's response is also much easier to read and understand.|High chances of not understanding an extremely short prompt (e.g. a word or three), even if it has it as an example in training, also returning a fairly easy fallback message.|
-|  chaos    |Makes more of an effort to understand a message, so the chances of returning an automatic fallback message are lower.|In general, he writes some strange and quite difficult to understand messages, often not knowing what the chatbot meant. It can also write too many or too few words, thus compounding the difficulty of fully understanding what the chatbot meant.|
+|  `stable` |In general, it writes more correctly in terms of word order, and the chatbot's response is also much easier to read and understand.|High chances of not understanding an extremely short prompt (e.g. a word or two), even if it has it as an example in training, also returning a fairly easy fallback message.|
+|  `chaos`  |Makes more of an effort to understand a message, so the chances of returning an automatic fallback message are lower.|In general, he writes some strange and quite difficult to understand messages, often not knowing what the chatbot meant. It can also write too many or too few words, thus compounding the difficulty of fully understanding what the chatbot meant.|
+| `modern`  |It is the first engine based on NumPy. It doesn't matter if you write letters with diacritics or accents or not, the chatbot will still understand. It can now return a generated answer to a one-word prompt, without returning a fallback message, as we encounter, completely the opposite, in the `stable` engine.|In general, the response generation time is longer than in other available engines (`chaos`, `stable`). Also, in the latest STABLE version, the memory function of the last conversation is mandatory, you cannot remove it, even if you have `with_memory=False` in your function (an attempt will be made to solve this problem in the future).|
 
 
 ### Short tutorial/code: **How to use an engine of your choice?**
@@ -280,6 +281,35 @@ Do you want to give us a new idea for functionality for `PyRomusa AI`, have you 
 
 An exact date for this has not yet been decided, but it is planned for this to happen in the near future, when `PyRomusa AI` will evolve further and have a minimum community.
 
+### 2. What methods do I have to learn to use `PyRomusa AI?`
+
+At the moment _(February 19, 2026)_, these PyRomusa AI learning options are quite limited, but you have the following methods:
+
+1. Find random codes through this repository
+    - In almost every README.md there is a piece of code where `PyRomusa AI` is used. Look at these and get inspired
+
+2. Watch videos about PyRomusa AI, specifically on the TikTok account <span style="color:lightblue">@pyromusa_ai</span>
+    - Sometimes, videos are posted on this TikTok account just about `PyRomusa AI`: from updates and little jokes to code and tutorials. Scroll through the videos here and find what you want.
+
+3. Look in the `📁 tutorials/` folder in this repository
+
+    - This folder, at the moment, does not have a code tutorial, but only a few text guides to solve problems like 'Why can't I load a prepared dataset?' or 'How do I setup PyRomusa AI in my code?', but it is planned to include code tutorials here in the future.
+
+4. Use the prepared dataset 'Teacher for PyRomusa AI'
+
+    - Yes, you can load this prepared dataset for your chatbot in your code, and then ask it questions. This dataset has input-output examples, specifically designed to answer your questions about PyRomusa AI. Indeed, it can't answer every question because of the poor vocabulary specifications and the number of examples, but it can answer basic questions. (By the way, you need to know Romanian to use it)
+
+
+5. Install `PyRomusa AI` & Run the code:
+```python
+from PyRomusa_AI import Chatbot
+
+# Create a chatbot
+bot = Chatbot()
+
+# Get help
+bot.helper.how_to_start()
+```
 ---
 
 **Note:** Versions prior to `BETA 0.0.1` were initially released under the name `muri_ai`.
