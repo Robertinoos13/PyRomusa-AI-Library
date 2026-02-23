@@ -45,7 +45,7 @@ Well, just click on the section (the blue text) below that interests you and you
 """
 This code works correctly with the following versions:
 BETA - v0.0.2
-STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1
+STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2
 EXPERIMENTAL - v001, v002
 """
 
@@ -157,7 +157,7 @@ print(bot.reply_at(prompt="Salut!"))
 |**Default Romanian Dataset: HIGH-END**|11581|1000|'high'|Romanian|Critically Low|No Effort|NO ❌|**BETA v0.0.1** or newer|
 |**High Quality, Very Low Quantity Romanian Dataset**|496|50|'high-quality-very-low-quantity'|Romanian|Very High|Very Low|NO ❌|**STABLE v0.1.1** or newer|
 |**High Quality, Low Quantity Romanian Dataset**|874|100|'high-quality-low-quantity'|Romanian|High|Very Low|NO ❌|**EXPERIMENTAL v001** or newer|
-|**Teacher for PyRomusa AI**|_397_ - _659_|_110_ - _200_|'pyromusa-ai-teacher'|Romanian|Very High|High|YES 👍|**STABLE v0.2.0** or newer|
+|**Teacher for PyRomusa AI**|_397_ - _685_|_110_ - _210_|'pyromusa-ai-teacher'|Romanian|Very High|High|YES 👍|**STABLE v0.2.0** or newer|
 |**Default English Dataset: LOW-END**|949|250|'low'|English|No Effort|Balanced|NO ❌|**STABLE v0.4.1** or newer|
 |**Default English Dataset: MID-RANGE**|1713|500|'mid'|English|No Effort|Balanced|NO ❌|**STABLE v0.4.1** or newer|
 |**Default English Dataset: HIGH-END**|3100|1000|'high'|English|No Effort|Balanced|NO ❌|**STABLE v0.4.1** or newer|
