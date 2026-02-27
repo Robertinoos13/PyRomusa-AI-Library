@@ -9,13 +9,18 @@
 ---
 ## Quick Navigation 🌐
 
-This README.md file seems a bit long, right? 
+This `📄README.md` file seems a bit long, right? 
 
 Well, just click on the section (the blue text) below that interests you and you'll be taken directly there! 👇
 
-- [Complete Code Example Using PyRomusa AI](#complete-code-example-using-pyromusa_ai)
+- [Complete Code Example Using `PyRomusa AI`](#complete-code-example-using-pyromusa_ai)
     - Do you want to see what code using the `PyRomusa AI` library would look like or do you want some ready-to-copy-paste code to see how it works? Well, this is the section you should come to.
 
+- [Why should I use `PyRomusa AI`? 🤔](#why-should-i-use-pyromusa-ai-)
+    - Do you want a reason to use `PyRomusa AI` or still don't understand what `PyRomusa AI` is? You could find this information right here
+
+- [How to download `PyRomusa AI` directly from GitHub?](#how-to-download-pyromusa-ai-directly-from-github)
+    - Are you ready to install PyRomusa AI directly from GitHub, on your hardware, and use PyRomusa AI? Here's a tutorial on how to install it from scratch.
 - [Key Features 🔑](#key-features-) 
     - Are you new and still don't know what you can do and what capabilities `PyRomusa AI` has? Discover what you can do with this and what capabilities `PyRomusa AI` has.
 
@@ -31,11 +36,14 @@ Well, just click on the section (the blue text) below that interests you and you
 - [About Reply Engines](#about-reply-engines)
     - Does your chatbot seem to not understand the prompt you wrote or is writing extremely unclearly? This can probably be solved by changing the engine. Click here if you want to learn more about these engines.
 
-- [Contact us 📩🌐](#contact-us-)
-    - Do you want to talk to the person/team that created this library called `PyRomusa AI`? Here you will find all the available possibilities to contact us!
+- [Contact me 📩🌐](#contact-me-)
+    - Do you want to talk to the person that created this library called `PyRomusa AI`? Here you will find all the available possibilities to contact me!
 
 - [More ➕](#more-) 
     - Still haven't found what you need? You'll probably find it here.
+
+- [Notes](#notes)
+    - There are some small things you should consider. Come here if you want to know these important things
 
 ---
 
@@ -46,7 +54,7 @@ Well, just click on the section (the blue text) below that interests you and you
 This code works correctly with the following versions:
 BETA - v0.0.2
 STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2
-EXPERIMENTAL - v001, v002
+EXPERIMENTAL - v001, v002, v003
 """
 
 from PyRomusa_AI import Chatbot
@@ -71,9 +79,95 @@ bot.trainer.start()
 # Generate a response to a user input
 print(bot.reply_at("Hello chatbot!"))
 ```
+---
+## Why should I use `PyRomusa AI`? 🤔
+### 1. Framework with a single goal: **creating chatbots from scratch**
+- It is a framework optimized only for creating chatbots from scratch, with your own input-output training examples.
+- It has functions specifically for creating a chatbot, without unnecessary functions
+
+### 2. It is a small and new python framework
+- Not much is known about this framework yet, and since it is a very young framework, it receives updates quite frequently. Any feedback and suggestions [sent via email or TikTok](#contact-us-) are welcome!
+
+- It is not yet a framework that can be installed in the form of `pip install PyRomusa_AI` in the console, but it is planned to be able to install in this form when there is a minimum community and/or when it will be necessary to make the major update to the STABLE version v0.9.X
+
+### 3. A fast framework
+- The response generation time + training time in a single code run are generally much shorter than other major frameworks.
+
+- **Want to see the real speed of the framework? Try the `🐍 benchmark.py` script**: It creates an instance of a chatbot, loads all available datasets, starts training, and responds to 10 prompts using the `modern` reply engine (works on PyRomusa AI STABLE v0.4.1 or newer).
+
+### 4. A framework a little... different from others
+- **`PyRomusa AI` comes with some more special concepts**: _[Reply Engines](#about-reply-engines) and [Prepared Datasets](#about-prepared-datasets-️)_
+- It does not use some concepts from traditional AI, such as loss functions or hidden layers
+
+### 5. Focused on being easy to learn and use
+- The syntax of this framework has been made as easy and logical as possible.
+- Even though [the learning resources for this framework](#1-what-methods-do-i-have-to-learn-to-use-pyromusa-ai), available in February 2026, are not very advanced and detailed, at least they are diversified directly by the creator.
+---
+## How to download `PyRomusa AI` directly from GitHub?
+
+### **This can be done by 2 methods:**
+
+---
+### **a) The clasic method (probably harder for beginners, but more flexible)**
+
+1. Make sure you have Python and pip installed (`PyRomusa AI` works with Python 3.8+).
+2. Open a terminal on Windows, macOS, or Linux, open your command line or terminal.
+3. Install `PyRomusa AI` directly from GitHub, writing this in your terminal:
+``` bash
+pip install git+https://github.com/Robertinoos13/pyromusa-ai.git
+```
+> This command tells pip to clone the repository and install the package automatically. You don’t need to download anything manually.
+
+**4. Test the installation**
+
+Open Python in your terminal and try:
+``` python
+from pyromusa_ai import Chatbot
+
+bot = Chatbot()
+bot.trainer.show_number_of_examples()
+```
+>If no errors appear, PyRomusa AI is installed and ready to use.
+
+>_(**How do you open Python in your terminal? Just type the word** `python` **before you type the python code**, then you have the option to type whatever Python code you want.)_
+
+**5. Load a prepared dataset (optional):**
+```
+bot.prepared_datasets.romanian.load_prepared_dataset("low")
+```
+
+> This loads a Romanian dataset into your chatbot for training or testing.
 
 ---
 
+### **b) The manual method (probably easier for beginners, but less flexible)**
+
+1. Go to one of these folders: `📁 all versions/` or `📁 pyromusa-ai`
+2. If you chose to go to folder `📁 all versions/`, then select a version type, the exact version, and look for file `🐍PyRomusa_AI.py`. If you went the other way, look for the `🐍core.py` file.
+3. Once you've found one of the Python files, install it or copy all of its contents to a Python file you created on your hardware.
+
+    > By the way, if you made it to step 3, make sure the Python file I told you about is in the same folder as the python file where you will use the PyRomusa AI functionalities. We will talk more about this in step 4.
+
+4. In order to use PyRomusa AI in your code, the 2 Python files must be in the same folder, with a structure something like this:
+    ```
+    |- 📁Your Folder/
+    |----- 🐍PyRomusa_AI.py
+    |----- 🐍you_code.py
+    |----- 📁Datasets/
+    |--------- 🐍other python files
+    ```
+
+    Where:
+    |Name|Description|
+    |:--:|:----------|
+    |`📁Your Folder/`|The folder where your Python code should be located where you want to use `PyRomusa AI` + the main framework code|
+    |`🐍PyRomusa_AI.py`|The main code of the `PyRomusa AI` framework|
+    |`🐍you_code.py`|Your code, where you will use `PyRomusa AI`|
+    |`📁Datasets/`|This is a folder with several optional Python files that `🐍PyRomusa_AI.py` needs to function fully and smoothly.|
+
+    > Did you know that `PyRomusa AI` uses several optional Python files that it needs to function fully and error-free? Well, they are found in the repository in a folder called `Datasets/`
+
+---
 ## Key Features 🔑
 - Create a chatbot in just a few lines of Python  
 - Simple training process (no heavy frameworks involved)  
@@ -84,9 +178,9 @@ print(bot.reply_at("Hello chatbot!"))
 ---
 
 ## Repository Structure 📁
-All versions of the library are stored inside the `📁 versions/` folder.
+All versions of `PyRomusa AI` from all time are stored inside the `📁 all versions/` folder.
 
-`📁 versions/`
+`📁 all versions/`
 - `📁 BETA versions/` 
     - 📁 _PyRomusa_AI_ - v0.0.X
 - `📁 EXPERIMENTAL versions/` 
@@ -102,6 +196,7 @@ Each version folder contains:
 - A dedicated `📄README.md` for that version  
 
 ---
+`📁 pyromusa-ai` - This is the newest stable version of `PyRomusa AI`. Its structure is optimized so that you can install it with `pip install` from your terminal. [Click on this text to learn how](#a-the-clasic-method-probably-harder-for-beginners)
 
 `📁 tutorials/` - This is a folder where all sorts of tutorials will be written to use the library.
 
@@ -109,9 +204,13 @@ Each version folder contains:
 
 `📁 images/` - In this folder you will find all the images that the repository usually uses in README.md files.
 
+`🐍 benchmark.py` - A stress-free, ready-made script that uses PyRomusa AI to test the runtime on your hardware.
+
 ---
 
 ## Version Types Explained
+As this repository has various versions of `PyRomusa AI` that are older, newer, or more buggy, they have been grouped into 3 categories, placed in the `📁 all versions/` folder:
+
 ### BETA 🤖🛠️
 - Still in development  
 - May contain bugs, incomplete features, or small issues  
@@ -214,7 +313,7 @@ _(Some values ​​in the `"Vocabulary"` and `"Number of examples"` columns may
 |:---------:|:---------|:------------|
 |  `stable` |In general, it writes more correctly in terms of word order, and the chatbot's response is also much easier to read and understand.|High chances of not understanding an extremely short prompt (e.g. a word or two), even if it has it as an example in training, also returning a fairly easy fallback message.|
 |  `chaos`  |Makes more of an effort to understand a message, so the chances of returning an automatic fallback message are lower.|In general, he writes some strange and quite difficult to understand messages, often not knowing what the chatbot meant. It can also write too many or too few words, thus compounding the difficulty of fully understanding what the chatbot meant.|
-| `modern`  |It is the first engine based on NumPy. It doesn't matter if you write letters with diacritics or accents or not, the chatbot will still understand. It can now return a generated answer to a one-word prompt, without returning a fallback message, as we encounter, completely the opposite, in the `stable` engine.|In general, the response generation time is longer than in other available engines (`chaos`, `stable`). Also, in the latest STABLE version, the memory function of the last conversation is mandatory, you cannot remove it, even if you have `with_memory=False` in your function (an attempt will be made to solve this problem in the future).|
+| `modern`  |It is the first engine based on NumPy. It doesn't matter if you write letters with diacritics or accents or not, the chatbot will still understand. It can now return a generated answer to a one-word prompt, without returning a fallback message, as we encounter, completely the opposite, in the `stable` engine.|In general, the response generation time is longer than in other available engines (`chaos`, `stable`). |
 
 
 ### Short tutorial/code: **How to use an engine of your choice?**
@@ -224,42 +323,30 @@ _(Some values ​​in the `"Vocabulary"` and `"Number of examples"` columns may
 _By the way_: This is a complete tutorial. **If you are only interested in how to select the engine when you want to generate a response, then skip to step 5.**
 
 ---
-
-1. First, import the Chatbot from PyRomusa AI
-
 ``` python
+# 1. First, import the Chatbot from PyRomusa AI
 from PyRomusa_AI import Chatbot
-```
 
-2. Create an instance of the chatbot
 
-``` python
+# 2. Create an instance of the chatbot
 bot = Chatbot(chatbot_name="test")
-```
 
-3. Add training examples or upload a prepared dataset
 
-``` python
+# 3. Add training examples or upload a prepared dataset
 bot.trainer.add_data(
                     training_input_example= "...",
                     training_output_example= "..."
                     )
 
-# AND / OR...
+        # AND / OR...
 
 bot.prepared_datasets.romanian.load_prepared_dataset(
                                                     dataset_name="..."
                                                     )
-```
-
-4. Start the training
-
-``` python
+# 4. Start the training
 bot.trainer.start()
-```
 
-5. Generate the answer... **choosing the engine you want**
-``` python
+# 5. Generate the answer... **choosing the engine you want**
 print(bot.reply_at(
     prompt="Hey Chatbot!",
     engine_name="chaos" # Here you write the name of the desired engine
@@ -268,23 +355,19 @@ print(bot.reply_at(
 
 
 ---
-## Contact us 📩🌐
+## Contact me 📩🌐
 
-Do you want to give us a new idea for functionality for `PyRomusa AI`, have you detected a bug in a particular version, want to ask us something, give us feedback, need help, a tutorial from `📁tutorials/` is not cleary or just want to say hello? Anything friendly message and/or about `PyRomusa AI` is welcome!
+Do you want to give me a new idea for functionality for `PyRomusa AI`, have you detected a bug in a particular version, want to ask me something, give me feedback, need help, a tutorial from `📁tutorials/` is not cleary or just want to say hello? Anything friendly message and/or about `PyRomusa AI` is welcome!
 
 - e-mail: pyromusa.ai@gmail.com
 
-- TikTok: <span style="color:lightblue">@pyromusa_ai</span>
+- TikTok: [@pyromusa_ai](https://www.tiktok.com/@pyromusa_ai?is_from_webapp=1&sender_device=pc)
 
 ---
 
 ## More ➕
 
-### 1. When will you be able to install the library with just `pip install PyRomusa_AI` from bash?
-
-An exact date for this has not yet been decided, but it is planned for this to happen in the near future, when `PyRomusa AI` will evolve further and have a minimum community.
-
-### 2. What methods do I have to learn to use `PyRomusa AI?`
+### 1. What methods do I have to learn to use `PyRomusa AI?`
 
 At the moment _(February 19, 2026)_, these PyRomusa AI learning options are quite limited, but you have the following methods:
 
@@ -315,5 +398,10 @@ bot.helper.how_to_start()
 ```
 ---
 
-**Note:** Versions prior to `BETA 0.0.1` were initially released under the name `muri_ai`.
+## **Notes:** 
+- Versions prior to `BETA 0.0.1` were initially released under the name `muri_ai`.
 **The project has been renamed to `PyRomusa_AI` to avoid naming conflicts and for better branding.**
+
+- Do you notice that the codes in this repository that use `PyRomusa AI`, you often find `from PyRomusa_AI import Chatbot`, and sometimes you also find `from pyromusa_ai import Chatbot`? **Well, know that if you install `PyRomusa AI` via `pip install ...`, in your code you will use `pyromusa_ai`, AND if you install it manually from the repository and do not change its name, then you will use `PyRomusa_AI`**
+
+- **Some information in this repository may be incorrect or outdated.** Please manually verify the information you want before taking it 100% into account. If you do find incorrect or outdated information, please [contact me.](#contact-me-)
