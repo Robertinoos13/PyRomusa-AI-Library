@@ -114,7 +114,7 @@ print(bot.reply_at("Hello chatbot!"))
 2. Open a terminal on Windows, macOS, or Linux, open your command line or terminal.
 3. Install `PyRomusa AI` directly from GitHub, writing this in your terminal:
 ``` bash
-pip install git+https://github.com/Robertinoos13/pyromusa-ai.git
+pip install git+https://github.com/Robertinoos13/PyRomusa-AI-Library.git#subdirectory=pyromusa-ai
 ```
 > This command tells pip to clone the repository and install the package automatically. You don’t need to download anything manually.
 
