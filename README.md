@@ -146,9 +146,9 @@ bot.prepared_datasets.romanian.load_prepared_dataset("low")
 2. If you chose to go to folder `📁 all versions/`, then select a version type, the exact version, and look for file `🐍PyRomusa_AI.py`. If you went the other way, look for the `🐍core.py` file.
 3. Once you've found one of the Python files, install it or copy all of its contents to a Python file you created on your hardware.
 
-    > By the way, if you made it to step 3, make sure the Python file I told you about is in the same folder as the python file where you will use the PyRomusa AI functionalities. We will talk more about this in step 4.
+    > By the way, if you made it to step 3, make sure the Python file I told you about is in the same folder as the python file where you will use the `PyRomusa AI` functionalities. We will talk more about this in step 4.
 
-4. In order to use PyRomusa AI in your code, the 2 Python files must be in the same folder, with a structure something like this:
+4. In order to use `PyRomusa AI` in your code, the 2 Python files must be in the same folder, with a structure something like this:
     ```
     |- 📁Your Folder/
     |----- 🐍PyRomusa_AI.py
@@ -180,14 +180,18 @@ bot.prepared_datasets.romanian.load_prepared_dataset("low")
 ## Repository Structure 📁
 All versions of `PyRomusa AI` from all time are stored inside the `📁 all versions/` folder.
 
-`📁 all versions/`
-- `📁 BETA versions/` 
-    - 📁 _PyRomusa_AI_ - v0.0.X
-- `📁 EXPERIMENTAL versions/` 
-    - 📁 _PyRomusa_AI_ - vXYZ
-- `📁 STABLE versions/` 
-    - 📁 _PyRomusa_AI_ - v0.X.Y
-
+```
+|-📁 all versions/
+|
+|----📁 BETA versions/ 
+|--------📁 _PyRomusa_AI_ - v0.0.X
+|
+|----📁 EXPERIMENTAL versions/
+|--------📁 _PyRomusa_AI_ - vXYZ
+|
+|----📁 STABLE versions/ 
+|--------📁 _PyRomusa_AI_ - v0.X.Y
+```
 
 
 
@@ -196,7 +200,7 @@ Each version folder contains:
 - A dedicated `📄README.md` for that version  
 
 ---
-`📁 pyromusa-ai` - This is the newest stable version of `PyRomusa AI`. Its structure is optimized so that you can install it with `pip install` from your terminal. [Click on this text to learn how](#a-the-clasic-method-probably-harder-for-beginners)
+`📁 pyromusa-ai` - This is the newest stable version of `PyRomusa AI`. Its structure is optimized so that you can install it with `pip install` from your terminal. [Click on this text to learn how](#a-the-clasic-method-probably-harder-for-beginners-but-more-flexible)
 
 `📁 tutorials/` - This is a folder where all sorts of tutorials will be written to use the library.
 
@@ -374,7 +378,7 @@ At the moment _(February 19, 2026)_, these PyRomusa AI learning options are quit
 1. Find random codes through this repository
     - In almost every README.md there is a piece of code where `PyRomusa AI` is used. Look at these and get inspired
 
-2. Watch videos about PyRomusa AI, specifically on the TikTok account <span style="color:lightblue">@pyromusa_ai</span>
+2. Watch videos about PyRomusa AI, specifically on the TikTok account [@pyromusa_ai](https://www.tiktok.com/@pyromusa_ai?is_from_webapp=1&sender_device=pc)
     - Sometimes, videos are posted on this TikTok account just about `PyRomusa AI`: from updates and little jokes to code and tutorials. Scroll through the videos here and find what you want.
 
 3. Look in the `📁 tutorials/` folder in this repository
