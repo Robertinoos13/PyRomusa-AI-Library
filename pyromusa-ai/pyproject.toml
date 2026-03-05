@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "PyRomusaAI"
-version = "0.4.2"
+version = "0.4.3"
 description = "A lightweight Python framework for creating simple AI chatbots with minimal code."
 authors = [{name = "Robert Mureșan", email = "pyromusa.ai@gmail.com"}]
 readme = "README.md"

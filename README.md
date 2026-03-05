@@ -86,7 +86,7 @@ print(bot.reply_at("Hello chatbot!"))
 - It has functions specifically for creating a chatbot, without unnecessary functions
 
 ### 2. It is a small and new python framework
-- Not much is known about this framework yet, and since it is a very young framework, it receives updates quite frequently. Any feedback and suggestions [sent via email or TikTok](#contact-us-) are welcome!
+- Not much is known about this framework yet, and since it is a very young framework, it receives updates quite frequently. Any feedback and suggestions [sent via email or TikTok](#contact-me-) are welcome!
 
 - It is not yet a framework that can be installed in the form of `pip install PyRomusa_AI` in the console, but it is planned to be able to install in this form when there is a minimum community and/or when it will be necessary to make the major update to the STABLE version v0.9.X
 
@@ -260,7 +260,7 @@ print(bot.reply_at(prompt="Salut!"))
 |**Default Romanian Dataset: HIGH-END**|11581|1000|'high'|Romanian|Critically Low|No Effort|NO ❌|**BETA v0.0.1** or newer|
 |**High Quality, Very Low Quantity Romanian Dataset**|496|50|'high-quality-very-low-quantity'|Romanian|Very High|Very Low|NO ❌|**STABLE v0.1.1** or newer|
 |**High Quality, Low Quantity Romanian Dataset**|874|100|'high-quality-low-quantity'|Romanian|High|Very Low|NO ❌|**EXPERIMENTAL v001** or newer|
-|**Teacher for PyRomusa AI**|_397_ - _685_|_110_ - _210_|'pyromusa-ai-teacher'|Romanian|Very High|High|YES 👍|**STABLE v0.2.0** or newer|
+|**Teacher for PyRomusa AI**|_397_ - _710_|_110_ - _220_|'pyromusa-ai-teacher'|Romanian|Very High|High|YES 👍|**STABLE v0.2.0** or newer|
 |**Default English Dataset: LOW-END**|949|250|'low'|English|No Effort|Balanced|NO ❌|**STABLE v0.4.1** or newer|
 |**Default English Dataset: MID-RANGE**|1713|500|'mid'|English|No Effort|Balanced|NO ❌|**STABLE v0.4.1** or newer|
 |**Default English Dataset: HIGH-END**|3100|1000|'high'|English|No Effort|Balanced|NO ❌|**STABLE v0.4.1** or newer|
