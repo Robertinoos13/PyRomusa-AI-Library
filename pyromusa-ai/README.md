@@ -1,7 +1,7 @@
-# `PyRomusa AI` — v0.4.2 🤖
+# `PyRomusa AI` — v0.4.3 🤖
 
 - **Version type:** STABLE
-- **Release date:** 2026-02-23
+- **Release date:** 2026-03-05
 
 ---
 
@@ -39,14 +39,13 @@ What makes it different:
 
         - more Python files...
    
+   
 
 ---
 
 ## What's New
 
-
-
-- **Bug fixed in the reply engine _`modern`_**: Now, if you select the `modern` engine, it works perfectly if you choose for the chatbot to ignore the last conversation with the user using the `with_memory` parameter in the `bot.reply_at()` function.
+- **New parameter in `bot.reply_at()`, `temperature`**: Now chatbots can generate different messages at the same prompt using this new parameter (this influences the 'creativity' of the chatbot).
 - **Improved Romanian language prepared dataset, Teacher for PyRomusa AI:** Added more input-output training examples for more vocabulary and responding to more prompts without returning a fallback message
 
 ---
