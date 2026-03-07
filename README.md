@@ -53,7 +53,7 @@ Well, just click on the section (the blue text) below that interests you and you
 """
 This code works correctly with the following versions:
 BETA - v0.0.2
-STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2
+STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2, v0.4.3
 EXPERIMENTAL - v001, v002, v003
 """
 
@@ -108,7 +108,7 @@ print(bot.reply_at("Hello chatbot!"))
 ### **This can be done by 2 methods:**
 
 ---
-### **a) The clasic method (probably harder for beginners, but more flexible)**
+### **a) The clasic method**
 
 1. Make sure you have Python and pip installed (`PyRomusa AI` works with Python 3.8+).
 2. Open a terminal on Windows, macOS, or Linux, open your command line or terminal.
@@ -140,7 +140,7 @@ bot.prepared_datasets.romanian.load_prepared_dataset("low")
 
 ---
 
-### **b) The manual method (probably easier for beginners, but less flexible)**
+### **b) The manual method**
 
 1. Go to one of these folders: `📁 all versions/` or `📁 pyromusa-ai`
 2. If you chose to go to folder `📁 all versions/`, then select a version type, the exact version, and look for file `🐍PyRomusa_AI.py`. If you went the other way, look for the `🐍core.py` file.
