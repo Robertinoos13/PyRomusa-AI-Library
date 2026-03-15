@@ -1,6 +1,8 @@
 # `PyRomusa AI` 🤖
 
-**`PyRomusa AI`** is a lightweight Python framework for creating simple AI chatbots with minimal code.  
+**Have you ever imagined training your own chatbot that doesn't even have any existing vocabulary, 100% with your own examples type question-answer, without requiring very good hardware?** Well, `PyRomusa AI` will give you this possibility!
+
+**`PyRomusa AI`** is a lightweight Python framework for creating simple AI chatbots with minimal code.
 
 
 
@@ -42,6 +44,9 @@ Well, just click on the section (the blue text) below that interests you and you
 - [More ➕](#more-) 
     - Still haven't found what you need? You'll probably find it here.
 
+- [Credits ⭐](#credits-)
+    - Curious about what libraries and frameworks were used to create PyRomusa AI? Here you will find the answer + the main purpose of each
+    
 - [Notes](#notes)
     - There are some small things you should consider. Come here if you want to know these important things
 
@@ -53,7 +58,7 @@ Well, just click on the section (the blue text) below that interests you and you
 """
 This code works correctly with the following versions:
 BETA - v0.0.2
-STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2, v0.4.3
+STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2, v0.4.3, v0.5.0
 EXPERIMENTAL - v001, v002, v003
 """
 
@@ -200,7 +205,7 @@ Each version folder contains:
 - A dedicated `📄README.md` for that version  
 
 ---
-`📁 pyromusa-ai` - This is the newest stable version of `PyRomusa AI`. Its structure is optimized so that you can install it with `pip install` from your terminal. [Click on this text to learn how](#a-the-clasic-method-probably-harder-for-beginners-but-more-flexible)
+`📁 pyromusa-ai` - This is the newest stable version of `PyRomusa AI`. Its structure is optimized so that you can install it with `pip install` from your terminal. [Click on this text to learn how](#a-the-clasic-method)
 
 `📁 tutorials/` - This is a folder where all sorts of tutorials will be written to use the library.
 
@@ -260,7 +265,7 @@ print(bot.reply_at(prompt="Salut!"))
 |**Default Romanian Dataset: HIGH-END**|11581|1000|'high'|Romanian|Critically Low|No Effort|NO ❌|**BETA v0.0.1** or newer|
 |**High Quality, Very Low Quantity Romanian Dataset**|496|50|'high-quality-very-low-quantity'|Romanian|Very High|Very Low|NO ❌|**STABLE v0.1.1** or newer|
 |**High Quality, Low Quantity Romanian Dataset**|874|100|'high-quality-low-quantity'|Romanian|High|Very Low|NO ❌|**EXPERIMENTAL v001** or newer|
-|**Teacher for PyRomusa AI**|_397_ - _710_|_110_ - _220_|'pyromusa-ai-teacher'|Romanian|Very High|High|YES 👍|**STABLE v0.2.0** or newer|
+|**Teacher for PyRomusa AI**|_397_ - _784_|_110_ - _250_|'pyromusa-ai-teacher'|Romanian|Very High|High|YES 👍|**STABLE v0.2.0** or newer|
 |**Default English Dataset: LOW-END**|949|250|'low'|English|No Effort|Balanced|NO ❌|**STABLE v0.4.1** or newer|
 |**Default English Dataset: MID-RANGE**|1713|500|'mid'|English|No Effort|Balanced|NO ❌|**STABLE v0.4.1** or newer|
 |**Default English Dataset: HIGH-END**|3100|1000|'high'|English|No Effort|Balanced|NO ❌|**STABLE v0.4.1** or newer|
@@ -371,14 +376,14 @@ Do you want to give me a new idea for functionality for `PyRomusa AI`, have you 
 
 ## More ➕
 
-### 1. What methods do I have to learn to use `PyRomusa AI?`
+### 1. What methods do I have to learn to use `PyRomusa AI`?
 
 At the moment _(February 19, 2026)_, these PyRomusa AI learning options are quite limited, but you have the following methods:
 
 1. Find random codes through this repository
     - In almost every README.md there is a piece of code where `PyRomusa AI` is used. Look at these and get inspired
 
-2. Watch videos about PyRomusa AI, specifically on the TikTok account [@pyromusa_ai](https://www.tiktok.com/@pyromusa_ai?is_from_webapp=1&sender_device=pc)
+2. Watch videos about `PyRomusa AI`, specifically on the TikTok account [@pyromusa_ai](https://www.tiktok.com/@pyromusa_ai?is_from_webapp=1&sender_device=pc)
     - Sometimes, videos are posted on this TikTok account just about `PyRomusa AI`: from updates and little jokes to code and tutorials. Scroll through the videos here and find what you want.
 
 3. Look in the `📁 tutorials/` folder in this repository
@@ -400,6 +405,21 @@ bot = Chatbot()
 # Get help
 bot.helper.how_to_start()
 ```
+---
+## **Credits ⭐**
+
+PyRomusa AI uses several other external Python libraries to function properly and completely. In this table below, you will find each external library used and its most important purpose in `PyRomusa AI`:
+
+|Library name|Objective|Name/Link of the repo in GitHub|
+|:---:|:---:|:---:|
+|`numpy`|The logic behind the 'modern' reply engine|[numpy](https://github.com/numpy/numpy)|
+|`pandas`|To create tables (dataframes) for some functions in `bot.helper. ...`|[pandas](https://github.com/pandas-dev/pandas)|
+|`pyrospeak`|For talking chatbots (TTS transformation)|[PyroSpeak-Library](https://github.com/Robertinoos13/PyroSpeak-Library)|
+
+<br><br>
+
+Thank you for creating these Python frameworks/libraries 🙏
+
 ---
 
 ## **Notes:** 
