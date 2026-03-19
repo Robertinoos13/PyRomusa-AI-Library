@@ -429,3 +429,9 @@ Thank you for creating these Python frameworks/libraries 🙏
 - Do you notice that the codes in this repository that use `PyRomusa AI`, you often find `from PyRomusa_AI import Chatbot`, and sometimes you also find `from pyromusa_ai import Chatbot`? **Well, know that if you install `PyRomusa AI` via `pip install ...`, in your code you will use `pyromusa_ai`, AND if you install it manually from the repository and do not change its name, then you will use `PyRomusa_AI`**
 
 - **Some information in this repository may be incorrect or outdated.** Please manually verify the information you want before taking it 100% into account. If you do find incorrect or outdated information, please [contact me.](#contact-me-)
+
+---
+
+<br>
+
+Did you find the functionalities interesting, did it help you a lot in a project of yours, or do you think `PyRomusa AI` has potential? Then leave a ⭐ so I know this information, so I know what you think about `PyRomusa AI` at the moment.
