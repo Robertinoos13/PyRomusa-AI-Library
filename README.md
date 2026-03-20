@@ -146,6 +146,7 @@ bot.prepared_datasets.romanian.load_prepared_dataset("low")
 ---
 
 ### **b) The manual method**
+Did you know that to install older versions of PyRomusa AI, the most stable installation method is this? **If you want to install older versions, then trust this method.**
 
 1. Go to one of these folders: `📁 all versions/` or `📁 pyromusa-ai`
 2. If you chose to go to folder `📁 all versions/`, then select a version type, the exact version, and look for file `🐍PyRomusa_AI.py`. If you went the other way, look for the `🐍core.py` file.
@@ -213,7 +214,17 @@ Each version folder contains:
 
 `📁 images/` - In this folder you will find all the images that the repository usually uses in README.md files.
 
-`🐍 benchmark.py` - A stress-free, ready-made script that uses PyRomusa AI to test the runtime on your hardware.
+`🐍 benchmark.py` - A stress-free, ready-made script that uses `PyRomusa AI` to test the runtime on your hardware.
+
+`📁 ISSUE_TEMPLATE` - Do you want a standard template to start a discussion about a bug or a new feature? Then you will find them in this folder
+
+`📄 CONTRIBUTING.md` - A file where you can find details on how to contribute to `PyRomusa AI`
+
+`📄 CODE_OF_CONDUCT.md` - Some rules you should respect if you want to join the community
+
+`📄 SECURITY.md` - Here you will find out what you should do if you are using `PyRomusa AI`, but the output shows something that shouldn't be happening.
+
+`📄 PULL_REQUEST_TEMPLATE.md` - What should your pull request describe and what should you check before making it public? Find out here
 
 ---
 
