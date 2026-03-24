@@ -91,7 +91,7 @@ print(bot.reply_at("Hello chatbot!"))
 - It has functions specifically for creating a chatbot, without unnecessary functions
 
 ### 2. It is a small and new python framework
-- Not much is known about this framework yet, and since it is a very young framework, it receives updates quite frequently. Any feedback and suggestions [sent via email or TikTok](#contact-me-) are welcome!
+- Not much is known about this framework yet, and since it is a very young framework, it receives updates as often as possible. Any feedback and suggestions [sent via email or TikTok](#contact-me-) are welcome!
 
 - It is not yet a framework that can be installed in the form of `pip install PyRomusa_AI` in the console, but it is planned to be able to install in this form when there is a minimum community and/or when it will be necessary to make the major update to the STABLE version v0.9.X
 
@@ -353,16 +353,19 @@ bot = Chatbot(chatbot_name="test")
 
 
 # 3. Add training examples or upload a prepared dataset
+# ---
 bot.trainer.add_data(
                     training_input_example= "...",
                     training_output_example= "..."
                     )
 
-        # AND / OR...
+# AND / OR...
 
 bot.prepared_datasets.romanian.load_prepared_dataset(
                                                     dataset_name="..."
                                                     )
+# ---
+
 # 4. Start the training
 bot.trainer.start()
 
