@@ -10,6 +10,12 @@ NOTES:
 - This code can be modified if you wish (e.g. add more training data with the bot.trainer.add_data() function, change the reply engine from 'modern' to 'stable', remove the loading of a specific prepared dataset, etc.)
 """
 
+"""
+ModuleError, even if you installed PyRomusa AI via 'pip install ...'?
+Try this line of code instead of the one below (lowercase):
+
+from pyromusa_ai import Chatbot
+"""
 
 from PyRomusa_AI import Chatbot
 
@@ -32,7 +38,7 @@ bot.prepared_datasets.english.load_prepared_dataset('high')
 # Starting chatbot training
 bot.trainer.start()
 
-
+# List of all the prompts that our chatbot will respond to
 prompts = [
     "Salut, cine ești?",
     "Hello, who are you?",
@@ -47,6 +53,7 @@ prompts = [
     "What is PyRomusa AI?",
 ]
 
+# This is where the chatbot starts responding to each prompt written in the 'prompts' list.
 for input in prompts:
     print(
     bot.reply_at(

@@ -406,7 +406,7 @@ At the moment _(February 19, 2026)_, these PyRomusa AI learning options are quit
 
 4. Use the prepared dataset 'Teacher for PyRomusa AI'
 
-    - Yes, you can load this prepared dataset for your chatbot in your code, and then ask it questions. This dataset has input-output examples, specifically designed to answer your questions about PyRomusa AI. Indeed, it can't answer every question because of the poor vocabulary specifications and the number of examples, but it can answer basic questions. (By the way, you need to know Romanian to use it)
+    - Yes, you can load this prepared dataset for your chatbot in your code, and then ask it questions. This dataset has input-output examples, specifically designed to answer your questions about `PyRomusa AI`. Indeed, it can't answer every question because of the poor vocabulary specifications and the number of examples, but it can answer basic questions. (By the way, you need to know Romanian to use it)
 
 
 5. Install `PyRomusa AI` & Run the code:
