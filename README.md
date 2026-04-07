@@ -58,7 +58,7 @@ Well, just click on the section (the blue text) below that interests you and you
 """
 This code works correctly with the following versions:
 BETA - v0.0.2
-STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2, v0.4.3, v0.5.0
+STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2, v0.4.3, v0.5.0, v0.6.0
 EXPERIMENTAL - v001, v002, v003
 """
 
@@ -267,65 +267,47 @@ print(bot.reply_at(prompt="Salut!"))
 
 ---
 
-### Info of All Prepared Datasets Available
+<br>
 
-|Dataset Name|Vocabulary|Number of examples|Word to acces it|Language|Naturalness|Focus on same questions|Planned to be updated|Avaiable in|
-|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-|**Default Romanian Dataset: LOW-END**|3625|250|'low'|Romanian|Critically Low|No Effort|NO ❌|**BETA v0.0.1** or newer|
-|**Default Romanian Dataset: MID-RANGE**|8242|500|'mid'|Romanian|Critically Low|No Effort|NO ❌|**BETA v0.0.1** or newer|
-|**Default Romanian Dataset: HIGH-END**|11581|1000|'high'|Romanian|Critically Low|No Effort|NO ❌|**BETA v0.0.1** or newer|
-|**High Quality, Very Low Quantity Romanian Dataset**|496|50|'high-quality-very-low-quantity'|Romanian|Very High|Very Low|NO ❌|**STABLE v0.1.1** or newer|
-|**High Quality, Low Quantity Romanian Dataset**|874|100|'high-quality-low-quantity'|Romanian|High|Very Low|NO ❌|**EXPERIMENTAL v001** or newer|
-|**Teacher for PyRomusa AI**|_397_ - _784_|_110_ - _250_|'pyromusa-ai-teacher'|Romanian|Very High|High|YES 👍|**STABLE v0.2.0** or newer|
-|**Default English Dataset: LOW-END**|949|250|'low'|English|No Effort|Balanced|NO ❌|**STABLE v0.4.1** or newer|
-|**Default English Dataset: MID-RANGE**|1713|500|'mid'|English|No Effort|Balanced|NO ❌|**STABLE v0.4.1** or newer|
-|**Default English Dataset: HIGH-END**|3100|1000|'high'|English|No Effort|Balanced|NO ❌|**STABLE v0.4.1** or newer|
+<h3 style="text-align: center">Info of All Prepared Datasets Available</h3>
+
+|Dataset Name|Vocabulary|Number of examples|Word to acces it|Language|Naturalness|Focus on same questions|Focus on diversifying output|Planned to be updated|Avaiable in|
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+|**Default Romanian Dataset: LOW-END**|3625|250|'low'|Romanian|Critically Low|No Effort|No Effort|NO ❌|**BETA v0.0.1** or newer|
+|**Default Romanian Dataset: MID-RANGE**|8242|500|'mid'|Romanian|Critically Low|No Effort|No Effort|NO ❌|**BETA v0.0.1** or newer|
+|**Default Romanian Dataset: HIGH-END**|11581|1000|'high'|Romanian|Critically Low|No Effort|No Effort|NO ❌|**BETA v0.0.1** or newer|
+|**High Quality, Very Low Quantity Romanian Dataset**|496|50|'high-quality-very-low-quantity'|Romanian|Very High|Very Low|No Effort|NO ❌|**STABLE v0.1.1** or newer|
+|**High Quality, Low Quantity Romanian Dataset**|874|100|'high-quality-low-quantity'|Romanian|High|Very Low|No Effort|NO ❌|**EXPERIMENTAL v001** or newer|
+|**Teacher for PyRomusa AI**|_397_ - _825_|_110_ - _260_|'pyromusa-ai-teacher'|Romanian|Very High|High|No Effort|YES 👍|**STABLE v0.2.0** or newer|
+|**Default English Dataset: LOW-END**|949|250|'low'|English|No Effort|Balanced|No Effort|NO ❌|**STABLE v0.4.1** or newer|
+|**Default English Dataset: MID-RANGE**|1713|500|'mid'|English|No Effort|Balanced|No Effort|NO ❌|**STABLE v0.4.1** or newer|
+|**Default English Dataset: HIGH-END**|3100|1000|'high'|English|No Effort|Balanced|No Effort|NO ❌|**STABLE v0.4.1** or newer|
 
 _(Some values ​​in the `"Vocabulary"` and `"Number of examples"` columns may be approximate.)_
 
-#### Explanation for Each Column
+<br>
 
-- _Dataset Name_ - **The dataset name will be written here so that each dataset is unique.**
+<h4 style="text-align: center">Explanation for Each Column:<h4>
 
-- _Vocabulary_ - **This is where you will write the total number of different words in the dataset.** It is important for the chatbot to have a diverse vocabulary from different domains to talk about more things.
+|Column Name|Description|Possible Values (from worst to best)|
+|:---:|:---|:---:|
+|_Dataset Name_|**The dataset name will be written here so that each dataset is unique.**|-|
+|_Vocabulary_|**This is where you will write the total number of different words in the dataset.** It is important for the chatbot to have a diverse vocabulary from different domains to talk about more things.|1 to infinite <br> (higher = better)|
+|_Number of examples_|**This is where you will put the total number of input-output examples that the dataset has.** It is important to have a high number, because it is said that this way you have a better chance of answering more prompts correctly (theoretically speaking...).|1 to infinite <br> (higher = better)|
+|_Word to acces it_|**Here we will put a recommended option to access the dataset in the `bot.prepared_datasets. ... ` function, putting it in `dataset_name` variable.** It is important to know how to access a specific dataset in your code.|-|
+|_Language_|**This will be the language that most of the dataset examples are in**. It's important to understand what the chatbot is saying.|-|
+|_Naturalness_|**This represents who the input/output examples  are made by and how (how much HUMAN vs AI). Better = more HUMAN**|**No Effort, Critically Low, Very Low, Low, Balanced, High, Very High**|
+| _Focus on same questions_|**Here you will find out how much focus was placed on the chatbot that has this dataset to recognize the same question, but written in a different form by the user.** It is important to know how much patience you need to have for the chatbot to understand what you are saying, so that it does not fallback or write something difficult to understand.|**No Effort, Critically Low, Very Low, Low, Balanced, High, Very High**|
+|_Focus on diversifying output_|**Here you will find how diverse the outputs are for the same user input in the training examples of the respective dataset.** This is an important concept if you want the chatbot to not respond with the same message every time you type the exact same input (be sure to use the `temperature` parameter with a value greater than 0 for this to work)|**No Effort, Critically Low, Very Low, Low, Balanced, High, Very High**|
+|_Planned to be updated_|This column shows whether the prepared dataset will be updated in the future. If YES, the dataset specifications vary depending on the version of `PyRomusa AI`.|**NO, MAYBE, YES**|
+|_Avaiable In_|**Here you will find in which oldest version this dataset started appearing in.** It is important to know which version to look for in the `versions/` folder if you want to use a specific dataset.|OLDER VERSION <br>=<br> Greater compatibility & better|
 
-- _Number of examples_ - **This is where you will put the total number of input-output examples that the dataset has.** It is important to have a high number, because it is said that this way you have a better chance of answering more prompts correctly (theoretically speaking...).
-
-- _Word to acces it_ - **Here we will put a recommended option to access the dataset in the `bot.prepared_datasets. ... ` function, putting it in `dataset_name` variable.** It is important to know how to access a specific dataset in your code.
-
-- _Language_ - **This will be the language that most of the dataset examples are in**. It's important to understand what the chatbot is saying.
-
-- _Naturalness_ - **This represents who the input/output examples  are made by and how.** Here only certain terms will be used, depending on each situation:
-
-    - **No Effort** - The examples in the dataset are 100% AI-generated and not a single one is human-made.
-    - **Critically Low** - The examples in the dataset are 99% generated with AI, but about 1% are human-made
-    - **Very Low** - The examples in the dataset are 80% generated with AI, but about 20% are human-made
-    - **Low** - The examples in the dataset are 60% generated with AI, but about 40% are human-made
-    - **Balanced** - The examples in the dataset are 50% generated with AI, but about 50% are human-made
-    - **High** - The examples in the dataset are 20% generated with AI, but about 80% are human-made
-    - **Very High** - The examples in the dataset are 100% human-made, but probability some information in the examples in the dataset is not correct.
-    - **Perfectly** - The examples in the dataset are 100% human-made, and also has verified information
-
-        _(By the way: The datasets that are mostly human-made, the examples from them were added progressively, thus the chatbot "learns" from mistakes.)_
-    
-- _Focus on same questions_ - **Here you will find out how much focus was placed on the chatbot that has this dataset to recognize the same question, but written in a different form by the user.** It is important to know how much patience you need to have for the chatbot to understand what you are saying, so that it does not fallback or write something difficult to understand. Here you can find the following values:
-
-    - **No Effort** - worst value
-    - **Very Low**
-    - **Low**
-    - **Balanced**
-    - **High**
-    - **Very High** - best value
-
-- _Planned to be updated_ - **This column will have only one of the 3 values: YES, NO or MAYBE.** This column shows whether the prepared dataset will be updated in the future. If YES, the dataset specifications vary depending on the version of `PyRomusa AI`.
-
-- _Avaiable In_ - **Here you will find in which oldest version this dataset started appearing in.** It is important to know which version to look for in the `versions/` folder if you want to use a specific dataset.
 ---
 
 ## About **Reply Engines** 
 **Did you know that you can change the logic in which the chatbot will generate a response?** Well, that's a new concept in the `STABLE 0.2.0` release!
 
-**But why was this new concept added?** Well, it **was observed that with a changed logic for generating responses, the chatbot responds more chaotically, more stably, or more precisely to a certain length of the prompt**, so that's how the concept of engines was born: _to optimize the goal of your chatbot._
+**But why was this new concept added?** Well, it **was observed that with a changed logic for generating responses, the chatbot responds more chaotically, more stably, faster, or more precisely to a certain length of the prompt**, so that's how the concept of engines was born: _to optimize the goal of your chatbot._
 
 ### Engines available in the latest version of `PyRomusa AI`:
 
@@ -422,7 +404,7 @@ bot.helper.how_to_start()
 ---
 ## **Credits ⭐**
 
-PyRomusa AI uses several other external Python libraries to function properly and completely. In this table below, you will find each external library used and its most important purpose in `PyRomusa AI`:
+`PyRomusa AI` uses several other external Python libraries to function properly and completely. In this table below, you will find each external library used and its most important purpose in `PyRomusa AI`:
 
 |Library name|Objective|Name/Link of the repo in GitHub|
 |:---:|:---:|:---:|
@@ -443,6 +425,8 @@ Thank you for creating these Python frameworks/libraries 🙏
 - Do you notice that the codes in this repository that use `PyRomusa AI`, you often find `from PyRomusa_AI import Chatbot`, and sometimes you also find `from pyromusa_ai import Chatbot`? **Well, know that if you install `PyRomusa AI` via `pip install ...`, in your code you will use `pyromusa_ai`, AND if you install it manually from the repository and do not change its name, then you will use `PyRomusa_AI`**
 
 - **Some information in this repository may be incorrect or outdated.** Please manually verify the information you want before taking it 100% into account. If you do find incorrect or outdated information, please [contact me.](#contact-me-)
+
+- To install an EXPERIMENTAL or BETA version, [the installation must be done manually](#b-the-manual-method), it is not possible with `pip install`
 
 ---
 

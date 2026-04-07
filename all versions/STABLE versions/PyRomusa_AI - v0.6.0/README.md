@@ -67,7 +67,7 @@ What makes it different:
 |`🐍PyRomusa_AI.py` , `🐍core.py`|The main/core code of `PyRomusa AI`|
 |`📁Datasets/`|Folder with some optional code for the main framework code (`🐍PyRomusa_AI.py`) for ready-made data to train your chatbot|
 |`⚙️pyproject.toml`|A very important file to be able to install with pip install, but completely useless if you install `PyRomusa AI` manually|
-|`🐍errors.py`|A new file from 0.6.0, here you find different types of errors that you can catch in `PyRomusa AI`|
+|`🐍errors.py`|A new file from 0.6.0, here you find different types of errors that you can catch in PyRomusa AI|
 
 
 
