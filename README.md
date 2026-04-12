@@ -216,15 +216,7 @@ Each version folder contains:
 
 `🐍 benchmark.py` - A stress-free, ready-made script that uses `PyRomusa AI` to test the runtime on your hardware.
 
-`📁 ISSUE_TEMPLATE` - Do you want a standard template to start a discussion about a bug or a new feature? Then you will find them in this folder
-
-`📄 CONTRIBUTING.md` - A file where you can find details on how to contribute to `PyRomusa AI`
-
-`📄 CODE_OF_CONDUCT.md` - Some rules you should respect if you want to join the community
-
-`📄 SECURITY.md` - Here you will find out what you should do if you are using `PyRomusa AI`, but the output shows something that shouldn't be happening.
-
-`📄 PULL_REQUEST_TEMPLATE.md` - What should your pull request describe and what should you check before making it public? Find out here
+`📁 .github` - Less important files related to COMMUNITY STANDARDS are placed here. You will find files like `📄CONTRIBUTING.md`, `📄SECURITY.md`, etc.
 
 ---
 
