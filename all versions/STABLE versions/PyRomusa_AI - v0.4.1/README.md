@@ -46,7 +46,7 @@ What makes it different:
 
 
 
-- **The first datasets prepared in English: _Default English Dataset: LOW-END, MID-RANGE, HIGH-END_:** For the first time, the first versions of prepared datasets in English have been released. They can be accessed using the function `bot.preepared_datasets.english.load_prepared_dataset("...")`
+- **The first datasets prepared in English: _Default English Dataset: LOW-END, MID-RANGE, HIGH-END_:** For the first time, the first versions of prepared datasets in English have been released. They can be accessed using the function `bot.prepared_datasets.english.load_prepared_dataset("...")`
 
 ---
 
