@@ -1,4 +1,4 @@
-# `PyRomusa AI` 🤖
+<h1 style="text-align: center;"><b>PyRomusa AI 🤖</b></h1>
 
 **Have you ever imagined training your own chatbot that doesn't even have any existing vocabulary, 100% with your own examples type question-answer, without requiring very good hardware?** Well, `PyRomusa AI` will give you this possibility!
 
@@ -84,6 +84,15 @@ bot.trainer.start()
 # Generate a response to a user input
 print(bot.reply_at("Hello chatbot!"))
 ```
+
+---
+
+<h3 style="text-align: center"><b>In reality, this is how the code above works:</b></h3>
+
+![[PyRomusa AI logo](how-the-code-works.gif)](images/how-the-code-works-video.gif)
+
+<br>
+
 ---
 ## Why should I use `PyRomusa AI`? 🤔
 ### 1. Framework with a single goal: **creating chatbots from scratch**
@@ -212,7 +221,7 @@ Each version folder contains:
 
 `📁 important updates/` - This folder will provide a more detailed description of all the important updates that `PyRomusa AI` has had so far.
 
-`📁 images/` - In this folder you will find all the images that the repository usually uses in README.md files.
+`📁 images/` - In this folder you will find all the images that the repository usually uses in this README.md file.
 
 `🐍 benchmark.py` - A stress-free, ready-made script that uses `PyRomusa AI` to test the runtime on your hardware.
 
