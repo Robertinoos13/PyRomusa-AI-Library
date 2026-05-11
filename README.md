@@ -23,6 +23,7 @@ Well, just click on the section (the blue text) below that interests you and you
 
 - [How to download `PyRomusa AI` directly from GitHub?](#how-to-download-pyromusa-ai-directly-from-github)
     - Are you ready to install PyRomusa AI directly from GitHub, on your hardware, and use PyRomusa AI? Here's a tutorial on how to install it from scratch.
+
 - [Key Features 🔑](#key-features-) 
     - Are you new and still don't know what you can do and what capabilities `PyRomusa AI` has? Discover what you can do with this and what capabilities `PyRomusa AI` has.
 
@@ -58,7 +59,7 @@ Well, just click on the section (the blue text) below that interests you and you
 """
 This code works correctly with the following versions:
 BETA - v0.0.2
-STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2, v0.4.3, v0.5.0, v0.6.0, v0.6.1, v0.6.2
+STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2, v0.4.3, v0.5.0, v0.6.0, v0.6.1, v0.6.2, v0.7.0
 EXPERIMENTAL - v001, v002, v003
 """
 
@@ -170,6 +171,8 @@ Did you know that to install older versions of PyRomusa AI, the most stable inst
     |----- 🐍you_code.py
     |----- 📁Datasets/
     |--------- 🐍other python files
+    |----- 📁Reply_Engines/
+    |--------- 🐍other python files
     ```
 
     Where:
@@ -178,7 +181,8 @@ Did you know that to install older versions of PyRomusa AI, the most stable inst
     |`📁Your Folder/`|The folder where your Python code should be located where you want to use `PyRomusa AI` + the main framework code|
     |`🐍PyRomusa_AI.py`|The main code of the `PyRomusa AI` framework|
     |`🐍you_code.py`|Your code, where you will use `PyRomusa AI`|
-    |`📁Datasets/`|This is a folder with several optional Python files that `🐍PyRomusa_AI.py` needs to function fully and smoothly.|
+    |`📁Datasets/`|This is a folder with several optional Python files that `🐍PyRomusa_AI.py` needs to function fully.|
+    |`📁Reply_Engines/`|The folder and its contents, from v0.7.0, are very important for generating responses based on prompts. This is a required folder.|
 
     > Did you know that `PyRomusa AI` uses several optional Python files that it needs to function fully and error-free? Well, they are found in the repository in a folder called `Datasets/`
 
@@ -279,7 +283,7 @@ print(bot.reply_at(prompt="Salut!"))
 |**Default Romanian Dataset: HIGH-END**|11581|1000|'high'|Romanian|Critically Low|No Effort|No Effort|NO ❌|**BETA v0.0.1** or newer|
 |**High Quality, Very Low Quantity Romanian Dataset**|496|50|'high-quality-very-low-quantity'|Romanian|Very High|Very Low|No Effort|NO ❌|**STABLE v0.1.1** or newer|
 |**High Quality, Low Quantity Romanian Dataset**|874|100|'high-quality-low-quantity'|Romanian|High|Very Low|No Effort|NO ❌|**EXPERIMENTAL v001** or newer|
-|**Teacher for PyRomusa AI**|_397_ - _956_|_110_ - _310_|'pyromusa-ai-teacher'|Romanian|Very High|High|No Effort|YES 👍|**STABLE v0.2.0** or newer|
+|**Teacher for PyRomusa AI**|_397_ - _973_|_110_ - _320_|'pyromusa-ai-teacher'|Romanian|Very High|High|No Effort|YES 👍|**STABLE v0.2.0** or newer|
 |**Default English Dataset: LOW-END**|949|250|'low'|English|No Effort|Balanced|No Effort|NO ❌|**STABLE v0.4.1** or newer|
 |**Default English Dataset: MID-RANGE**|1713|500|'mid'|English|No Effort|Balanced|No Effort|NO ❌|**STABLE v0.4.1** or newer|
 |**Default English Dataset: HIGH-END**|3100|1000|'high'|English|No Effort|Balanced|No Effort|NO ❌|**STABLE v0.4.1** or newer|
@@ -317,6 +321,7 @@ _(Some values ​​in the `"Vocabulary"` and `"Number of examples"` columns may
 |  `stable` |In general, it writes more correctly in terms of word order, and the chatbot's response is also much easier to read and understand.|High chances of not understanding an extremely short prompt (e.g. a word or two), even if it has it as an example in training, also returning a fairly easy fallback message.|
 |  `chaos`  |Makes more of an effort to understand a message, so the chances of returning an automatic fallback message are lower.|In general, he writes some strange and quite difficult to understand messages, often not knowing what the chatbot meant. It can also write too many or too few words, thus compounding the difficulty of fully understanding what the chatbot meant.|
 | `modern`  |It is the first engine based on NumPy. It doesn't matter if you write letters with diacritics or accents or not, the chatbot will still understand. It can now return a generated answer to a one-word prompt, without returning a fallback message, as we encounter, completely the opposite, in the `stable` engine.|In general, the response generation time is longer than in other available engines (`chaos`, `stable`).|
+|`optimized`|It has the best speed/quality (x2 more speed than `modern`, similar quality) ratio in May 2026 of all Reply Engines available at this time. It can also generate slightly different responses than what is seen in the training examples.|The quality of the answers, in practice, is slightly worse than what `modern` can generate|
 
 
 ### Short tutorial/code: **How to use an engine of your choice?**
@@ -428,6 +433,8 @@ Thank you for creating these Python frameworks/libraries 🙏
 - **Some information in this repository may be incorrect or outdated.** Please manually verify the information you want before taking it 100% into account. If you do find incorrect or outdated information, please [contact me.](#contact-me-)
 
 - To install an EXPERIMENTAL or BETA version, [the installation must be done manually](#b-the-manual-method), it is not possible with `pip install`
+
+- In the Python code examples in `📄README.md` files, **you see the word `bot`** quite often, right? Well, **that's the instance of the chatbot class (`bot = Chatbot()`)**
 
 ---
 
