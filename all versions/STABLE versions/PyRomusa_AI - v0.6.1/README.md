@@ -34,6 +34,7 @@ What makes it different:
 |
 |----📁PyRomusa_AI/
 |-------- 🐍PyRomusa_AI.py
+|-------- 🐍errors.py
 |
 |-------- 📁Datasets/
 |------------ more Python files...
