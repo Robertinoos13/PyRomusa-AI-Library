@@ -59,7 +59,7 @@ Well, just click on the section (the blue text) below that interests you and you
 """
 This code works correctly with the following versions:
 BETA - v0.0.2
-STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2, v0.4.3, v0.5.0, v0.6.0, v0.6.1, v0.6.2, v0.7.0, v0.7.1
+STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2, v0.4.3, v0.5.0, v0.6.0, v0.6.1, v0.6.2, v0.7.0, v0.7.1, v0.8.0
 EXPERIMENTAL - v001, v002, v003
 """
 
@@ -283,7 +283,7 @@ print(bot.reply_at(prompt="Salut!"))
 |**Default Romanian Dataset: HIGH-END**|11581|1000|'high'|Romanian|Critically Low|No Effort|No Effort|NO ❌|**BETA v0.0.1** or newer|
 |**High Quality, Very Low Quantity Romanian Dataset**|496|50|'high-quality-very-low-quantity'|Romanian|Very High|Very Low|No Effort|NO ❌|**STABLE v0.1.1** or newer|
 |**High Quality, Low Quantity Romanian Dataset**|874|100|'high-quality-low-quantity'|Romanian|High|Very Low|No Effort|NO ❌|**EXPERIMENTAL v001** or newer|
-|**Teacher for PyRomusa AI**|_397_ - _973_|_110_ - _320_|'pyromusa-ai-teacher'|Romanian|Very High|High|No Effort|YES 👍|**STABLE v0.2.0** or newer|
+|**Teacher for PyRomusa AI**|_397_ - _1078_|_110_ - _360_|'pyromusa-ai-teacher'|Romanian|Very High|High|No Effort|YES 👍|**STABLE v0.2.0** or newer|
 |**Default English Dataset: LOW-END**|949|250|'low'|English|No Effort|Balanced|No Effort|NO ❌|**STABLE v0.4.1** or newer|
 |**Default English Dataset: MID-RANGE**|1713|500|'mid'|English|No Effort|Balanced|No Effort|NO ❌|**STABLE v0.4.1** or newer|
 |**Default English Dataset: HIGH-END**|3100|1000|'high'|English|No Effort|Balanced|No Effort|NO ❌|**STABLE v0.4.1** or newer|
@@ -321,7 +321,8 @@ _(Some values ​​in the `"Vocabulary"` and `"Number of examples"` columns may
 |  `stable` |In general, it writes more correctly in terms of word order, and the chatbot's response is also much easier to read and understand.|High chances of not understanding an extremely short prompt (e.g. a word or two), even if it has it as an example in training, also returning a fairly easy fallback message.|
 |  `chaos`  |Makes more of an effort to understand a message, so the chances of returning an automatic fallback message are lower.|In general, he writes some strange and quite difficult to understand messages, often not knowing what the chatbot meant. It can also write too many or too few words, thus compounding the difficulty of fully understanding what the chatbot meant.|
 | `modern`  |It is the first engine based on NumPy. It doesn't matter if you write letters with diacritics or accents or not, the chatbot will still understand. It can now return a generated answer to a one-word prompt, without returning a fallback message, as we encounter, completely the opposite, in the `stable` engine.|In general, the response generation time is longer than in other available engines (`chaos`, `stable`).|
-|`optimized`|It has the best speed/quality (x2 more speed than `modern`, similar quality) ratio in May 2026 of all Reply Engines available at this time. It can also generate slightly different responses than what is seen in the training examples.|The quality of the answers, in practice, is slightly worse than what `modern` can generate|
+| `optimized`|It has the best speed/quality (x2 more speed than `modern`, similar quality) ratio in May 2026 of all Reply Engines available at this time. It can also generate slightly different responses than what is seen in the training examples.|The quality of the answers, in practice, is slightly worse than what `modern` can generate|
+| `unsmarty` |Can replace a word from what is seen in the training examples|It generates a response 2x slower than `modern`, puts too much spacing between certain characters, and takes too much account of recent conversations|
 
 
 ### Short tutorial/code: **How to use an engine of your choice?**
