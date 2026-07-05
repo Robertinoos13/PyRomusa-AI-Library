@@ -1057,3 +1057,621 @@ class Chatbot:
         )
 
         return text
+
+
+
+
+
+
+
+
+
+class RealChatbot:
+    def __init__(
+        self,
+        chatbot_name: str = "Chatbot",
+        chatbot_description: str = "This chatbot does not yet have a description.",
+        d_model: int = 32,
+        num_heads: int = 2,
+        num_layers: int = 2,
+        max_len: int = 512,
+        dropout: float = 0.1,
+        block_size: int = 64
+    ):
+        try:
+            import torch
+            import torch.nn as nn
+            import torch.nn.functional as F
+        except ImportError as exc:
+            raise ImportError("PyTorch is required to use RealChatbot. Install it with 'pip install torch'.") from exc
+
+        self.torch = torch
+        self.nn = nn
+        self.F = F
+
+        self.chatbot_name = chatbot_name
+        self.chatbot_description = chatbot_description
+        self.block_size = block_size
+        self.created_on = datetime.now().strftime("%Y/%m/%d")
+        
+        self.d_model = d_model
+        self.num_heads = num_heads
+        self.num_layers = num_layers
+        self.max_len = max_len
+        self.dropout = dropout
+
+        self.vocabulary = set()
+        self.vocabulary_size = max(1, len(self.vocabulary))
+        self.char_to_index = {char: index for index, char in enumerate(self.vocabulary)}
+        self.index_to_char = {index: char for index, char in enumerate(self.vocabulary)}
+
+        self.qa_pairs = [] 
+        self.training_text = ""
+        self.tokenizer_type = "char-level"
+        self.final_loss = 0
+        self.total_trained_epochs = 0
+        self.last_used_datetime = datetime.now().strftime("%Y/%m/%d")
+
+        self.device = self.torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        self.MultiHeadAttention = self._build_multi_head_attention_class()(
+            d_model=d_model, num_heads=num_heads, dropout=dropout
+        )
+        self.FeedForward = self._build_feed_forward_class()(
+            d_model=d_model, dropout=dropout
+        )
+        self.TransformerBlock = self._build_transformer_block_class()(
+            d_model=d_model, num_heads=num_heads, dropout=dropout, max_len=max_len
+        )
+
+        self.trainer           = self.Train(self)
+        self.prepared_datasets = self.Datasets(self)
+        self.storage           = self.Storage(self)
+
+    def _build_multi_head_attention_class(self):
+        nn = self.nn
+        torch = self.torch
+        F = self.F
+
+        class _MultiHeadAttention(nn.Module):
+            def __init__(self, d_model, num_heads, dropout=0.1, max_len=512):
+                super().__init__()
+                self.num_heads = num_heads
+                self.d_head = d_model // num_heads
+                self.W_q = nn.Linear(d_model, d_model, bias=False)
+                self.W_k = nn.Linear(d_model, d_model, bias=False)
+                self.W_v = nn.Linear(d_model, d_model, bias=False)
+                self.W_o = nn.Linear(d_model, d_model, bias=False)
+                self.attn_dropout = nn.Dropout(dropout)
+                self.register_buffer("mask", torch.tril(torch.ones(max_len, max_len)))
+
+            def forward(self, x):
+                B, T, C = x.shape
+                Q = self.W_q(x).view(B, T, self.num_heads, self.d_head).transpose(1, 2)
+                K = self.W_k(x).view(B, T, self.num_heads, self.d_head).transpose(1, 2)
+                V = self.W_v(x).view(B, T, self.num_heads, self.d_head).transpose(1, 2)
+                scores = Q @ K.transpose(-2, -1) / (self.d_head ** 0.5)
+                scores = scores.masked_fill(self.mask[:T, :T] == 0, float("-inf"))
+                weights = self.attn_dropout(F.softmax(scores, dim=-1))
+                out = weights @ V
+                return self.W_o(out.transpose(1, 2).contiguous().view(B, T, C))
+
+        return _MultiHeadAttention
+
+    def _build_feed_forward_class(self):
+        nn = self.nn
+
+        class _FeedForward(nn.Module):
+            def __init__(self, d_model, dropout=0.1):
+                super().__init__()
+                self.net = nn.Sequential(
+                    nn.Linear(d_model, 4 * d_model),
+                    nn.ReLU(),
+                    nn.Dropout(dropout),
+                    nn.Linear(4 * d_model, d_model),
+                )
+
+            def forward(self, x):
+                return self.net(x)
+
+        return _FeedForward
+
+    def _build_transformer_block_class(self):
+        nn = self.nn
+        MultiHeadAttention = self._build_multi_head_attention_class()
+        FeedForward = self._build_feed_forward_class()
+
+        class _TransformerBlock(nn.Module):
+            def __init__(self, d_model, num_heads, dropout=0.1, max_len=512):
+                super().__init__()
+                self.attention = MultiHeadAttention(d_model, num_heads, dropout, max_len)
+                self.ffn = FeedForward(d_model, dropout)
+                self.ln1 = nn.LayerNorm(d_model)
+                self.ln2 = nn.LayerNorm(d_model)
+                self.dropout = nn.Dropout(dropout)
+
+            def forward(self, x):
+                x = x + self.dropout(self.attention(self.ln1(x)))
+                x = x + self.dropout(self.ffn(self.ln2(x)))
+                return x
+
+        return _TransformerBlock
+
+    def _build_llm_model_class(self):
+        nn = self.nn
+        torch = self.torch
+        F = self.F
+        TransformerBlock = self._build_transformer_block_class()
+
+        class _LLMModel(nn.Module):
+            def __init__(self, vocab_size, d_model, num_heads, num_layers, dropout=0.1, max_len=512):
+                super().__init__()
+                self.embedding = nn.Embedding(vocab_size, d_model)
+                self.pos_enc = nn.Embedding(max_len, d_model)
+                self.drop_emb = nn.Dropout(dropout)
+                self.blocks = nn.Sequential(
+                    *[TransformerBlock(d_model, num_heads, dropout, max_len) for _ in range(num_layers)]
+                )
+                self.ln_final = nn.LayerNorm(d_model)
+                self.lm_head = nn.Linear(d_model, vocab_size, bias=False)
+
+            def forward(self, x):
+                B, T = x.shape
+                x = self.drop_emb(self.embedding(x) + self.pos_enc(torch.arange(T, device=x.device)))
+                return self.lm_head(self.ln_final(self.blocks(x)))
+
+            def generate(self, start_tokens, max_new_tokens=100, stop_token=None, temperature=1.0):
+                self.eval()
+                tokens = start_tokens
+                for _ in range(max_new_tokens):
+                    tokens_cond = tokens[:, -self.pos_enc.num_embeddings:]
+                    logits = self(tokens_cond)[:, -1, :]
+                    scores = F.softmax(logits / temperature, dim=-1)
+                    next_tok = torch.multinomial(scores, 1)
+                    tokens = torch.cat([tokens, next_tok], dim=1)
+
+                    if stop_token is not None and next_tok.item() == stop_token:
+                        break
+
+                return tokens
+
+        return _LLMModel
+
+    def reply_at(self, prompt: str, max_new_tokens: int = 150, temperature: float = 0.8, auto_write_prompt_on_default_QA_formating=True):
+        # VERIFICARE: Dacă LLMModel nu există, înseamnă că start() nu a fost rulat
+        if not hasattr(self, 'LLMModel') or self.LLMModel is None:
+            print("WARNING: The model has not been trained yet. Run 'bot.trainer.start()' first.")
+            return ""
+
+        # Dacă modelul există, continuăm normal procesul de generare
+        self.LLMModel.eval()
+
+        if auto_write_prompt_on_default_QA_formating == True:
+            prompt = f"<example_type=Q&A>\nQ: {prompt} \nA:"
+        
+        input_indices = []
+        for char in prompt:
+            if char in self.char_to_index:
+                input_indices.append(self.char_to_index[char])
+            else:
+                continue
+        
+        if not input_indices:
+            input_indices = [0]
+            
+        input_tensor = self.torch.tensor([input_indices], dtype=self.torch.long).to(self.device)
+        
+        with self.torch.no_grad():
+            generated_tokens = self.LLMModel.generate(
+                start_tokens=input_tensor, 
+                max_new_tokens=max_new_tokens, 
+                temperature=temperature
+            )
+        
+        generated_indices = generated_tokens[0].tolist()
+        output_text = "".join([self.index_to_char.get(idx, "") for idx in generated_indices])
+
+        end_token = "<END_QA>"
+
+        if end_token in output_text:
+            output_text = output_text.split(end_token)[0]
+
+        answer_marker = "A:"
+
+        if answer_marker in output_text:
+            output_text = output_text.split(answer_marker, 1)[1]
+
+        self.last_used_datetime = datetime.now().strftime("%Y/%m/%d")
+        
+        return output_text.strip()
+
+    def show_number_of_parameters(self):
+        if not hasattr(self, 'LLMModel') or self.LLMModel is None:
+            print("WARNING: The model has not been trained yet. Run 'bot.trainer.start()' first.")
+            return ""
+
+        print(sum(p.numel() for p in self.LLMModel.parameters()))
+
+    class Storage:
+        def __init__(self, parent):
+            self.parent = parent
+
+        def save_on_file(self, file_name: str="my_chatbot", file_location: str=""):
+            import os
+
+            file_name = f"{file_name}.pt"
+
+            if file_location:
+                # Creează folderele din rută dacă acestea nu există deja
+                os.makedirs(file_location, exist_ok=True)
+                file_path = os.path.join(file_location, file_name)
+            else: 
+                # Dacă nu este specificată o locație, se salvează în directorul curent
+                file_path = file_name
+
+            self.parent.torch.save(
+                {
+                    "model": self.parent.LLMModel.state_dict(),
+                    "chatbot_name": self.parent.chatbot_name,
+                    "chatbot_description": self.parent.chatbot_description,
+                    "char_to_index": self.parent.char_to_index,
+                    "index_to_char": self.parent.index_to_char,
+                    "vocabulary": self.parent.vocabulary,
+                    "vocab_size": self.parent.vocabulary_size,
+                    "d_model": self.parent.d_model,
+                    "num_heads": self.parent.num_heads,
+                    "num_layers": self.parent.num_layers,
+                    "max_len": self.parent.max_len,
+                    "dropout": self.parent.dropout,
+                    "created_on": datetime.now().strftime("%Y/%m/%d"),
+                    "total_trained_epochs": self.parent.total_trained_epochs,
+                    "final_loss": self.parent.final_loss,
+                    "last_used_datetime": self.parent.last_used_datetime,
+                    "tokenizer_type": self.parent.tokenizer_type
+                }, file_path
+            )
+
+        def load_from_file(self, file_name: str="my_chatbot", file_location: str=""):
+            import os
+
+            file_name = f"{file_name}.pt"
+            
+            if file_location:
+                file_path = os.path.join(file_location, file_name)
+            else:
+                file_path = file_name
+
+            # Verificare de siguranță: dacă fișierul nu există, aruncă o eroare clară
+            if not os.path.exists(file_path):
+                raise FileNotFoundError(f"Fișierul '{file_path}' nu a fost găsit. Verifică ruta!")
+
+            device = getattr(self.parent, 'device', 'cuda' if self.parent.torch.cuda.is_available() else 'cpu')
+
+            ckpt = self.parent.torch.load(file_path, weights_only=True, map_location=device)
+
+            self.parent.char_to_index        = ckpt["char_to_index"]
+            self.parent.index_to_char        = ckpt["index_to_char"]
+            self.parent.chatbot_name         = ckpt["chatbot_name"]
+            self.parent.chatbot_description  = ckpt["chatbot_description"]
+            self.parent.vocabulary           = ckpt["vocabulary"]
+            self.parent.vocabulary_size      = ckpt["vocab_size"]
+            self.parent.d_model              = ckpt["d_model"]
+            self.parent.num_heads            = ckpt["num_heads"]
+            self.parent.num_layers           = ckpt["num_layers"]
+            self.parent.max_len              = ckpt["max_len"]
+            self.parent.dropout              = ckpt["dropout"]
+            self.parent.created_on           = ckpt["created_on"]
+            self.parent.final_loss           = ckpt["final_loss"]
+            self.parent.total_trained_epochs = ckpt["total_trained_epochs"]
+            self.parent.last_used_datetime   = ckpt["last_used_datetime"]
+            self.parent.tokenizer_type       = ckpt["tokenizer_type"]
+
+            self.parent.vocabulary_size     = len(self.parent.char_to_index)
+
+            self.parent.LLMModel = self.parent._build_llm_model_class()(
+                vocab_size=self.parent.vocabulary_size,
+                d_model=self.parent.d_model,
+                num_heads=self.parent.num_heads,
+                num_layers=self.parent.num_layers,
+                max_len=self.parent.max_len,
+                dropout=self.parent.dropout,
+            )
+            self.parent.LLMModel.load_state_dict(ckpt["model"])
+
+            self.parent.LLMModel.to(device)
+
+
+    class Train:
+        def __init__(self, parent):
+            self.parent = parent
+
+        def add_data(self, training_input_example, training_output_example):
+            qa_example = {"q": training_input_example, "a": training_output_example}
+
+            self.parent.qa_pairs.append(qa_example)
+
+
+        def start(self, epochs: int=100, show_loss_every_x_epochs: int=10, show_loss_process: bool=True, use_gpu_if_is_available: bool=True, learn_late=1e-3, min_learn_rate=1e-5, batch_size=32):
+
+            # EROARE AICI: KeyError
+            # 1. Aplicăm ghilimele simple pentru cheile dicționarului ca să evităm SyntaxError
+            self.parent.training_text = " ".join(f"<example_type=Q&A>\nQ: {p['q']} \nA: {p['a']} <END_QA>\n" for p in self.parent.qa_pairs)
+
+            # 2. EXTRAGEM VOCABULARUL direct din textul final
+            # Folosim sorted() pentru ca ordinea indecșilor să fie aceeași la fiecare rulare
+            self.parent.vocabulary = sorted(list(set(self.parent.training_text)))
+            self.parent.vocabulary_size = max(1, len(self.parent.vocabulary))
+
+            # 3. POPULĂM DICȚIONARELE
+            self.parent.char_to_index = {char: index for index, char in enumerate(self.parent.vocabulary)}
+            self.parent.index_to_char = {index: char for index, char in enumerate(self.parent.vocabulary)}
+
+            # 4. ACUM instanțiem LLMModel, știind numărul real de caractere
+            self.parent.LLMModel = self.parent._build_llm_model_class()(
+                vocab_size=self.parent.vocabulary_size,
+                d_model=self.parent.d_model,
+                num_heads=self.parent.num_heads,
+                num_layers=self.parent.num_layers,
+                max_len=self.parent.max_len,
+                dropout=self.parent.dropout,
+            )
+
+            training_tensor_data = self.parent.torch.tensor([self.parent.char_to_index[c] for c in self.parent.training_text], dtype=self.parent.torch.long)
+
+            try:
+                train_x = self.parent.torch.stack([training_tensor_data[i:i+self.parent.block_size] for i in range(len(training_tensor_data)-self.parent.block_size)])
+                train_y = self.parent.torch.stack([training_tensor_data[i+1:i+self.parent.block_size+1] for i in range(len(training_tensor_data)-self.parent.block_size)])
+            except Exception as e:
+                raise("ERROR: Your training dataset is too small. Try adding more training examples or adding more text to the current examples and try again.")
+
+
+            if use_gpu_if_is_available == True:
+                train_x, train_y = train_x.to(self.parent.device), train_y.to(self.parent.device)
+                self.parent.LLMModel = self.parent.LLMModel.to(self.parent.device)
+
+            optimizer = self.parent.torch.optim.Adam(self.parent.LLMModel.parameters(), lr=learn_late)
+            scheduler = self.parent.torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs, eta_min=min_learn_rate)
+            
+            for step in range(epochs):
+                self.parent.LLMModel.train()
+                total_loss = 0
+                num_batches = 0
+                
+                # Permutăm indicii pentru a alege secvențe randomizate în fiecare epocă
+                indices = self.parent.torch.randperm(len(train_x))
+                
+                for i in range(0, len(train_x), batch_size):
+                    batch_idx = indices[i : i + batch_size]
+                    batch_x = train_x[batch_idx]
+                    batch_y = train_y[batch_idx]
+                    
+                    logits = self.parent.LLMModel(batch_x)
+                    loss   = self.parent.F.cross_entropy(logits.view(-1, self.parent.vocabulary_size), batch_y.view(-1))
+                    
+                    optimizer.zero_grad()
+                    loss.backward()
+                    optimizer.step()
+                    
+                    total_loss += loss.item()
+                    num_batches += 1
+
+                scheduler.step()
+                self.parent.total_trained_epochs += 1
+
+                if step % show_loss_every_x_epochs == 0 and show_loss_process == True:
+                    avg_loss = total_loss / num_batches if num_batches > 0 else 0
+                    self.parent.final_loss = avg_loss
+                    print(f"Step {step:4d} | Average Loss: {avg_loss:.4f}")
+
+    class Datasets:
+            def __init__(self, parent):
+                self.parent = parent
+    
+                self.romanian = self.Romanian(self)
+                self.english = self.English(self)
+    
+            def add_data(self, training_input_example: str, training_output_example: str, **kwargs):
+                
+                qa_example = {"q": training_input_example, "a": training_output_example}
+                
+                self.parent.qa_pairs.append(qa_example)
+               
+    
+            class English:
+                def __init__(self, parent):
+                    self.parent = parent
+    
+                def load_prepared_dataset(self, dataset_name: str):
+    
+                    # Dataset 1
+                    # NAME: --- Default English Dataset: LOW-END ---
+                    # TOTAL NUMBER OF EXAMPLES: aprox. 250
+                    # TOTAL VOCABULARY: aprox. 949 elements (words)
+                    if dataset_name.lower() in ("low", "low-end-dataset", "low-end", "low-dataset", "low dataset"):
+    
+                        try:
+                            from .Datasets import Default_English_Dataset_LOW_END
+    
+                            Default_English_Dataset_LOW_END.load_dataset(self.parent.parent)
+    
+                            print("INFO: Dataset 'Default English Dataset: LOW-END' loaded successfully.")
+                        
+                        except ImportError as e:
+                            
+                            print(f"MINOR ERROR: Could not import dataset 'Default English Dataset: LOW-END' module. Reason: {e}")
+                        except Exception as e:
+    
+                            print(f"ERROR: An error occurred while loading 'Default English Dataset: LOW-END' dataset: {e}")
+    
+                    # Dataset 2
+                    # NAME: --- Default English Dataset: MID-RANGE ---
+                    # TOTAL NUMBER OF EXAMPLES: aprox. 500
+                    # TOTAL VOCABULARY: aprox. 1713 elements (words)
+                    if dataset_name.lower() in ("mid", "mid-range-dataset", "mid-range", "mid-dataset", "mid dataset"):
+    
+                        try:
+                            from .Datasets import Default_English_Dataset_MID_RANGE
+    
+                            Default_English_Dataset_MID_RANGE.load_dataset(self.parent.parent)
+    
+                            print("INFO: Dataset 'Default English Dataset: MID-RANGE' loaded successfully.")
+                        
+                        except ImportError as e:
+                            
+                            print(f"MINOR ERROR: Could not import dataset 'Default English Dataset: MID-RANGE' module. Reason: {e}")
+                        except Exception as e:
+    
+                            print(f"ERROR: An error occurred while loading 'Default English Dataset: MID-RANGE' dataset: {e}")
+    
+                    # Dataset 3
+                    # NAME: --- Default English Dataset: HIGH-END ---
+                    # TOTAL NUMBER OF EXAMPLES: aprox. 1000
+                    # TOTAL VOCABULARY: aprox. 3100 elements (words)
+                    if dataset_name.lower() in ("high", "high-end-dataset", "high-end", "high-dataset", "high dataset"):
+    
+                        try:
+                            from .Datasets import Default_English_Dataset_HIGH_END
+    
+                            Default_English_Dataset_HIGH_END.load_dataset(self.parent.parent)
+    
+                            print("INFO: Dataset 'Default English Dataset: HIGH-END' loaded successfully.")
+                        
+                        except ImportError as e:
+                            
+                            print(f"MINOR ERROR: Could not import dataset 'Default English Dataset: HIGH-END' module. Reason: {e}")
+                        except Exception as e:
+    
+                            print(f"ERROR: An error occurred while loading 'Default English Dataset: HIGH-END' dataset: {e}")
+    
+            class Romanian:
+                def __init__(self, parent):
+                    self.parent = parent
+                
+                def load_prepared_dataset(self, dataset_name: str):
+                    # Dataset 1:
+                    # NAME: --- Default Romanian Dataset: LOW-END ---
+                    # TOTAL NUMBER OF EXAMPLES: aprox. 250
+                    # TOTAL VOCABULARY: aprox. 3625 elements (words)
+                    if dataset_name.lower() in ["low", "low end", "low-end", 'low-dataset', 'low dataset']:
+                        
+                        try:
+                            from .Datasets import Default_Romanian_Dataset_LOW_END
+                            
+                            Default_Romanian_Dataset_LOW_END.load_dataset(self.parent.parent)
+                            
+                            print("INFO: Dataset 'Default Romanian Dataset: LOW-END' loaded successfully.")
+                        
+                        except ImportError as e:
+                            
+                            print(f"MINOR ERROR: Could not import dataset 'Default Romanian Dataset: LOW-END' module. Reason: {e}")
+                        except Exception as e:
+    
+                            print(f"ERROR: An error occurred while loading 'Default Romanian Dataset: LOW-END' dataset: {e}")
+    
+                    # Dataset 2:
+                    # NAME: --- Default Romanian Dataset: MID-RANGE ---
+                    # TOTAL NUMBER OF EXAMPLES: aprox. 500
+                    # TOTAL VOCABULARY: aprox. 8242 elements (words)
+                    if dataset_name.lower() in ['mid', 'mid-range', 'mid range', 'mid-dataset', 'mid dataset']:
+                        
+                        try:
+                            from .Datasets import Default_Romanian_Dataset_MID_RANGE
+    
+                            Default_Romanian_Dataset_MID_RANGE.load_dataset(self.parent.parent)
+    
+                            print("INFO: Dataset 'Default Romanian Dataset: MID-RANGE' loaded successfully.")
+                        
+                        except ImportError as e:
+                            
+                            print(f"MINOR ERROR: Could not import dataset 'Default Romanian Dataset: MID-RANGE' module. Reason: {e}")
+                        except Exception as e:
+                            
+                            print(f"ERROR: An error occurred while loading 'Default Romanian Dataset: MID-RANGE' dataset: {e}")
+    
+                    # Dataset 3:
+                    # NAME: --- Default Romanian Dataset: HIGH-END ---
+                    # TOTAL NUMBER OF EXAMPLES: aprox. 1000
+                    # TOTAL VOCABULARY: aprox. 11581 elements (words)
+                    if dataset_name.lower() in ('high', 'high-end', 'high end', 'high-dataset', 'high dataset'):
+                        
+                        try:
+                            from .Datasets import Default_Romanian_Dataset_HIGH_END
+    
+                            Default_Romanian_Dataset_HIGH_END.load_dataset(self.parent.parent)
+    
+                            print("INFO: Dataset 'Default Romanian Dataset: HIGH-END' loaded successfully.")
+                        
+                        except ImportError as e:
+                            
+                            print(f"MINOR ERROR: Could not import dataset 'Default Romanian Dataset: HIGH-END' module. Reason: {e}")
+                        except Exception as e:
+                            
+                            print(f"ERROR: An error occurred while loading 'Default Romanian Dataset: HIGH-END' dataset: {e}")
+    
+    
+                    # Dataset 4
+                    # NAME: --- High Quality, Very Low Quantity Romanian Dataset  ---
+                    # TOTAL NUMBER OF EXAMPLES: aprox. 50
+                    # TOTAL VOCABULARY: aprox. 496 elements (words)
+                    if dataset_name.lower() in ('high quality very low quantity', 'high-quality-very-low-quantity', 'high quality 1', 'high-quality-1'):
+    
+                        try:
+                            from .Datasets import High_Quality_Very_Low_Quantity_Romanian_Dataset
+    
+                            High_Quality_Very_Low_Quantity_Romanian_Dataset.load_dataset(self.parent.parent)
+    
+                            print("INFO: Dataset 'High Quality, Very Low Quantity Romanian Dataset' loaded successfully.")
+                        
+                        except ImportError as e:
+                            
+                            print(f"MINOR ERROR: Could not import dataset 'High Quality, Very Low Quantity Romanian Dataset' module. Reason: {e}")
+                        except Exception as e:
+                            
+                            print(f"ERROR: An error occurred while loading 'High Quality, Very Low Quantity Romanian Dataset' dataset: {e}")
+    
+    
+                    # Dataset 5
+                    # NAME: --- High Quality, Low Quantity Romanian Dataset ---
+                    # TOTAL NUMBER OF EXAMPLES: aprox. 100
+                    # TOTAL VOCABULARY: aprox. 874 elements (words)
+                    if dataset_name.lower() in ('high quality low quantity', 'high-quality-low-quantity', 'high quality 2', 'high-quality-2'):
+                        
+                        try:
+                            from .Datasets import High_Quality_Low_Quantity_Romanian_Dataset
+    
+                            High_Quality_Low_Quantity_Romanian_Dataset.load_dataset(self.parent.parent)
+    
+                            print("INFO: Dataset 'High Quality, Low Quantity Romanian Dataset' loaded successfully.")
+                        
+                        except ImportError as e:
+                            
+                            print(f"MINOR ERROR: Could not import dataset 'High Quality, Low Quantity Romanian Dataset' module. Reason: {e}")
+                        except Exception as e:
+                            
+                            print(f"ERROR: An error occurred while loading 'High Quality, Low Quantity Romanian Dataset' dataset: {e}")
+    
+                    
+                    # Dataset 6
+                    # NAME: --- Teacher for PyRomusa AI ---
+                    # TOTAL NUMBER OF EXAMPLES: aprox. 110
+                    # TOTAL VOCABULARY: aprox. 397 elements (words)
+                    if dataset_name.lower() in ('teacher', 'pyromusa ai tutorial', 'pyromusa ai teacher', 'pyromusa-ai-teacher', 'pyromusa-ai-tutorial'):
+    
+                        try:
+                            from .Datasets import Teacher_for_PyRomusa_AI
+                            
+                            Teacher_for_PyRomusa_AI.load_dataset(self.parent.parent)
+    
+                            print("INFO: Dataset 'Teacher for PyRomusa AI' loaded successfully.")
+                        
+                        except ImportError as e:
+                            
+                            print(f"MINOR ERROR: Could not import dataset 'Teacher for PyRomusa AI' module. Reason: {e}")
+                        except Exception as e:
+                            
+                            print(f"ERROR: An error occurred while loading 'Teacher for PyRomusa AI' dataset: {e}")
+
+
+    
+
+        

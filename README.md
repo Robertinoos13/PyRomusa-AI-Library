@@ -21,6 +21,9 @@ Well, just click on the section (the blue text) below that interests you and you
 - [Why should I use `PyRomusa AI`? 🤔](#why-should-i-use-pyromusa-ai-)
     - Do you want a reason to use `PyRomusa AI` or still don't understand what `PyRomusa AI` is? You could find this information right here
 
+- [`RealChatbot()` vs `Chatbot()`](#realchatbot-vs-chatbot)
+    - You may have noticed: as of v0.9.0, there are now 2 types of chatbots in `PyRomusa AI`. Go to this section to find out which one suits you best based on your needs.
+
 - [How to download `PyRomusa AI` directly from GitHub?](#how-to-download-pyromusa-ai-directly-from-github)
     - Are you ready to install PyRomusa AI directly from GitHub, on your hardware, and use PyRomusa AI? Here's a tutorial on how to install it from scratch.
 
@@ -59,7 +62,7 @@ Well, just click on the section (the blue text) below that interests you and you
 """
 This code works correctly with the following versions:
 BETA - v0.0.2
-STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2, v0.4.3, v0.5.0, v0.6.0, v0.6.1, v0.6.2, v0.7.0, v0.7.1, v0.8.0
+STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2, v0.4.3, v0.5.0, v0.6.0, v0.6.1, v0.6.2, v0.7.0, v0.7.1, v0.8.0, v0.9.0
 EXPERIMENTAL - v001, v002, v003
 """
 
@@ -101,22 +104,54 @@ print(bot.reply_at("Hello chatbot!"))
 - It has functions specifically for creating a chatbot, without unnecessary functions
 
 ### 2. It is a small and new python framework
-- Not much is known about this framework yet, and since it is a very young framework, it receives updates as often as possible. Any feedback and suggestions [sent via email or TikTok](#contact-me-) are welcome!
+- Not much is known about this framework yet, and since it is a young framework, it receives regular updates. Any feedback and suggestions [sent via email or TikTok](#contact-me-) are welcome!
 
 - It is not yet a framework that can be installed in the form of `pip install PyRomusa_AI` in the console, but it is planned to be able to install in this form when there is a minimum community and/or when it will be necessary to make the major update to the STABLE version v0.9.X
 
 ### 3. A fast framework
-- The response generation time + training time in a single code run are generally much shorter than other major frameworks.
+- The response generation time + training time in a single code run are generally much shorter than other major frameworks (`Chatbot()` object).
 
-- **Want to see the real speed of the framework? Try the `🐍 benchmark.py` script**: It creates an instance of a chatbot, loads all available datasets, starts training, and responds to 10 prompts using the `modern` reply engine (works on PyRomusa AI STABLE v0.4.1 or newer).
+- **Want to see the real speed of the framework? Try the `🐍 benchmark.py` script**: It creates an instance of a chatbot (`Chatbot()` object), loads all available datasets, starts training, and responds to 10 prompts using the `modern` reply engine (works on PyRomusa AI STABLE v0.4.1 or newer).
 
 ### 4. A framework a little... different from others
 - **`PyRomusa AI` comes with some more special concepts**: _[Reply Engines](#about-reply-engines) and [Prepared Datasets](#about-prepared-datasets-️)_
-- It does not use some concepts from traditional AI, such as loss functions or hidden layers
+- It does not use some concepts from traditional AI, such as loss functions or hidden layers (`Chatbot()` object)
 
 ### 5. Focused on being easy to learn and use
 - The syntax of this framework has been made as easy and logical as possible.
 - Even though [the learning resources for this framework](#1-what-methods-do-i-have-to-learn-to-use-pyromusa-ai), available in February 2026, are not very advanced and detailed, at least they are diversified directly by the creator.
+---
+## `RealChatbot()` vs `Chatbot()`
+
+### Some details about `RealChatbot()` object
+Starting with version v0.9.0, you can train your own real pretrained LLM on your custom Q&A examples. To do this, there is the `RealChatbot()` object:
+
+``` python
+from PyRomusa_AI import RealChatbot
+
+bot = RealChatbot()
+```
+
+This new object in `PyRomusa AI v0.9.0` is mainly based on `PyTorch` technologies and was focused on being able to be used exactly like the old `Chatbot()` object: both have the functions, for example, `bot.reply_at()`, `bot.trainer.add_data()`, `bot.trainer.start()`
+
+---
+
+### But why was `RealChatbot()` created, in principle?
+There are probably `PyRomusa AI` users who expected something more: real LLM technologies
+
+At the birth of the framework, the main goal was to create chatbots with the simplest syntax and without the need for advanced hardware, so the first object of `PyRomusa AI` was `Chatbot()`. It is based from the beginning on its own logic for generating responses and without the need for heavy hardware dependencies.
+
+Those who have ever used the `Chatbot()` object have probably noticed a drawback: too frequent fallback messages and a lack of generalized messages compared to what was seen in the training datasets.
+
+And how did he think we could get rid of its disadvantages (or not)? The answer is simple: by adding the `RealChatbot()` object based on real AI.
+
+---
+### Differences between `Chatbot()` and `RealChatbot()`
+|object|advantages 📈|similarity ⚖️|disadvantajes 📉|
+|:--|:-|:-:|-:|
+|`RealChatbot()`|It has a much better generalization capacity than `Chatbot()`, could respond to more prompts, and has options to modify the architecture, depending on needs (`d_model`, `num_layers`, `num_heads`, `batch_size`, etc.)|It is a type of chatbot and has many main functions written exactly like the other objects.|Training can take anywhere from a few seconds/minutes to a few hours/days/weeks, depending on your configurations. It is also not optimized to generate a 100% correct answer based on just a few dozen training examples _(it needs thousands of examples or more to speak DECENTLY)_|
+|`Chatbot()`|It is focused on running fast, can generate a correct spelling response if it finds the prompt in its training (even in dozens of training examples) and is very light on hardware compared to `RealChatbot()`. It is also based on the concept of Reply Engines: you can choose from several response generation strategies depending on your needs|It is a type of chatbot and has many main functions written exactly like the other objects.|It is more fragile if it doesn't have certain words in its training examples (it returns a fallback message) and can't generalize well. It also doesn't learn grammar/spelling rules like an LLM would, just word matching against what it saw.|
+
 ---
 ## How to download `PyRomusa AI` directly from GitHub?
 
@@ -189,10 +224,10 @@ Did you know that to install older versions of PyRomusa AI, the most stable inst
 ---
 ## Key Features 🔑
 - Create a chatbot in just a few lines of Python  
-- Simple training process (no heavy frameworks involved)  
+- Simple training process (no heavy frameworks involved on `Chatbot()` object)  
 - Multiple version types: Stable, Beta, and Experimental  
 - Beginner-friendly and easy to understand  
-- No high-end GPU required
+- No high-end GPU required (`Chatbot()` object)
 
 ---
 
@@ -418,8 +453,9 @@ bot.helper.how_to_start()
 |`numpy`|The logic behind the 'modern' reply engine|[numpy](https://github.com/numpy/numpy)|
 |`pandas`|To create tables (dataframes) for some functions in `bot.helper. ...`|[pandas](https://github.com/pandas-dev/pandas)|
 |`pyrospeak`|For talking chatbots (TTS transformation)|[PyroSpeak-Library](https://github.com/Robertinoos13/PyroSpeak-Library)|
+|`pytorch`|For main technology of the `RealChatbot()` object|[pytorch](https://github.com/pytorch/pytorch)|
 
-<br><br>
+<br>
 
 Thank you for creating these Python frameworks/libraries 🙏
 

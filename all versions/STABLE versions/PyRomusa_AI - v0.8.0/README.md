@@ -91,7 +91,7 @@ What makes it different:
 
 - **Modified returned text on `bot.helper.questions()`:** To be up to date, I have updated a statement of a text in an answer
 
-- **Update to the Romanian language dataset, 'Teacher for PyRomusa AI':** It has been added more training examples to be able to answer more prompts. It is now a better dataset than in the previous version.**
+- **Update to the Romanian language dataset, 'Teacher for PyRomusa AI':** It has been added more training examples to be able to answer more prompts. It is now a better dataset than in the previous version.
 
 - **Bigger conversations memory:** Now a chatbot can remember the entire conversation in a session, not just the last conversation
 
