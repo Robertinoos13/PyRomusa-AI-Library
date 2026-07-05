@@ -13,7 +13,7 @@ dependencies = [
     "numpy>=1.25.0",
     "pandas>=2.1.0",
     "pyrospeak @ git+https://github.com/Robertinoos13/PyroSpeak-Library.git#subdirectory=pyrospeak-pack",
-    "pytorch>=1.0.2"
+    "torch>=1.0.2"
 ]
 keywords = ["AI", "chatbot", "PyRomusaAI"]
 license = {text = "Apache-2.0"}
