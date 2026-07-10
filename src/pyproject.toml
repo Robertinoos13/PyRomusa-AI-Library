@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=77.0.3", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyromusa_ai"
+version = "0.9.0"
+description = "A lightweight Python framework for creating simple AI chatbots with minimal code."
+authors = [{name = "Mureșan Robert", email = "pyromusa.ai@gmail.com"}]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.25.0",
+    "pandas>=2.1.0",
+    "torch>=1.0.2"
+]
+keywords = ["AI", "chatbot", "PyRomusaAI"]
+license = "Apache-2.0"
+
+[project.urls]
+Homepage = "https://github.com/Robertinoos13/PyRomusa-AI-Library"
+Repository = "https://github.com/Robertinoos13/PyRomusa-AI-Library"
+Issues = "https://github.com/Robertinoos13/PyRomusa-AI-Library/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pyromusa_ai*"]
