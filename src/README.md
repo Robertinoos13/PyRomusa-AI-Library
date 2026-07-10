@@ -47,22 +47,21 @@ What makes it different:
 
 <br>
 
-### More exact structure (if you search in the `📁pyromusa-ai` folder):
+### More exact structure (if you search in the `📁src` folder):
 ```
-|-📁pyromusa-ai/
-|----📄README.md
-|----⚙️pyproject.toml
-|
-|----📁pyromusa_ai/
-|-------- 🐍core.py
-|-------- 🐍errors.py
-|-------- 🐍__init__.py
-|
-|-------- 📁Datasets/
-|------------ more Python files...
-|
-|-------- 📁Reply_Engines/
-|------------ more Python files...
+|- 📁src/
+|--- ⚙️pyproject.toml
+|--- 📄README.md
+├─── 📁dist
+├─── 📁pyromusa_ai/
+|---|--- 🐍core.py
+|---|--- 🐍__init__.py
+|---|--- 🐍errors.py
+│   ├─── 📁Datasets
+│   ├─── 📁Reply_Engines
+│   └─── 📁_vendor
+│       └─── 📁pyrospeak
+└─── 📁pyromusa_ai.egg-info
 ```
 
 
@@ -70,7 +69,7 @@ What makes it different:
 ### Where:
 |File/Folder name|Description|
 |:-:|:--|
-|`📁PyRomusa_AI - vX.Y.Z` , `📁pyromusa-ai/`|The main folder containing everything for that version of the framework (full framework code + `📄README.md`)|
+|`📁PyRomusa_AI - vX.Y.Z` , `📁src/`|The main folder containing everything for that version of the framework (full framework code + `📄README.md`)|
 |`📄README.md`|Documentation for this specific version |
 |`📁PyRomusa_AI/` , `📁pyromusa_ai/`|The secondary folder, which only has all the code that contributes to the 100% functional `PyRomusa AI`|
 |`🐍PyRomusa_AI.py` , `🐍core.py`|The main/core code of `PyRomusa AI`|
@@ -78,6 +77,8 @@ What makes it different:
 |`⚙️pyproject.toml`|A very important file to be able to install with pip install, but completely useless if you install `PyRomusa AI` manually|
 |`🐍errors.py`|A new file from 0.6.0, here you find different types of errors that you can catch in `PyRomusa AI`|
 |`📁Reply_Engines/`|The folder containing the most important lines of code for the main goal of `PyRomusa AI`. These lines of code are mandatory for generating responses based on a prompt.|
+|`📁dist`, `📁pyromusa_ai.egg-info`|Some folders needed for `PyPI`|
+|`📁_vendor`|Folder with libraries that are not yet on `PyPI`. Code implemented directly in the source pack|
 
 
 
@@ -136,7 +137,7 @@ bot.helper.how_to_start()
 
 Depending on how you installed `PyRomusa AI`, this framework, in your code, must be imported like this, one of these 2 variants:
 
-### a) If you installed with `pip install git+https://github.com/Robertinoos13/PyRomusa-AI-Library.`:
+### a) If you installed with `pip install ...`:
 ```python
 from pyromusa_ai import Chatbot
 ```
@@ -150,5 +151,3 @@ or
 ```python
 from PyRomusa_AI.PyRomusa_AI import Chatbot # If your code is in the same folder as the folder that has all the resources for PyRomusa AI (📁PyRomusa_AI)
 ```
-
->

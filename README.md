@@ -106,8 +106,6 @@ print(bot.reply_at("Hello chatbot!"))
 ### 2. It is a small and new python framework
 - Not much is known about this framework yet, and since it is a young framework, it receives regular updates. Any feedback and suggestions [sent via email or TikTok](#contact-me-) are welcome!
 
-- It is not yet a framework that can be installed in the form of `pip install PyRomusa_AI` in the console, but it is planned to be able to install in this form when there is a minimum community and/or when it will be necessary to make the major update to the STABLE version v0.9.X
-
 ### 3. A fast framework
 - The response generation time + training time in a single code run are generally much shorter than other major frameworks (`Chatbot()` object).
 
@@ -155,42 +153,58 @@ And how did he think we could get rid of its disadvantages (or not)? The answer 
 ---
 ## How to download `PyRomusa AI` directly from GitHub?
 
-### **This can be done by 2 methods:**
+### **This can be done by 3 methods:**
 
 ---
 ### **a) The clasic method**
+
+1. Open a terminal on Windows, macOS, or Linux, open your command line (`Win + R`, then write `cmd` and press `Enter`) or terminal.
+
+2. Install `PyRomusa AI` directly from `PyPI`, writing this in your terminal:
+``` bash
+pip install pyromusa-ai
+```
+**3. Test the installation**
+
+Try to run this code:
+``` python
+from pyromusa_ai import Chatbot
+
+bot = Chatbot()
+
+bot.prepared_datasets.romanian.load_prepared_dataset("low")
+bot.trainer.show_number_of_examples()
+```
+>If no errors appear, PyRomusa AI is installed and ready to use.
+
+---
+
+### **b) The GitHub method**
 
 1. Make sure you have Python and pip installed (`PyRomusa AI` works with Python 3.8+).
 2. Open a terminal on Windows, macOS, or Linux, open your command line or terminal.
 3. Install `PyRomusa AI` directly from GitHub, writing this in your terminal:
 ``` bash
-pip install git+https://github.com/Robertinoos13/PyRomusa-AI-Library.git#subdirectory=pyromusa-ai
+pip install git+https://github.com/Robertinoos13/PyRomusa-AI-Library.git#subdirectory=src
 ```
 > This command tells pip to clone the repository and install the package automatically. You don’t need to download anything manually.
 
 **4. Test the installation**
 
-Open Python in your terminal and try:
+Try to run this code:
 ``` python
 from pyromusa_ai import Chatbot
 
 bot = Chatbot()
+
+bot.prepared_datasets.romanian.load_prepared_dataset("low")
 bot.trainer.show_number_of_examples()
 ```
 >If no errors appear, PyRomusa AI is installed and ready to use.
 
->_(**How do you open Python in your terminal? Just type the word** `python` **before you type the python code**, then you have the option to type whatever Python code you want.)_
-
-**5. Load a prepared dataset (optional):**
-```
-bot.prepared_datasets.romanian.load_prepared_dataset("low")
-```
-
-> This loads a Romanian dataset into your chatbot for training or testing.
-
 ---
 
-### **b) The manual method**
+### **c) The manual method**
 Did you know that to install older versions of PyRomusa AI, the most stable installation method is this? **If you want to install older versions, then trust this method.**
 
 1. Go to one of these folders: `📁 all versions/` or `📁 pyromusa-ai`
@@ -254,7 +268,7 @@ Each version folder contains:
 - A dedicated `📄README.md` for that version  
 
 ---
-`📁 pyromusa-ai` - This is the newest stable version of `PyRomusa AI`. Its structure is optimized so that you can install it with `pip install` from your terminal. [Click on this text to learn how](#a-the-clasic-method)
+`📁 src` - This is the newest stable version of `PyRomusa AI`. Its structure is optimized so that you can install it with `pip install` from your terminal. [Click on this text to learn how](#a-the-clasic-method)
 
 `📁 tutorials/` - This is a folder where all sorts of tutorials will be written to use the library.
 
