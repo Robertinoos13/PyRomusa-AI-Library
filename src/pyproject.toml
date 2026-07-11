@@ -16,10 +16,6 @@ dependencies = [
     "pyttsx3",
     "gTTS",
     "pygame",
-    "numpy",
-    "sounddevice",
-    "whisper",
-    "faststt",
     "elevenlabs"
 ]
 keywords = ["AI", "chatbot", "PyRomusaAI"]
