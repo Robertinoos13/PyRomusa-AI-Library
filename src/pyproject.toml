@@ -13,10 +13,7 @@ dependencies = [
     "numpy>=1.25.0",
     "pandas>=2.1.0",
     "torch>=1.0.2",
-    "pyttsx3",
-    "gTTS",
-    "pygame",
-    "elevenlabs"
+    "pyrospeak"
 ]
 keywords = ["AI", "chatbot", "PyRomusaAI"]
 license = "Apache-2.0"

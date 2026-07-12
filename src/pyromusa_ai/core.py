@@ -1026,7 +1026,7 @@ class Chatbot:
 
     def reply_with_audio(self, prompt, engine_name="modern", sensitivity: int = 1, with_memory: bool = True, max_inflenced_memory: int = 3, fallback_language="english", fallback_empty_string_message="", fallback_no_understanded_message="", fallback_not_sure_message="", temperature: float = 0.0, show_thinking=False, allow_long_text_thinking=True, show_debug=False, new_lines_system: bool = True, censored_words: dict = {},
                          audio_engine="gTTS", audio_language='en', elevenlabs_voice_id="21m00Tcm4TlvDq8ikWAM", elevenlabs_api_key="", elevenlabs_model_id="eleven_multilingual_v2"):
-        from ._vendor.pyrospeak import speak
+        from pyrospeak import speak
 
         # Text generat de chatbot, salvat într-o variabilă
         text = self.reply_at(

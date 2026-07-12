@@ -57,10 +57,7 @@ What makes it different:
     |--- 🐍__init__.py
     |--- 🐍errors.py
     ├─── 📁Datasets
-    ├─── 📁Reply_Engines
-    └─── 📁_vendor
-        └─── 📁pyrospeak
-
+    └─── 📁Reply_Engines
 ```
 
 
@@ -76,7 +73,6 @@ What makes it different:
 |`⚙️pyproject.toml`|A very important file to be able to install with pip install, but completely useless if you install `PyRomusa AI` manually|
 |`🐍errors.py`|A new file from 0.6.0, here you find different types of errors that you can catch in `PyRomusa AI`|
 |`📁Reply_Engines/`|The folder containing the most important lines of code for the main goal of `PyRomusa AI`. These lines of code are mandatory for generating responses based on a prompt.|
-|`📁_vendor`|Folder with libraries that are not yet on `PyPI`. Code implemented directly in the source pack|
 
 
 
