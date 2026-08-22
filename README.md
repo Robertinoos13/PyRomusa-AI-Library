@@ -62,11 +62,11 @@ Well, just click on the section (the blue text) below that interests you and you
 """
 This code works correctly with the following versions:
 BETA - v0.0.2
-STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2, v0.4.3, v0.5.0, v0.6.0, v0.6.1, v0.6.2, v0.7.0, v0.7.1, v0.8.0, v0.9.0, v0.9.1
+STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2, v0.4.3, v0.5.0, v0.6.0, v0.6.1, v0.6.2, v0.7.0, v0.7.1, v0.8.0, v0.9.0, v0.9.1, v0.10.0
 EXPERIMENTAL - v001, v002, v003
 """
 
-from PyRomusa_AI import Chatbot
+from pyromusa_ai import Chatbot
 
 # Create a chatbot named "RomusaBot"
 bot = Chatbot(chatbot_name="RomusaBot")
@@ -125,7 +125,7 @@ print(bot.reply_at("Hello chatbot!"))
 Starting with version v0.9.0, you can train your own real pretrained LLM on your custom Q&A examples. To do this, there is the `RealChatbot()` object:
 
 ``` python
-from PyRomusa_AI import RealChatbot
+from pyromusa_ai import RealChatbot
 
 bot = RealChatbot()
 ```
@@ -332,7 +332,7 @@ print(bot.reply_at(prompt="Salut!"))
 |**Default Romanian Dataset: HIGH-END**|11581|1000|'high'|Romanian|Critically Low|No Effort|No Effort|NO ❌|**BETA v0.0.1** or newer|
 |**High Quality, Very Low Quantity Romanian Dataset**|496|50|'high-quality-very-low-quantity'|Romanian|Very High|Very Low|No Effort|NO ❌|**STABLE v0.1.1** or newer|
 |**High Quality, Low Quantity Romanian Dataset**|874|100|'high-quality-low-quantity'|Romanian|High|Very Low|No Effort|NO ❌|**EXPERIMENTAL v001** or newer|
-|**Teacher for PyRomusa AI**|_397_ - _1125_|_110_ - _380_|'pyromusa-ai-teacher'|Romanian|Very High|High|No Effort|YES 👍|**STABLE v0.2.0** or newer|
+|**Teacher for PyRomusa AI**|_397_ - _1258_|_110_ - _410_|'pyromusa-ai-teacher'|Romanian|Very High|High|No Effort|YES 👍|**STABLE v0.2.0** or newer|
 |**Default English Dataset: LOW-END**|949|250|'low'|English|No Effort|Balanced|No Effort|NO ❌|**STABLE v0.4.1** or newer|
 |**Default English Dataset: MID-RANGE**|1713|500|'mid'|English|No Effort|Balanced|No Effort|NO ❌|**STABLE v0.4.1** or newer|
 |**Default English Dataset: HIGH-END**|3100|1000|'high'|English|No Effort|Balanced|No Effort|NO ❌|**STABLE v0.4.1** or newer|
@@ -352,7 +352,7 @@ _(Some values ​​in the `"Vocabulary"` and `"Number of examples"` columns may
 |_Language_|**This will be the language that most of the dataset examples are in**. It's important to understand what the chatbot is saying.|-|
 |_Naturalness_|**This represents who the input/output examples  are made by and how (how much HUMAN vs AI). Better = more HUMAN**|**No Effort, Critically Low, Very Low, Low, Balanced, High, Very High**|
 | _Focus on same questions_|**Here you will find out how much focus was placed on the chatbot that has this dataset to recognize the same question, but written in a different form by the user.** It is important to know how much patience you need to have for the chatbot to understand what you are saying, so that it does not fallback or write something difficult to understand.|**No Effort, Critically Low, Very Low, Low, Balanced, High, Very High**|
-|_Focus on diversifying output_|**Here you will find how diverse the outputs are for the same user input in the training examples of the respective dataset.** This is an important concept if you want the chatbot to not respond with the same message every time you type the exact same input (be sure to use the `temperature` parameter with a value greater than 0 for this to work)|**No Effort, Critically Low, Very Low, Low, Balanced, High, Very High**|
+|_Focus on diversifying output_|**Here you will find how diverse the outputs are for the same user input in the training examples of the respective dataset.** This is an important concept if you want the chatbot to not respond with the same message every time you type the exact same input (for `Chatbot()` object, be sure to use the `temperature` parameter with a value greater than 0 for this to work)|**No Effort, Critically Low, Very Low, Low, Balanced, High, Very High**|
 |_Planned to be updated_|This column shows whether the prepared dataset will be updated in the future. If YES, the dataset specifications vary depending on the version of `PyRomusa AI`.|**NO, MAYBE, YES**|
 |_Avaiable In_|**Here you will find in which oldest version this dataset started appearing in.** It is important to know which version to look for in the `versions/` folder if you want to use a specific dataset.|OLDER VERSION <br>=<br> Greater compatibility & better|
 
