@@ -280,6 +280,8 @@ Each version folder contains:
 
 `📁 .github` - Less important files related to COMMUNITY STANDARDS are placed here. You will find files like `📄CONTRIBUTING.md`, `📄SECURITY.md`, etc.
 
+`📄CHANGELOG.md` - This file contains all the updates made to `PyRomusa AI` over time: from its launch to the latest versions. A useful file if you like to see its evolution.
+
 ---
 
 ## Version Types Explained
