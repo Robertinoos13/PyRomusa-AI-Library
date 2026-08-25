@@ -18,6 +18,9 @@ Well, just click on the section (the blue text) below that interests you and you
 - [Complete Code Example Using `PyRomusa AI`](#complete-code-example-using-pyromusa_ai)
     - Do you want to see what code using the `PyRomusa AI` library would look like or do you want some ready-to-copy-paste code to see how it works? Well, this is the section you should come to.
 
+- [Why `PyRomusa AI` exists? 🤔](#why-pyromusa-ai-exists-)
+    - What problem do you think `PyRomusa AI` solves? Find out right here and maybe it will help you too
+
 - [Why should I use `PyRomusa AI`? 🤔](#why-should-i-use-pyromusa-ai-)
     - Do you want a reason to use `PyRomusa AI` or still don't understand what `PyRomusa AI` is? You could find this information right here
 
@@ -98,6 +101,25 @@ print(bot.reply_at("Hello chatbot!"))
 <br>
 
 ---
+
+## Why `PyRomusa AI` exists? 🤔
+
+In principal, **`PyRomusa AI` was created to reduce the number of code lines and create the arhitecture of a chatbot more faster.** 
+
+Look at this table:
+
+|task type|other chatbot frameworks|`PyRomusa AI`|
+|:-:|:-|:-|
+|code lines to write the chatbot arhitecture (minimalistic)|_up to ~150_|**1**|
+|training time|_up to some weeks/months_|**With `Chatbot()`: some seconds**|
+|How to add a training example manually?|_Depending by the framework (a simple string, a complex dictionary, etc.)_|**Just use `bot.trainer.add_data()` and complete 2 parameters with strings**|
+|Lines of code to write the generation function (minimalistic)|_up to ~20_|**1**|
+|Lines of code to write the training loop (minimalistic)|_up to ~20_|**1**|
+|Needs to write suplimentary components (vocabulary, tokenization, layers, etc.)|_yes_|**no**|
+|How much time take to learn the framework for creating chatbots?|_some weeks/months_|**2-3 days**|
+
+---
+
 ## Why should I use `PyRomusa AI`? 🤔
 ### 1. Framework with a single goal: **creating chatbots from scratch**
 - It is a framework optimized only for creating chatbots from scratch, with your own input-output training examples.
@@ -442,7 +464,7 @@ At the moment _(February 19, 2026)_, these PyRomusa AI learning options are quit
 
 3. Look in the `📁 tutorials/` folder in this repository
 
-    - This folder, at the moment, does not have a code tutorial, but only a few text guides to solve problems like 'Why can't I load a prepared dataset?' or 'How do I setup PyRomusa AI in my code?', but it is planned to include code tutorials here in the future.
+    - In this folder, as of August 2026, you can also find some small examples where `PyRomusa AI` is used. Indeed, the folder is still a work in progress, but it is a perfect start.
 
 4. Use the prepared dataset 'Teacher for PyRomusa AI'
 
@@ -451,7 +473,7 @@ At the moment _(February 19, 2026)_, these PyRomusa AI learning options are quit
 
 5. Install `PyRomusa AI` & Run the code:
 ```python
-from PyRomusa_AI import Chatbot
+from pyromusa_ai import Chatbot
 
 # Create a chatbot
 bot = Chatbot()
@@ -487,7 +509,7 @@ Thank you for creating these Python frameworks/libraries 🙏
 
 - To install an EXPERIMENTAL or BETA version, [the installation must be done manually](#b-the-manual-method), it is not possible with `pip install`
 
-- In the Python code examples in `📄README.md` files, **you see the word `bot`** quite often, right? Well, **that's the instance of the chatbot class (`bot = Chatbot()`)**
+- In the Python code examples in `📄README.md` files, **you see the word `bot`** quite often, right? Well, **that's the instance of the chatbot class** (`bot = Chatbot()` or `bot = RealChatbot()`)
 
 ---
 
