@@ -261,7 +261,7 @@ Did you know that to install older versions of PyRomusa AI, the most stable inst
 ## Key Features 🔑
 - Create a chatbot in just a few lines of Python  
 - Simple training process (no heavy frameworks involved on `Chatbot()` object)  
-- Multiple version types: Stable, Beta, and Experimental  
+- Multiple version types: Stable, Old, Modded and Experimental  
 - Beginner-friendly and easy to understand  
 - No high-end GPU required (`Chatbot()` object)
 
@@ -273,7 +273,7 @@ All versions of `PyRomusa AI` from all time are stored inside the `📁 all vers
 ```
 |-📁 all versions/
 |
-|----📁 BETA versions/ 
+|----📁 OLD versions/ 
 |--------📁 PyRomusa_AI - v0.0.X
 |
 |----📁 EXPERIMENTAL versions/
@@ -281,6 +281,9 @@ All versions of `PyRomusa AI` from all time are stored inside the `📁 all vers
 |
 |----📁 STABLE versions/ 
 |--------📁 PyRomusa_AI - v0.X.Y
+|
+|----📁 MODDED versions/ 
+|--------📁 PyRomusa_AI-modded-vXYZ-USERNAME
 ```
 
 
@@ -290,6 +293,7 @@ Each version folder contains:
 - A dedicated `📄README.md` for that version  
 
 ---
+
 `📁 src` - This is the newest stable version of `PyRomusa AI`. Its structure is optimized so that you can install it with `pip install` from your terminal. [Click on this text to learn how](#a-the-clasic-method)
 
 `📁 tutorials/` - This is a folder where all sorts of tutorials will be written to use the library.
