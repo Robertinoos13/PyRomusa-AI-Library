@@ -307,10 +307,10 @@ Each version folder contains:
 ---
 
 ## Version Types Explained
-As this repository has various versions of `PyRomusa AI` that are older, newer, or more buggy, they have been grouped into 3 categories, placed in the `📁 all versions/` folder:
+As this repository has various versions of `PyRomusa AI` that are older, newer, personalized or more buggy, they have been grouped into 4 categories, placed in the `📁 all versions/` folder:
 
-### BETA 🤖🛠️
-- Still in development  
+### OLD 👴🛠️
+- Versions when `PyRomusa AI` was in development  
 - May contain bugs, incomplete features, or small issues  
 
 ### STABLE 😁👍
@@ -320,6 +320,10 @@ As this repository has various versions of `PyRomusa AI` that are older, newer, 
 ### EXPERIMENTAL 🧪🔬
 - Radical changes and experimental ideas  
 - Not intended for production use  
+
+### MODDED 👥🔧
+- Made by the comunity
+- Good if you want something different than the official versions
 
 ---
 
@@ -500,8 +504,10 @@ Thank you for creating these Python frameworks/libraries 🙏
 ---
 
 ## **Notes:** 
-- Versions prior to `BETA 0.0.1` were initially released under the name `muri_ai`.
+- Versions prior to `OLD 0.0.1` were initially released under the name `muri_ai`.
 **The project has been renamed to `PyRomusa_AI` to avoid naming conflicts and for better branding.**
+
+- Did you know that `OLD versions` were initially released as `BETA versions`? This name change was decided because it was noticed, since the first `STABLE versions` began to be released, that no `BETA versions` had been published, so the name `OLD` was changed, these types of versions being considered historical and public in order to see where `PyRomusa AI` started.
 
 - Do you notice that the codes in this repository that use `PyRomusa AI`, you often find `from PyRomusa_AI import Chatbot`, and sometimes you also find `from pyromusa_ai import Chatbot`? **Well, know that if you install `PyRomusa AI` via `pip install ...`, in your code you will use `pyromusa_ai`, AND if you install it manually from the repository and do not change its name, then you will use `PyRomusa_AI`**
 

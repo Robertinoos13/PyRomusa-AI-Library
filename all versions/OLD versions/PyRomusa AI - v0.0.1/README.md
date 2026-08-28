@@ -1,11 +1,13 @@
-# PyRomusa_AI — v0.0.2 🤖
+# PyRomusa_AI — v0.0.1 🤖
 
-**Version type:** BETA  
-**Release date:** 2026-01-17
+**Version type:** BETA   
+**Release date:** 2026-01-11 
 
 ---
 
 ## Overview
+
+This is the **first public version ever** of the `PyRomusa_AI` library.
 
 This version/library focuses on creating a **very simple, beginner-friendly chatbot system**, built with custom logic instead of real machine learning models.
 
@@ -34,12 +36,10 @@ What makes it different:
 
 ## What's New
 
-- 2 functions in the Help class were completed, without replacing their real context with 'pass'
-- **FUNCTION NAME CHANGED:** 
-`bot.responding_at()` -> `bot.reply_at()`
+- Nothing, just the initial OLD version
 
-⚠️ **BETA notice:**
-- API may change in future versions
+⚠️ **OLD notice:**
+- It is a historical version
 - Logic is not optimised
 - Some behaviours may feel inconsistent
 - This version may contain bugs or unfinished features
@@ -61,7 +61,7 @@ bot.trainer.add_data("Bye!", "Goodbye!")
 bot.trainer.start()
 
 # Get a response
-print(bot.reply_at("Hello!"))
+print(bot.responding_at("Hello!"))
 ```
 ---
 
