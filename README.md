@@ -64,8 +64,8 @@ Well, just click on the section (the blue text) below that interests you and you
 ```python
 """
 This code works correctly with the following versions:
-BETA - v0.0.2
-STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2, v0.4.3, v0.5.0, v0.6.0, v0.6.1, v0.6.2, v0.7.0, v0.7.1, v0.8.0, v0.9.0, v0.9.1, v0.10.0
+OLD - v0.0.2
+STABLE - v0.1.0, v0.1.1, v0.2.0, v0.3.0, v0.4.0, v0.4.1, v0.4.2, v0.4.3, v0.5.0, v0.6.0, v0.6.1, v0.6.2, v0.7.0, v0.7.1, v0.8.0, v0.9.0, v0.9.1, v0.10.0, v0.10.1
 EXPERIMENTAL - v001, v002, v003
 """
 
@@ -203,7 +203,7 @@ bot.trainer.show_number_of_examples()
 
 ### **b) The GitHub method**
 
-1. Make sure you have Python and pip installed (`PyRomusa AI` works with Python 3.8+).
+1. Make sure you have Python and pip installed (`PyRomusa AI` works with Python 3.10+).
 2. Open a terminal on Windows, macOS, or Linux, open your command line or terminal.
 3. Install `PyRomusa AI` directly from GitHub, writing this in your terminal:
 ``` bash
@@ -229,7 +229,7 @@ bot.trainer.show_number_of_examples()
 ### **c) The manual method**
 Did you know that to install older versions of PyRomusa AI, the most stable installation method is this? **If you want to install older versions, then trust this method.**
 
-1. Go to one of these folders: `📁 all versions/` or `📁 pyromusa-ai`
+1. Go to one of these folders: `📁 all versions/` or `📁 src/`
 2. If you chose to go to folder `📁 all versions/`, then select a version type, the exact version, and look for file `🐍PyRomusa_AI.py`. If you went the other way, look for the `🐍core.py` file.
 3. Once you've found one of the Python files, install it or copy all of its contents to a Python file you created on your hardware.
 
@@ -364,7 +364,7 @@ print(bot.reply_at(prompt="Salut!"))
 |**Default Romanian Dataset: HIGH-END**|11581|1000|'high'|Romanian|Critically Low|No Effort|No Effort|NO ❌|**BETA v0.0.1** or newer|
 |**High Quality, Very Low Quantity Romanian Dataset**|496|50|'high-quality-very-low-quantity'|Romanian|Very High|Very Low|No Effort|NO ❌|**STABLE v0.1.1** or newer|
 |**High Quality, Low Quantity Romanian Dataset**|874|100|'high-quality-low-quantity'|Romanian|High|Very Low|No Effort|NO ❌|**EXPERIMENTAL v001** or newer|
-|**Teacher for PyRomusa AI**|_397_ - _1258_|_110_ - _410_|'pyromusa-ai-teacher'|Romanian|Very High|High|No Effort|YES 👍|**STABLE v0.2.0** or newer|
+|**Teacher for PyRomusa AI**|_397_ - _1408_|_110_ - _460_|'pyromusa-ai-teacher'|Romanian|Very High|High|No Effort|YES 👍|**STABLE v0.2.0** or newer|
 |**Default English Dataset: LOW-END**|949|250|'low'|English|No Effort|Balanced|No Effort|NO ❌|**STABLE v0.4.1** or newer|
 |**Default English Dataset: MID-RANGE**|1713|500|'mid'|English|No Effort|Balanced|No Effort|NO ❌|**STABLE v0.4.1** or newer|
 |**Default English Dataset: HIGH-END**|3100|1000|'high'|English|No Effort|Balanced|No Effort|NO ❌|**STABLE v0.4.1** or newer|
@@ -386,7 +386,7 @@ _(Some values ​​in the `"Vocabulary"` and `"Number of examples"` columns may
 | _Focus on same questions_|**Here you will find out how much focus was placed on the chatbot that has this dataset to recognize the same question, but written in a different form by the user.** It is important to know how much patience you need to have for the chatbot to understand what you are saying, so that it does not fallback or write something difficult to understand.|**No Effort, Critically Low, Very Low, Low, Balanced, High, Very High**|
 |_Focus on diversifying output_|**Here you will find how diverse the outputs are for the same user input in the training examples of the respective dataset.** This is an important concept if you want the chatbot to not respond with the same message every time you type the exact same input (for `Chatbot()` object, be sure to use the `temperature` parameter with a value greater than 0 for this to work)|**No Effort, Critically Low, Very Low, Low, Balanced, High, Very High**|
 |_Planned to be updated_|This column shows whether the prepared dataset will be updated in the future. If YES, the dataset specifications vary depending on the version of `PyRomusa AI`.|**NO, MAYBE, YES**|
-|_Avaiable In_|**Here you will find in which oldest version this dataset started appearing in.** It is important to know which version to look for in the `versions/` folder if you want to use a specific dataset.|OLDER VERSION <br>=<br> Greater compatibility & better|
+|_Avaiable In_|**Here you will find in which oldest version this dataset started appearing in.** It is important to know which version to look for in the `all versions/` folder if you want to use a specific dataset.|OLDER VERSION <br>=<br> Greater compatibility|
 
 ---
 
@@ -517,7 +517,7 @@ Thank you for creating these Python frameworks/libraries 🙏
 
 - **Some information in this repository may be incorrect or outdated.** Please manually verify the information you want before taking it 100% into account. If you do find incorrect or outdated information, please [contact me.](#contact-me-)
 
-- To install an EXPERIMENTAL or BETA version, [the installation must be done manually](#b-the-manual-method), it is not possible with `pip install`
+- To install an EXPERIMENTAL or OLD version, [the installation must be done manually](#c-the-manual-method), it is not possible with `pip install`
 
 - In the Python code examples in `📄README.md` files, **you see the word `bot`** quite often, right? Well, **that's the instance of the chatbot class** (`bot = Chatbot()` or `bot = RealChatbot()`)
 

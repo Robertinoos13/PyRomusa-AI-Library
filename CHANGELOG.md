@@ -213,3 +213,19 @@ Here you will find all updates maked at PyRomusa AI of all time (STABLE & BETA v
 
 - ✨ **Update to the Romanian language dataset, 'Teacher for PyRomusa AI':** It has been added more training examples to be able to answer more prompts. It is now a better dataset than in the previous version.
 ---
+
+### `v0.10.1 STABLE` (2026/09/07)
+
+- 🦠 **_|`RealChatbot()` object|_ Fixed PyTorch `FutureWarning`:** When you wanted to load a chatbot from a `.pt` file, then tried to train it on new training examples, you would get a `FutureWarning` due to the `torch` dependency. In the current version, you will no longer get any warnings in this situation _(tested with `torch == 2.5.1+cu121`)_
+
+- 🦠 **_|`RealChatbot()` object|_ Exagerated spaces generation after fine-tuning tried to be fixed:** After training your chatbot on new examples and testing it by generating text, the result was a strange one with a lot of spaces and no logic. Now an attempt has been made to reduce this strange symptom.
+
+- 🦠 **_|`RealChatbot()` object|_ Fixed `Teacher for PyRomusa AI` loading system for `RealChatbot()`:** Due to the incompatible format of the loading system of this prepared dataset and the `RealChatbot()` object, the training examples are never loaded in their entirety, thus having an error in the console, even if you did everything correctly. From this version, you will no longer have incomplete loads or unexplained errors related to loading this type of dataset.
+
+- ➕ **_|`RealChatbot()` object|_ New function, `bot.show_basic_specs()`:** Do you want to see the chatbot's specifications, training information, or even some details about the uploaded and/or learned training data? If you want that, just call this function and read what interests you.
+
+- ➕ **_|`RealChatbot()` object|_ New parameters on `bot.trainer.start()` function, `fine_tune_only_new_data`, `freeze_base_layers`, `show_suplimentary_info_in_console`:** Several new parameters available for training, to modify according to your needs.
+
+- ✨ **_|`RealChatbot()` object|_ Optimized the fine-tuning training speed:** Previously, when fine-tuning, you had to retrain the chatbot from 0 _(with new + old data)_, which was an inefficient and time-consuming process. Now it is possible to train it strictly on new data only, reducing training time.
+
+- ✨ **Update to the Romanian language dataset, 'Teacher for PyRomusa AI':** It has been added more training examples to be able to answer more prompts. It is now a better dataset than in the previous version.
