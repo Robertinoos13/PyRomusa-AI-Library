@@ -462,10 +462,10 @@ Do you want to give me a new idea for functionality for `PyRomusa AI`, have you 
 
 ### 1. What methods do I have to learn to use `PyRomusa AI`?
 
-At the moment _(February 19, 2026)_, these PyRomusa AI learning options are quite limited, but you have the following methods:
+At the moment, these PyRomusa AI learning options are quite limited, but you have the following methods:
 
 1. Find random codes through this repository
-    - In almost every README.md there is a piece of code where `PyRomusa AI` is used. Look at these and get inspired
+    - In almost every `📄README.md` there is a piece of code where `PyRomusa AI` is used. Look at these and get inspired
 
 2. Watch videos about `PyRomusa AI`, specifically on the TikTok account [@pyromusa_ai](https://www.tiktok.com/@pyromusa_ai?is_from_webapp=1&sender_device=pc)
     - Sometimes, videos are posted on this TikTok account just about `PyRomusa AI`: from updates and little jokes to code and tutorials. Scroll through the videos here and find what you want.
@@ -474,9 +474,33 @@ At the moment _(February 19, 2026)_, these PyRomusa AI learning options are quit
 
     - In this folder, as of August 2026, you can also find some small examples where `PyRomusa AI` is used. Indeed, the folder is still a work in progress, but it is a perfect start.
 
-4. Use the prepared dataset 'Teacher for PyRomusa AI'
+4. Use the prepared dataset `Teacher for PyRomusa AI`
 
-    - Yes, you can load this prepared dataset for your chatbot in your code, and then ask it questions. This dataset has input-output examples, specifically designed to answer your questions about `PyRomusa AI`. Indeed, it can't answer every question because of the poor vocabulary specifications and the number of examples, but it can answer basic questions. (By the way, you need to know Romanian to use it)
+    - Yes, you can load this prepared dataset for your chatbot in your code, and then ask it questions. This dataset has input-output examples, specifically designed to answer your questions about `PyRomusa AI`. Indeed, it can't answer every question because of the poor vocabulary specifications and the number of examples, but it can answer basic questions. (By the way, you need to know Romanian to use it). You can use this code:
+
+    ``` python
+    from pyromusa_ai import Chatbot, RealChatbot # Remove 'RealChatbot' from this line if you will not modify the next line ('bot = Chatbot()')
+
+    bot = Chatbot() # Recommended: Chatbot()
+
+    bot.prepared_datasets.romanian.load_prepared_dataset("pyromusa-ai-teacher")
+
+    bot.trainer.start()
+
+    while True:
+
+        user_input = input("USER: ")
+
+        if user_input.lower() in ("pa", "bb", "exit"):
+            break
+
+        else:
+            print("BOT: " + str(bot.reply_at(
+                prompt=user_input
+            )))
+    ```
+
+    > You can use `Chatbot()` or `RealChatbot()` — it doesn't matter — though `RealChatbot()` is more likely to give odd responses due to the number of examples, whereas `Chatbot()` doesn't generalize very well.
 
 
 5. Install `PyRomusa AI` & Run the code:
