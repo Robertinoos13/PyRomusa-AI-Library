@@ -304,7 +304,9 @@ Each version folder contains:
 
 `🐍 benchmark.py` - A stress-free, ready-made script that uses `PyRomusa AI` to test the runtime on your hardware.
 
-`📁 .github` - Less important files related to COMMUNITY STANDARDS are placed here. You will find files like `📄CONTRIBUTING.md`, `📄SECURITY.md`, etc.
+`📁 .github/` - Less important files related to COMMUNITY STANDARDS are placed here. You will find files like `📄CONTRIBUTING.md`, `📄SECURITY.md`, etc.
+
+`📁 documentation/` - The official documentation for `PyRomusa AI`, containing descriptions of all functions available in the latest versions.
 
 `📄CHANGELOG.md` - This file contains all the updates made to `PyRomusa AI` over time: from its launch to the latest versions. A useful file if you like to see its evolution.
 

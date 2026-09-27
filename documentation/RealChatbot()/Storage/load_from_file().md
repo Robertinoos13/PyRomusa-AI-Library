@@ -1,0 +1,36 @@
+# `bot.storage.load_from_file()`
+
+## Description
+
+Loads a chatbot from a `.pt` file, given its name and location (the folder where it is stored). This function is useful when you have a previously trained chatbot and simply want to generate text with it, without the complexities of training.
+
+## Parameters
+
+|name|description|default value|
+|:---:|:---|:--:|
+|`file_name`|The file is loaded/searched for, using the value of this parameter as its name.|`"my_chatbot"`|
+|`file_location`|Specify the path to the folder from where you want to load the chatbot. Leave this parameter as is (as an empty string) if you want to load the file from the same folder from which this function is called.|`""`|
+
+## Returns
+
+no return values excepted
+
+## Codes examples
+
+``` python
+from pyromusa_ai import RealChatbot
+
+bot = RealChatbot()
+
+# Loading a pretrained chatbot from the same folder with this script (my_chatbot.pt)
+bot.storage.load_from_file()
+
+# We use the chatbot to generate text based on a prompt.
+print(bot.reply_at("Hello chatbot, how are you?"))
+```
+
+---
+
+_**last updated for `PyRomusa AI` version:** 0.10.1_
+
+_(Keep in mind: an older version means this documentation is more likely not to be 100% accurate for the latest available version.)_
