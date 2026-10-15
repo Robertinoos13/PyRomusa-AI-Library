@@ -337,7 +337,7 @@ As this repository has various versions of `PyRomusa AI` that are older, newer, 
 
 Did you know that from `PyRomusa AI` you can load a ready-made training dataset to the model? Well, here's an example below:
 ``` python
-from PyRomusa_AI import Chatbot
+from pyromusa_ai import Chatbot
 
 # 1. Create your chatbot
 bot = Chatbot(chatbot_name="MyChatbot")
@@ -417,7 +417,7 @@ _By the way_: This is a complete tutorial. **If you are only interested in how t
 ---
 ``` python
 # 1. First, import the Chatbot from PyRomusa AI
-from PyRomusa_AI import Chatbot
+from pyromusa_ai import Chatbot
 
 
 # 2. Create an instance of the chatbot
@@ -466,17 +466,21 @@ Do you want to give me a new idea for functionality for `PyRomusa AI`, have you 
 
 At the moment, these PyRomusa AI learning options are quite limited, but you have the following methods:
 
-1. Find random codes through this repository
+1. **Find random codes through this repository**
     - In almost every `📄README.md` there is a piece of code where `PyRomusa AI` is used. Look at these and get inspired
 
-2. Watch videos about `PyRomusa AI`, specifically on the TikTok account [@pyromusa_ai](https://www.tiktok.com/@pyromusa_ai?is_from_webapp=1&sender_device=pc)
+2. **Watch videos about `PyRomusa AI`, specifically on the TikTok account [@pyromusa_ai](https://www.tiktok.com/@pyromusa_ai?is_from_webapp=1&sender_device=pc)**
     - Sometimes, videos are posted on this TikTok account just about `PyRomusa AI`: from updates and little jokes to code and tutorials. Scroll through the videos here and find what you want.
 
-3. Look in the `📁 tutorials/` folder in this repository
+3. **Look in the [`📁 tutorials/`](https://github.com/Robertinoos13/PyRomusa-AI-Library/tree/main/tutorials) folder in this repository**
 
     - In this folder, as of August 2026, you can also find some small examples where `PyRomusa AI` is used. Indeed, the folder is still a work in progress, but it is a perfect start.
 
-4. Use the prepared dataset `Teacher for PyRomusa AI`
+4. **Look in the [`📁 documentation/`](https://github.com/Robertinoos13/PyRomusa-AI-Library/tree/main/documentation) folder in this repository**
+
+    - Here you will find descriptions of almost every function, parameter, and class available in the latest version of `PyRomusa AI`. Read through them and learn the role of any component you think you might need.
+
+5. **Use the prepared dataset `Teacher for PyRomusa AI`**
 
     - Yes, you can load this prepared dataset for your chatbot in your code, and then ask it questions. This dataset has input-output examples, specifically designed to answer your questions about `PyRomusa AI`. Indeed, it can't answer every question because of the poor vocabulary specifications and the number of examples, but it can answer basic questions. (By the way, you need to know Romanian to use it). You can use this code:
 
@@ -505,16 +509,16 @@ At the moment, these PyRomusa AI learning options are quite limited, but you hav
     > You can use `Chatbot()` or `RealChatbot()` — it doesn't matter — though `RealChatbot()` is more likely to give odd responses due to the number of examples, whereas `Chatbot()` doesn't generalize very well.
 
 
-5. Install `PyRomusa AI` & Run the code:
-```python
-from pyromusa_ai import Chatbot
+6. **Install `PyRomusa AI` & Run the code:**
+    ```python
+    from pyromusa_ai import Chatbot
 
-# Create a chatbot
-bot = Chatbot()
+    # Create a chatbot
+    bot = Chatbot()
 
-# Get help
-bot.helper.how_to_start()
-```
+    # Get help
+    bot.helper.how_to_start()
+    ```
 ---
 ## **Credits ⭐**
 
