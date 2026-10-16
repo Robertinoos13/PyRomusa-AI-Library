@@ -131,7 +131,7 @@ Look at this table:
 ### 3. A fast framework
 - The response generation time + training time in a single code run are generally much shorter than other major frameworks (`Chatbot()` object).
 
-- **Want to see the real speed of the framework? Try the `🐍 benchmark.py` script**: It creates an instance of a chatbot (`Chatbot()` object), loads all available datasets, starts training, and responds to 10 prompts using the `modern` reply engine (works on PyRomusa AI STABLE v0.4.1 or newer).
+- **Want to see the real speed of the framework? Try the [`🐍 benchmark.py`](https://github.com/Robertinoos13/PyRomusa-AI-Library/blob/main/benchmark.py) script**: It creates an instance of a chatbot (`Chatbot()` object), loads all available datasets, starts training, and responds to 10 prompts using the `modern` reply engine (works on PyRomusa AI STABLE v0.4.1 or newer).
 
 ### 4. A framework a little... different from others
 - **`PyRomusa AI` comes with some more special concepts**: _[Reply Engines](#about-reply-engines) and [Prepared Datasets](#about-prepared-datasets-️)_

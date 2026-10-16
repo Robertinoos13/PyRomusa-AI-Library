@@ -4,67 +4,97 @@
 
 ---
 
-## 1. Select the library version you want from the PyRomusa AI library repository on GitHub.
+## 1. Install with a command or copy paste all the library code into a Python file (.py)
 
-To select the library version, **you need to browse the** `versions` **folder and select a version type** (selecting a folder):
-- `BETA versions` - Here you will find versions that are probably not perfect from a functional point of view. You have the chance to find bugs or errors of any kind here.
-
-- `EXPERIMENTAL versions` - The versions in this folder are the most unstable of all. All versions that appear here are created with a focus on testing new ideas, functions or logic with radical changes. For experimental versions, there is not much focus on fixing bugs, only the bare minimum for a functional new concept.
-
-- `STABLE versions` - Here you will find the most stable versions of all. Here, you will rarely encounter bugs or other errors of any kind. In the long run, these are the most recommended versions.
-
-
-Once you've selected the version type, find the more specific version you want to use.
-
->Want a version recommendation? Try this tutorial with the newest version in STABLE (e.g. v0.1.1 on January 25, 2026)
+### **This can be done by 3 methods:**
 
 ---
+### **a) The clasic method** _(install with a command)_
 
-## 2. Install or copy paste all the library code into a Python file (.py)
+1. Open a terminal on Windows, macOS, or Linux, open your command line (`Win + R`, then write `cmd` and press `Enter`) or terminal.
 
-Once you have selected the PyRomusa AI version (that is a folder), **go to the only Python code in that folder, which is called 'PyRomusa_AI.py'. Access its code** and you have 2 options:
-
-a) **Copy the code:**
-
-1. Copy all the code from that script (Ctrl + C)
-2. Go to your IDE and create a folder
-3. In that folder you created, create 2 more Python scripts, in which:
-``` 
-    📁 Your Folder/
-
-        🐍 *script 1* - Here you paste (Ctrl + V) the version code of the     
-        PyRomusa AI library that you selected in the previous step
-
-        🐍 *script 2* - Here you will use the PyRomusa AI functions you need
+2. Install `PyRomusa AI` directly from `PyPI`, writing this in your terminal:
+``` bash
+pip install pyromusa-ai
 ```
+**3. Test the installation**
 
-Real example (with names):
+Try to run this code:
+``` python
+from pyromusa_ai import Chatbot
 
-        📁 AI Library Folder/
+bot = Chatbot()
 
-            🐍 PyRomusa_AI.py
-            🐍 practice_PyRomusa.py
-
----
-
-b) **Install the library code directly:**
-
-1. Install the script directly from GitHub
-2. Most likely, your browser places the installed files in a folder called 'Downloads' or something similar. Go there, select the downloaded file with a single click and press the key combination `Ctrl + X`.
-3. Put it in a new folder (with `Ctrl + X` and `Ctrl + V`) and open it in your IDE
-4. Also, put your Python file (i.e. in the new folder from step 3) where you want to use PyRomusa AI.
+bot.prepared_datasets.romanian.load_prepared_dataset("low")
+bot.trainer.show_number_of_examples()
+```
+>If no errors appear, PyRomusa AI is installed and ready to use.
 
 ---
 
-## 3. Use PyRomusa AI directly in your code!
-This is the final step, where you just write your code in script 2 (the script where you will use PyRomusa AI technologies). Run the code below. If it works, you don't need to do anything else, just take advantage of PyRomusa AI's capabilities. Enjoy!
+### **b) The GitHub method**  _(install with a command)_
+
+1. Make sure you have Python and pip installed (`PyRomusa AI` works with Python 3.10+).
+2. Open a terminal on Windows, macOS, or Linux, open your command line or terminal.
+3. Install `PyRomusa AI` directly from GitHub, writing this in your terminal:
+``` bash
+pip install git+https://github.com/Robertinoos13/PyRomusa-AI-Library.git#subdirectory=src
+```
+> This command tells pip to clone the repository and install the package automatically. You don’t need to download anything manually.
+
+**4. Test the installation**
+
+Try to run this code:
+``` python
+from pyromusa_ai import Chatbot
+
+bot = Chatbot()
+
+bot.prepared_datasets.romanian.load_prepared_dataset("low")
+bot.trainer.show_number_of_examples()
+```
+>If no errors appear, PyRomusa AI is installed and ready to use.
+
+---
+
+### **c) The manual method** _(copy-paste all necesarry content)_
+Did you know that to install older versions of PyRomusa AI, the most stable installation method is this? **If you want to install older versions, then trust this method.**
+
+1. Go to one of these folders: `📁 all versions/` or `📁 src/`
+2. If you chose to go to folder `📁 all versions/`, then select a version type, the exact version, and look for file `🐍PyRomusa_AI.py`. If you went the other way, look for the `🐍core.py` file.
+3. Once you've found one of the Python files, install it or copy all of its contents to a Python file you created on your hardware.
+
+    > By the way, if you made it to step 3, make sure the Python file I told you about is in the same folder as the python file where you will use the `PyRomusa AI` functionalities. We will talk more about this in step 4.
+
+4. In order to use `PyRomusa AI` in your code, the 2 Python files must be in the same folder, with a structure something like this:
+    ```
+    |- 📁Your Folder/
+    |----- 🐍PyRomusa_AI.py
+    |----- 🐍you_code.py
+    |----- 📁Datasets/
+    |--------- 🐍other python files
+    |----- 📁Reply_Engines/
+    |--------- 🐍other python files
+    ```
+
+    Where:
+    |Name|Description|
+    |:--:|:----------|
+    |`📁Your Folder/`|The folder where your Python code should be located where you want to use `PyRomusa AI` + the main framework code|
+    |`🐍PyRomusa_AI.py`|The main code of the `PyRomusa AI` framework|
+    |`🐍you_code.py`|Your code, where you will use `PyRomusa AI`|
+    |`📁Datasets/`|This is a folder with several optional Python files that `🐍PyRomusa_AI.py` needs to function fully.|
+    |`📁Reply_Engines/`|The folder and its contents, from v0.7.0, are very important for generating responses based on prompts. This is a required folder.|
+
+    > Did you know that `PyRomusa AI` uses several optional Python files that it needs to function fully and error-free? Well, they are found in the repository in a folder called `Datasets/`
+
+---
+
+## 2. Use `PyRomusa AI` directly in your code!
+This is the final step, where you just write your code in script 2 _(the script where you will use PyRomusa AI technologies)_. Run the code below. If it works, you don't need to do anything else, just take advantage of PyRomusa AI's capabilities. Enjoy!
 
 ``` python
-"""
-By the way, for the script to work 100%, make sure that the file where you pasted the PyRomusa AI library code is exactly named 'PyRomusa_AI'.
-"""
-
-from PyRomusa_AI import Chatbot
+from pyromusa_ai import Chatbot
 
 # 1. Create your chatbot
 bot = Chatbot(chatbot_name="MyChatbot")
@@ -77,11 +107,10 @@ bot.trainer.start()
 
 # 4. Enjoy to use the chatbot (Salut! = Hello!)
 print(bot.reply_at(prompt="Salut!"))
-
 ```
 
 ---
 
-**tutorial last updated:** 4th February 2026
+**tutorial last updated:** 16th Octomber 2026
 
 _(Remember: the more outdated the file, the greater the chances that this tutorial will not be 100% functional.)_
