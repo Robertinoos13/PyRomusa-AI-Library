@@ -1,0 +1,2482 @@
+# -*- coding: utf-8 -*-
+# Cod pentru evitarea erorilor când codul întâlnește litere românești (ă, î, â, ș, ț)
+import sys
+try:
+    sys.stdout.reconfigure(encoding='utf-8')
+except Exception:
+    # Fallback pentru versiuni Python mai învechite
+    import io
+    try:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+import json
+import os
+import re
+import unicodedata
+from datetime import datetime
+import time
+import difflib
+
+
+# Începutul real al librăriei începe de aici
+class Chatbot:
+    def __init__(self, total_vocabulary=None, training_dataset=None, tokens=None, chatbot_name="ChatBot", chatbot_description="This chatbot does not yet have a description."):
+        """
+        Initializes the Chatbot instance with vocabulary, training dataset, tokens, and metadata.
+
+        Args:
+            total_vocabulary (dict, optional): Dictionary mapping words to unique integer tokens.
+            training_dataset (list, optional): List of training samples.
+            tokens (list, optional): List of all token IDs.
+            chatbot_name (str, optional): The name of the chatbot. Defaults to "ChatBot".
+            chatbot_description (str, optional): A brief description of the chatbot.
+        """
+
+        self.total_vocabulary = total_vocabulary if total_vocabulary is not None else {}
+        self.training_dataset = training_dataset if training_dataset is not None else []
+        self.tokens = tokens if tokens is not None else []
+        self.chatbot_name = chatbot_name
+        self.chatbot_description = chatbot_description
+        self._new_line_token = "__PYROMUSA_NEW_LINE__"
+
+        self.translated_input_and_output_examples = []
+        # Pentru contextul conversației: ultimul prompt al utilizatorului și ultimul output generat
+        self.last_user_prompt = ""
+        self.last_bot_output = ""
+        # Istoric compact al conversațiilor recente, păstrat pe durata rulării procesului.
+        self.conversation_history = []
+
+        self.trainer = self.Train(self)
+        self.helper = self.Help(self)
+        self.prepared_datasets = self.Datasets(self)
+        self.storage = self.Storage(self)
+
+
+    class Help:
+        def __init__(self, parent):
+            """
+            Initializes the Help helper with a reference to the parent chatbot.
+
+            Args:
+                parent (Chatbot): The parent chatbot instance.
+            """
+            self.parent = parent
+
+        def examples_of_scripts_as_rookie(self):
+            """
+            Prints basic script usage examples for beginners.
+            """
+            return print("-----\n--- Here you will find some script examples to practice and learn how to work with this library. ---\n\nExample 1: The most basic use of this library (creating a functional chatbot)\nfrom PyRomusa_AI import Chatbot\n\nbot = Chatbot()\nbot.trainer.add_data('Hello chatbot!', 'Hello human! What is your name and how can I help you today?')\nbot.trainer.start()\nbot.reply_at('Hello chatbot!')\n\nExample 2: Creating multiple chatbots in a single script and naming them\nfrom PyRomusa_AI import Chatbot\n\nbot = Chatbot(chatbot_name='Romusa1')\nbot1 = Chatbot(chatbot_name='Romusa2')\nbot2 = Chatbot(chatbot_name='Romusa3')\n-----")
+
+        def questions(self):
+            """
+            Prints frequently asked questions and answers about library capabilities.
+            """
+            return print("-----\n--- Here you will find some questions about the possibilities and usage of this library, which you probably wanted answers to. ---\n\nQUESTION 1: Is it possible to create multiple chatbots in a single script?\nANSWER: Yes, it is 100% possible to create more than one chatbot. You just need to create multiple instances (bot = Chatbot(), bot1 = Chatbot(), bot2 = Chatbot(), ...). You can also assign a name to your chatbot using the 'chatbot_name' attribute (e.g. bot = Chatbot(chatbot_name='PyRomusa Bot 1')). The names of the chatbots do not affect the performance or behavior of the chatbot during training or replying.\n\nQUESTION 2: Does PyRomusa AI have a tokenization system?\nANSWER: Yes, it has a simplified tokenization system. More precisely, it consists of transforming the words found in the training examples into integers and all these tokens are saved in the chatbot's vocabulary (i.e. in the 'total_vocabulary' variable)\n\nQUESTION 3: Can chatbots created with this framework generate ASCII art?\nANSWER: Starting with version v0.8.0 (June 2026) it is absolutely possible to create simple ASCII art.\n-----")
+
+        def how_to_start(self):
+            """
+            Prints an introductory guide on how to get started with creating chatbots using the library.
+            """
+            return print("-----\n\nFirst, we need to understand what this library is. This library is a technology specialized in creating your own chatbot in the simplest way possible (just 5 lines of code to train your first chatbot: import the library, create a chatbot, add a simple input/output example, start the training, and generate a response).\n\nWARNING! The logic of this library (the 'create a chatbot from scratch' concept) is not the same as a 100% traditional AI. It is built using the creator's own logic and is ONLY INSPIRED by traditional AI concepts. For example, you will not find things like hidden layers, different optimizers, or loss functions in this library.\n\n--- HOW TO START? ---\nA special helper function was created to guide you through using this library (you already used it if you wrote something like: bot.helper.how_to_start()). If you want more information, just replace how_to_start() with one of the following (depending on your needs): \n- examples_of_scripts_as_rookie() - Shows complete examples of how to use this library; \n- describe_functions() - Displays a table with important functions and their descriptions; \n- questions() - Answers some frequently asked questions.\n-----")
+
+        def describe_functions(self):
+            """
+            Displays a summary table of the most important functions and their descriptions.
+            """
+            import pandas as pd
+            tabel_functions = pd.DataFrame({
+                "function": ["bot.trainer.add_data()", "bot.trainer.show_dataset()", "bot.trainer.start()", "bot.trainer.show_translated_examples()", "bot.trainer.show_relationed_output_with_input_words()", "bot.trainer.show_relationed_output_with_input_ids()", "bot.reply_at()", "bot.prepared_datasets.romanian.load_prepared_dataset()", "bot.trainer.show_number_of_examples()", "bot.storage.save_on_file()", "bot.storage.load_from_file()"],
+                "min number of values": [2, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
+                "info": ["Adds examples type input/output in the dataset for the training chatbot", "Shows the current train examples for the chatbot (the dataset)", "Starts you train for chatbot, using the examples input/output finded in the dataset", "Shows you the examples in chatbot language (words -> tokens)", "Shows the words what can use the chatbot (value) if exist a any unique word (key)", "Shows the tokens what can use the chatbot (value) if exist a any unique token (key) in the input", "Generates a output using a prompt", "Loads a prepared dataset for training in romanian language", "Shows the total number of examples what exist in the current dataset of a chatbot", "Saves chatbot data in a new JSON file", "Loads chatbot data from a JSON file and rebuilds the chatbot state"]
+            })
+            return print(f"\n-----\n--- Here are the most important functions of this library, explained in the simplest and clearest way possible. As a beginner, it is recommended to read these descriptions to better understand what each function does. ---\n\nNOTE: Before using any of these functions, make sure you have this line in your code:\nbot = Chatbot()\n\n{tabel_functions}\n-----")
+
+    class Storage:
+        def __init__(self, parent):
+            """
+            Initializes the Storage helper with a reference to the parent chatbot.
+
+            Args:
+                parent (Chatbot): The parent chatbot instance.
+            """
+            self.parent = parent
+
+        def _normalize_dataset_for_json(self):
+            """
+            Normalizes the training dataset into a standard dictionary format suitable for JSON serialization.
+
+            Returns:
+                list: Normalized dataset entries.
+            """
+            normalized = []
+            for sample in getattr(self.parent, "training_dataset", []):
+                if isinstance(sample, dict):
+                    normalized.append({
+                        "input": str(sample.get("input", "")),
+                        "output": str(sample.get("output", "")),
+                        "if_last_input": sample.get("if_last_input"),
+                        "if_last_output": sample.get("if_last_output"),
+                    })
+                elif isinstance(sample, (list, tuple)):
+                    normalized.append({
+                        "input": str(sample[0]) if len(sample) > 0 else "",
+                        "output": str(sample[1]) if len(sample) > 1 else "",
+                        "if_last_input": sample[2] if len(sample) > 2 else None,
+                        "if_last_output": sample[3] if len(sample) > 3 else None,
+                    })
+                else:
+                    normalized.append({
+                        "input": str(sample),
+                        "output": "",
+                        "if_last_input": None,
+                        "if_last_output": None,
+                    })
+            return normalized
+
+        def _normalize_history_for_json(self):
+            """
+            Normalizes conversation history into a JSON-serializable structure.
+
+            Returns:
+                list: Normalized conversation history turns.
+            """
+            normalized = []
+            for turn in getattr(self.parent, "conversation_history", []):
+                if not isinstance(turn, dict):
+                    continue
+                normalized.append({
+                    "user_prompt": str(turn.get("user_prompt", "")),
+                    "bot_output": str(turn.get("bot_output", "")),
+                    "user_words": [str(word) for word in turn.get("user_words", []) if str(word).strip()],
+                    "bot_words": [str(word) for word in turn.get("bot_words", []) if str(word).strip()],
+                    "created_on": str(turn.get("created_on", "")),
+                })
+            return normalized
+
+        def _to_json_filename(self, file_name: str):
+            """
+            Ensures a given filename is properly formatted with a .json extension.
+
+            Args:
+                file_name (str): The raw filename.
+
+            Returns:
+                str: Cleaned filename ending in .json.
+            """
+            cleaned_name = str(file_name).strip()
+            if cleaned_name.lower().endswith(".json"):
+                cleaned_name = cleaned_name[:-5]
+            if cleaned_name == "":
+                cleaned_name = "chatbot_backup"
+            return cleaned_name + ".json"
+
+        def save_on_file(self, file_name="no_name_chatbot", file_location: str = None):
+            """
+            Saves the chatbot state and training data into a new JSON backup file.
+
+            Args:
+                file_name (str, optional): Base filename for the backup. Defaults to "no_name_chatbot".
+                file_location (str, optional): Directory path where the file will be saved.
+
+            Returns:
+                str: The absolute file path where the chatbot was saved.
+            """
+            if file_name is None or str(file_name).strip() == "":
+                file_name = "no_name_chatbot"
+
+            if file_location is None or str(file_location).strip() == "":
+                directory_path = os.path.abspath(os.getcwd())
+            else:
+                directory_path = os.path.abspath(str(file_location))
+            os.makedirs(directory_path, exist_ok=True)
+
+            base_filename = self._to_json_filename(file_name)
+            base_name_only, _ = os.path.splitext(base_filename)
+            final_path = os.path.join(directory_path, base_filename)
+
+            # La fiecare save trebuie fișier nou, fără suprascriere.
+            index = 1
+            while os.path.exists(final_path):
+                final_path = os.path.join(directory_path, f"{base_name_only}_{index}.json")
+                index += 1
+
+            payload = {
+                "chatbot_name": str(getattr(self.parent, "chatbot_name", "ChatBot")),
+                "chatbot_description": str(getattr(self.parent, "chatbot_description", "Chatbot")),
+                "created_on": datetime.now().strftime("%Y/%m/%d"),
+                "training_dataset": self._normalize_dataset_for_json(),
+                "last_user_prompt": str(getattr(self.parent, "last_user_prompt", "")),
+                "last_bot_output": str(getattr(self.parent, "last_bot_output", "")),
+                "conversation_history": self._normalize_history_for_json(),
+            }
+
+            with open(final_path, "w", encoding="utf-8") as json_file:
+                json.dump(payload, json_file, ensure_ascii=False, indent=4)
+
+            print(f"INFO: Chatbot saved successfully in '{final_path}'.")
+            return final_path
+
+        def load_from_file(self, file_location: str, file_name: str = None):
+            """
+            Loads chatbot state, vocabulary, and datasets from an existing JSON backup file.
+
+            Args:
+                file_location (str): Directory path where the JSON file is located.
+                file_name (str, optional): Specific JSON filename to load.
+
+            Returns:
+                str: The file path of the successfully loaded JSON file.
+
+            Raises:
+                ValueError: If file_location is empty or JSON format is invalid.
+                FileNotFoundError: If the folder or JSON file does not exist.
+            """
+            if file_location is None or str(file_location).strip() == "":
+                raise ValueError("Parameter 'file_location' should not be empty.")
+
+            directory_path = os.path.abspath(str(file_location))
+            if not os.path.isdir(directory_path):
+                raise FileNotFoundError(f"Folder not found at '{directory_path}'.")
+            if file_name is None or str(file_name).strip() == "":
+                all_json_files = [
+                    os.path.join(directory_path, current_file)
+                    for current_file in os.listdir(directory_path)
+                    if str(current_file).lower().endswith(".json")
+                ]
+                if not all_json_files:
+                    raise FileNotFoundError(f"No JSON files found in '{directory_path}'.")
+                file_path = max(all_json_files, key=os.path.getmtime)
+            else:
+                requested_name = self._to_json_filename(file_name)
+                file_path = os.path.join(directory_path, requested_name)
+
+            if not os.path.exists(file_path):
+                raise FileNotFoundError(f"JSON file not found at '{file_path}'.")
+
+            with open(file_path, "r", encoding="utf-8") as json_file:
+                payload = json.load(json_file)
+
+            if not isinstance(payload, dict):
+                raise ValueError("Invalid JSON format. Root should be an object.")
+
+            raw_dataset = payload.get("training_dataset", [])
+            if not isinstance(raw_dataset, list):
+                raise ValueError("Invalid JSON format. 'training_dataset' should be a list.")
+
+            normalized_dataset = []
+            for sample in raw_dataset:
+                if isinstance(sample, dict):
+                    normalized_dataset.append({
+                        "input": str(sample.get("input", "")),
+                        "output": str(sample.get("output", "")),
+                        "if_last_input": sample.get("if_last_input"),
+                        "if_last_output": sample.get("if_last_output"),
+                    })
+
+            # Reset total starea internă, apoi reconstruim mapările necesare engine-urilor.
+            self.parent.total_vocabulary = {}
+            self.parent.tokens = []
+            self.parent.training_dataset = normalized_dataset
+            self.parent.translated_input_and_output_examples = []
+            self.parent.input_word_to_output_words = {}
+            self.parent.input_word_id_to_output_ids = {}
+            self.parent.id_to_word = {}
+
+            self.parent.chatbot_name = str(payload.get("chatbot_name", self.parent.chatbot_name))
+            self.parent.chatbot_description = str(payload.get("chatbot_description", self.parent.chatbot_description))
+            self.parent.last_user_prompt = str(payload.get("last_user_prompt", ""))
+            self.parent.last_bot_output = str(payload.get("last_bot_output", ""))
+
+            raw_history = payload.get("conversation_history", [])
+            normalized_history = []
+            if isinstance(raw_history, list):
+                for turn in raw_history:
+                    if not isinstance(turn, dict):
+                        continue
+                    user_prompt = str(turn.get("user_prompt", ""))
+                    bot_output = str(turn.get("bot_output", ""))
+                    normalized_history.append({
+                        "user_prompt": user_prompt,
+                        "bot_output": bot_output,
+                        "user_words": [word for word in user_prompt.lower().split() if word],
+                        "bot_words": [word for word in bot_output.lower().split() if word],
+                        "created_on": str(turn.get("created_on", "")),
+                    })
+            if not normalized_history and (self.parent.last_user_prompt or self.parent.last_bot_output):
+                normalized_history.append({
+                    "user_prompt": self.parent.last_user_prompt,
+                    "bot_output": self.parent.last_bot_output,
+                    "user_words": [word for word in str(self.parent.last_user_prompt).lower().split() if word],
+                    "bot_words": [word for word in str(self.parent.last_bot_output).lower().split() if word],
+                    "created_on": "",
+                })
+            self.parent.conversation_history = normalized_history
+            if normalized_history:
+                if not self.parent.last_user_prompt:
+                    self.parent.last_user_prompt = str(normalized_history[-1].get("user_prompt", ""))
+                if not self.parent.last_bot_output:
+                    self.parent.last_bot_output = str(normalized_history[-1].get("bot_output", ""))
+
+            # Rebuild intern pentru a permite reply immediate pe toate engine-urile.
+            self.parent.trainer.start()
+
+            print(f"INFO: Chatbot loaded successfully from '{file_path}'.")
+            return file_path
+
+
+    class Datasets:
+        def __init__(self, parent):
+            """
+            Initializes Datasets helper and its language submodules.
+
+            Args:
+                parent (Chatbot): The parent chatbot instance.
+            """
+            self.parent = parent
+
+            self.romanian = self.Romanian(self)
+            self.english = self.English(self)
+
+        def add_data(self, training_input_example: str, training_output_example: str, if_last_input: str = None, if_last_output: str = None):
+            """
+            Adds a training input/output example pair to the dataset.
+
+            Args:
+                training_input_example (str): The input training text.
+                training_output_example (str): The expected output training text.
+                if_last_input (str, optional): Optional conditional previous input.
+                if_last_output (str, optional): Optional conditional previous output.
+            """
+            # Salvăm intrările într-un format compatibil cu versiunile vechi (dict pentru extensibilitate)
+            entry = {
+                'input': training_input_example,
+                'output': training_output_example,
+                'if_last_input': if_last_input,
+                'if_last_output': if_last_output,
+            }
+            self.parent.training_dataset.append(entry)
+
+        class English:
+            def __init__(self, parent):
+                """
+                Initializes the English dataset loader.
+
+                Args:
+                    parent (Datasets): Parent datasets helper instance.
+                """
+                self.parent = parent
+
+            def load_prepared_dataset(self, dataset_name: str):
+                """
+                Loads a pre-prepared English dataset into the chatbot (e.g., low-end, mid-range, high-end).
+
+                Args:
+                    dataset_name (str): Identifier or name of the dataset to load.
+                """
+
+                # Dataset 1
+                # NAME: --- Default English Dataset: LOW-END ---
+                # TOTAL NUMBER OF EXAMPLES: aprox. 250
+                # TOTAL VOCABULARY: aprox. 949 elements (words)
+                if dataset_name.lower() in ("low", "low-end-dataset", "low-end", "low-dataset", "low dataset"):
+
+                    try:
+                        from .Datasets import Default_English_Dataset_LOW_END
+
+                        Default_English_Dataset_LOW_END.load_dataset(self.parent.parent)
+
+                        print("INFO: Dataset 'Default English Dataset: LOW-END' loaded successfully.")
+                    
+                    except ImportError as e:
+                        
+                        print(f"MINOR ERROR: Could not import dataset 'Default English Dataset: LOW-END' module. Reason: {e}")
+                    except Exception as e:
+
+                        print(f"ERROR: An error occurred while loading 'Default English Dataset: LOW-END' dataset: {e}")
+
+                # Dataset 2
+                # NAME: --- Default English Dataset: MID-RANGE ---
+                # TOTAL NUMBER OF EXAMPLES: aprox. 500
+                # TOTAL VOCABULARY: aprox. 1713 elements (words)
+                if dataset_name.lower() in ("mid", "mid-range-dataset", "mid-range", "mid-dataset", "mid dataset"):
+
+                    try:
+                        from .Datasets import Default_English_Dataset_MID_RANGE
+
+                        Default_English_Dataset_MID_RANGE.load_dataset(self.parent.parent)
+
+                        print("INFO: Dataset 'Default English Dataset: MID-RANGE' loaded successfully.")
+                    
+                    except ImportError as e:
+                        
+                        print(f"MINOR ERROR: Could not import dataset 'Default English Dataset: MID-RANGE' module. Reason: {e}")
+                    except Exception as e:
+
+                        print(f"ERROR: An error occurred while loading 'Default English Dataset: MID-RANGE' dataset: {e}")
+
+                # Dataset 3
+                # NAME: --- Default English Dataset: HIGH-END ---
+                # TOTAL NUMBER OF EXAMPLES: aprox. 1000
+                # TOTAL VOCABULARY: aprox. 3100 elements (words)
+                if dataset_name.lower() in ("high", "high-end-dataset", "high-end", "high-dataset", "high dataset"):
+
+                    try:
+                        from .Datasets import Default_English_Dataset_HIGH_END
+
+                        Default_English_Dataset_HIGH_END.load_dataset(self.parent.parent)
+
+                        print("INFO: Dataset 'Default English Dataset: HIGH-END' loaded successfully.")
+                    
+                    except ImportError as e:
+                        
+                        print(f"MINOR ERROR: Could not import dataset 'Default English Dataset: HIGH-END' module. Reason: {e}")
+                    except Exception as e:
+
+                        print(f"ERROR: An error occurred while loading 'Default English Dataset: HIGH-END' dataset: {e}")
+
+        class Romanian:
+            def __init__(self, parent):
+                """
+                Initializes the Romanian dataset loader.
+
+                Args:
+                    parent (Datasets): Parent datasets helper instance.
+                """
+                self.parent = parent
+            
+            def load_prepared_dataset(self, dataset_name: str):
+                """
+                Loads a pre-prepared Romanian dataset into the chatbot (e.g., low, mid, high, teacher).
+
+                Args:
+                    dataset_name (str): Identifier or name of the dataset to load.
+                """
+                # Dataset 1:
+                # NAME: --- Default Romanian Dataset: LOW-END ---
+                # TOTAL NUMBER OF EXAMPLES: aprox. 250
+                # TOTAL VOCABULARY: aprox. 3625 elements (words)
+                if dataset_name.lower() in ["low", "low end", "low-end", 'low-dataset', 'low dataset']:
+                    
+                    try:
+                        from .Datasets import Default_Romanian_Dataset_LOW_END
+                        
+                        Default_Romanian_Dataset_LOW_END.load_dataset(self.parent.parent)
+                        
+                        print("INFO: Dataset 'Default Romanian Dataset: LOW-END' loaded successfully.")
+                    
+                    except ImportError as e:
+                        
+                        print(f"MINOR ERROR: Could not import dataset 'Default Romanian Dataset: LOW-END' module. Reason: {e}")
+                    except Exception as e:
+
+                        print(f"ERROR: An error occurred while loading 'Default Romanian Dataset: LOW-END' dataset: {e}")
+
+                # Dataset 2:
+                # NAME: --- Default Romanian Dataset: MID-RANGE ---
+                # TOTAL NUMBER OF EXAMPLES: aprox. 500
+                # TOTAL VOCABULARY: aprox. 8242 elements (words)
+                if dataset_name.lower() in ['mid', 'mid-range', 'mid range', 'mid-dataset', 'mid dataset']:
+                    
+                    try:
+                        from .Datasets import Default_Romanian_Dataset_MID_RANGE
+
+                        Default_Romanian_Dataset_MID_RANGE.load_dataset(self.parent.parent)
+
+                        print("INFO: Dataset 'Default Romanian Dataset: MID-RANGE' loaded successfully.")
+                    
+                    except ImportError as e:
+                        
+                        print(f"MINOR ERROR: Could not import dataset 'Default Romanian Dataset: MID-RANGE' module. Reason: {e}")
+                    except Exception as e:
+                        
+                        print(f"ERROR: An error occurred while loading 'Default Romanian Dataset: MID-RANGE' dataset: {e}")
+
+                # Dataset 3:
+                # NAME: --- Default Romanian Dataset: HIGH-END ---
+                # TOTAL NUMBER OF EXAMPLES: aprox. 1000
+                # TOTAL VOCABULARY: aprox. 11581 elements (words)
+                if dataset_name.lower() in ('high', 'high-end', 'high end', 'high-dataset', 'high dataset'):
+                    
+                    try:
+                        from .Datasets import Default_Romanian_Dataset_HIGH_END
+
+                        Default_Romanian_Dataset_HIGH_END.load_dataset(self.parent.parent)
+
+                        print("INFO: Dataset 'Default Romanian Dataset: HIGH-END' loaded successfully.")
+                    
+                    except ImportError as e:
+                        
+                        print(f"MINOR ERROR: Could not import dataset 'Default Romanian Dataset: HIGH-END' module. Reason: {e}")
+                    except Exception as e:
+                        
+                        print(f"ERROR: An error occurred while loading 'Default Romanian Dataset: HIGH-END' dataset: {e}")
+
+
+                # Dataset 4
+                # NAME: --- High Quality, Very Low Quantity Romanian Dataset  ---
+                # TOTAL NUMBER OF EXAMPLES: aprox. 50
+                # TOTAL VOCABULARY: aprox. 496 elements (words)
+                if dataset_name.lower() in ('high quality very low quantity', 'high-quality-very-low-quantity', 'high quality 1', 'high-quality-1'):
+
+                    try:
+                        from .Datasets import High_Quality_Very_Low_Quantity_Romanian_Dataset
+
+                        High_Quality_Very_Low_Quantity_Romanian_Dataset.load_dataset(self.parent.parent)
+
+                        print("INFO: Dataset 'High Quality, Very Low Quantity Romanian Dataset' loaded successfully.")
+                    
+                    except ImportError as e:
+                        
+                        print(f"MINOR ERROR: Could not import dataset 'High Quality, Very Low Quantity Romanian Dataset' module. Reason: {e}")
+                    except Exception as e:
+                        
+                        print(f"ERROR: An error occurred while loading 'High Quality, Very Low Quantity Romanian Dataset' dataset: {e}")
+
+
+                # Dataset 5
+                # NAME: --- High Quality, Low Quantity Romanian Dataset ---
+                # TOTAL NUMBER OF EXAMPLES: aprox. 100
+                # TOTAL VOCABULARY: aprox. 874 elements (words)
+                if dataset_name.lower() in ('high quality low quantity', 'high-quality-low-quantity', 'high quality 2', 'high-quality-2'):
+                    
+                    try:
+                        from .Datasets import High_Quality_Low_Quantity_Romanian_Dataset
+
+                        High_Quality_Low_Quantity_Romanian_Dataset.load_dataset(self.parent.parent)
+
+                        print("INFO: Dataset 'High Quality, Low Quantity Romanian Dataset' loaded successfully.")
+                    
+                    except ImportError as e:
+                        
+                        print(f"MINOR ERROR: Could not import dataset 'High Quality, Low Quantity Romanian Dataset' module. Reason: {e}")
+                    except Exception as e:
+                        
+                        print(f"ERROR: An error occurred while loading 'High Quality, Low Quantity Romanian Dataset' dataset: {e}")
+
+                
+                # Dataset 6
+                # NAME: --- Teacher for PyRomusa AI ---
+                # TOTAL NUMBER OF EXAMPLES: aprox. 110
+                # TOTAL VOCABULARY: aprox. 397 elements (words)
+                if dataset_name.lower() in ('teacher', 'pyromusa ai tutorial', 'pyromusa ai teacher', 'pyromusa-ai-teacher', 'pyromusa-ai-tutorial'):
+
+                    try:
+                        from .Datasets import Teacher_for_PyRomusa_AI
+                        
+                        Teacher_for_PyRomusa_AI.load_dataset(self.parent.parent)
+
+                        print("INFO: Dataset 'Teacher for PyRomusa AI' loaded successfully.")
+                    
+                    except ImportError as e:
+                        
+                        print(f"MINOR ERROR: Could not import dataset 'Teacher for PyRomusa AI' module. Reason: {e}")
+                    except Exception as e:
+                        
+                        print(f"ERROR: An error occurred while loading 'Teacher for PyRomusa AI' dataset: {e}")
+
+    class Train:    
+        def __init__(self, parent):
+            """
+            Initializes the Train helper with a reference to the parent chatbot.
+
+            Args:
+                parent (Chatbot): The parent chatbot instance.
+            """
+            # Salvăm referința către instanța de chatbot
+            self.parent = parent
+
+        def add_data(self, training_input_example: str, training_output_example: str, if_last_input: str = None, if_last_output: str = None):
+            """
+            Adds an input/output example to the training dataset.
+
+            Args:
+                training_input_example (str): Input prompt example.
+                training_output_example (str): Output response example.
+                if_last_input (str, optional): Conditional previous input.
+                if_last_output (str, optional): Conditional previous output.
+            """
+            # Acceptăm și format extins cu condiții opționale
+            entry = {
+                'input': training_input_example,
+                'output': training_output_example,
+                'if_last_input': if_last_input,
+                'if_last_output': if_last_output,
+            }
+            self.parent.training_dataset.append(entry)
+
+        def show_dataset(self):
+            """
+            Prints the current raw training dataset.
+            """
+            return print(self.parent.training_dataset)
+
+        def start(self):
+            """
+            Processes training data, builds the vocabulary, translates text examples into token IDs, and computes input-to-output word mappings.
+
+            Returns:
+                tuple: Total vocabulary dictionary and list of tokens.
+            """
+            # 1. Transformăm toate cuvintele găsite în exemplele input-output în tokene numerice + le adăugăm la vocabularul chatbot-ului (fiecare număr ce cuvânt înseamnă)
+            # Normalizăm intrările: susținem atât vechiul format (tuple/list), cât și dict-urile noi
+            for sample in self.parent.training_dataset:
+                if isinstance(sample, dict):
+                    fields = [sample.get('input', ''), sample.get('output', ''), sample.get('if_last_input', ''), sample.get('if_last_output', '')]
+                elif isinstance(sample, (list, tuple)):
+                    # tuple vechi: (input, output) or (input, output, if_last_input, if_last_output)
+                    fields = list(sample) + [None] * (4 - len(sample))
+                else:
+                    fields = [str(sample), '', None, None]
+
+                for part in fields:
+                    if not part:
+                        continue
+                    for word in self.parent._tokenize_preserving_new_lines(part):
+                        if word not in self.parent.total_vocabulary:
+                            self.parent.total_vocabulary[word] = len(self.parent.total_vocabulary) + 1
+                            self.parent.tokens.append(self.parent.total_vocabulary[word])
+
+            # 2. Traducem exemplele input-output: string (cuvinte) -> tokens (numere)
+
+            self.input_words = []
+            self.output_words = []
+            translated = []
+
+            for sample in self.parent.training_dataset:
+                if isinstance(sample, dict):
+                    inp = str(sample.get('input', ''))
+                    out = str(sample.get('output', ''))
+                    if_last_in = sample.get('if_last_input')
+                    if_last_out = sample.get('if_last_output')
+                elif isinstance(sample, (list, tuple)):
+                    # suportăm și tuple/list vechi
+                    inp = str(sample[0]) if len(sample) > 0 else ''
+                    out = str(sample[1]) if len(sample) > 1 else ''
+                    if_last_in = sample[2] if len(sample) > 2 else None
+                    if_last_out = sample[3] if len(sample) > 3 else None
+                else:
+                    inp = str(sample)
+                    out = ''
+                    if_last_in = None
+                    if_last_out = None
+
+                # transformăm în id-uri
+                inp_tokens = self.parent._tokenize_preserving_new_lines(inp)
+                out_tokens = self.parent._tokenize_preserving_new_lines(out)
+
+                inp_ids = [self.parent.total_vocabulary[w] for w in inp_tokens if w in self.parent.total_vocabulary]
+                out_ids = [self.parent.total_vocabulary[w] for w in out_tokens if w in self.parent.total_vocabulary]
+
+                self.input_words.append(inp_ids)
+                self.output_words.append(out_ids)
+
+                translated.append({
+                    'input_ids': inp_ids,
+                    'output_ids': out_ids,
+                    'if_last_input_words': set(self.parent._tokenize_preserving_new_lines(if_last_in)) if if_last_in else set(),
+                    'if_last_output_words': set(self.parent._tokenize_preserving_new_lines(if_last_out)) if if_last_out else set(),
+                    'input_words': set(inp_tokens),
+                    'output_words': set(out_tokens),
+                })
+
+            # stocăm exemplele traduse ca listă de dict-uri pentru acces extins
+            self.parent.translated_input_and_output_examples = translated
+                        
+
+            # 3. Pentru fiecare cuvânt găsit în input-urile din translated_input_and_output_examples, găsim toate cuvintele posibile pentru fiecare cuvânt din output
+            
+            # Construim o hartă inversă id -> cuvânt
+            id_to_word = {v: k for k, v in self.parent.total_vocabulary.items()}
+
+            # Mapări: cuvânt (string) -> listă de cuvinte (string)
+            # și id_cuvânt (int) -> listă de id-uri (int)
+            input_word_to_output_words = {}
+            input_word_id_to_output_ids = {}
+
+            for ex in self.parent.translated_input_and_output_examples:
+                inp_ids = ex.get('input_ids', [])
+                out_ids = ex.get('output_ids', [])
+                for in_id in inp_ids:
+                    input_word_id_to_output_ids.setdefault(in_id, []).extend(out_ids)
+                    input_word_to_output_words.setdefault(
+                        id_to_word.get(in_id, str(in_id)),
+                        []).extend([id_to_word.get(o, str(o)) for o in out_ids])
+
+            # Funcție auxiliară pentru a elimina duplicate păstrând ordinea
+            def _unique_preserve(seq):
+                seen = set()
+                res = []
+                for x in seq:
+                    if x not in seen:
+                        seen.add(x)
+                        res.append(x)
+                return res
+
+            for k in list(input_word_id_to_output_ids.keys()):
+                input_word_id_to_output_ids[k] = _unique_preserve(input_word_id_to_output_ids[k])
+            for k in list(input_word_to_output_words.keys()):
+                input_word_to_output_words[k] = _unique_preserve(input_word_to_output_words[k])
+
+            # Salvăm pe parent pentru a fi folosite și la răspunsuri
+            self.parent.input_word_to_output_words = input_word_to_output_words
+            self.parent.input_word_id_to_output_ids = input_word_id_to_output_ids
+            self.parent.id_to_word = id_to_word
+
+            return self.parent.total_vocabulary, self.parent.tokens
+        
+        def show_translated_examples(self, with_print=True):
+            """
+            Returns or prints translated tokenized examples.
+
+            Args:
+                with_print (bool, optional): Whether to print to console. Defaults to True.
+
+            Returns:
+                list: Translated dataset examples if with_print is False.
+            """
+            if with_print:
+                return print(self.parent.translated_input_and_output_examples)
+            else:
+                return self.parent.translated_input_and_output_examples
+        
+        def show_number_of_examples(self, with_print=True):
+            """
+            Returns or prints the total number of examples in the training dataset.
+
+            Args:
+                with_print (bool, optional): Whether to print to console. Defaults to True.
+
+            Returns:
+                int: Count of training examples if with_print is False.
+            """
+            count = len(getattr(self.parent, "training_dataset", []))
+            if with_print:
+                return print(count)
+            else:
+                return count
+        
+        def show_relationed_output_with_input_words(self, with_print=True):
+            """
+            Returns or prints the mapping between input words and output words.
+
+            Args:
+                with_print (bool, optional): Whether to print to console. Defaults to True.
+
+            Returns:
+                dict: Input word to output words dictionary if with_print is False.
+            """
+            if with_print:
+                return print(self.parent.input_word_to_output_words)
+            else:
+                return self.parent.input_word_to_output_words
+        
+        def show_relationed_output_with_input_ids(self, with_print=True):
+            """
+            Returns or prints the mapping between input token IDs and output token IDs.
+
+            Args:
+                with_print (bool, optional): Whether to print to console. Defaults to True.
+
+            Returns:
+                dict: Input ID to output IDs dictionary if with_print is False.
+            """
+            if with_print:
+                return print(self.parent.input_word_id_to_output_ids)
+            else:
+                return self.parent.input_word_id_to_output_ids
+        
+    def show_basic_specs(self):
+        """
+        Displays basic specifications of the chatbot, including total training examples and vocabulary length.
+        """
+        print("total training examples: " + str(self.trainer.show_number_of_examples(with_print=False)))
+        
+        print("total vocabulary length: " + str(len(self.total_vocabulary)))
+    
+    def _choose_by_temperature(self, candidates, temp):
+        """Helper method for temperature-based sampling of candidates"""
+        import random
+        import math
+        
+        if not candidates:
+            return None
+        try:
+            t = float(temp)
+        except Exception:
+            t = 0.0
+        if t <= 0.0:
+            best = max(candidates, key=lambda x: x[0])
+            return best[1]
+        
+        scores = [c[0] for c in candidates]
+        max_score = max(scores)
+        exps = [math.exp((s - max_score) / t) for s in scores]
+        ssum = sum(exps)
+        if ssum <= 0:
+            return candidates[0][1]
+        probs = [e / ssum for e in exps]
+        idx = random.choices(range(len(candidates)), weights=probs, k=1)[0]
+        return candidates[idx][1]
+    
+    def _thinking(self, message: str, show_thinking: bool, allow_long_text_thinking: bool):
+        """Helper method to print thinking messages"""
+        if not show_thinking:
+            return
+        msg = str(message)
+        if allow_long_text_thinking:
+            print(f"[THINKING] {msg}")
+        else:
+            short = msg.splitlines()[0] if msg else ""
+            if len(short) > 180:
+                short = short[:177] + "..."
+            print(f"[THINKING] {short}")
+    
+    def _debug(self, category: str, message: str, show_debug: bool):
+        """Helper method to print debug messages"""
+        if not show_debug:
+            return
+        print(f"[DEBUG] {category}: {message}")
+    
+    def _stop_thinking(self, show_thinking: bool):
+        """Helper method to end thinking output"""
+        if show_thinking:
+            print("[STOP THINKING]")
+            print("---")
+
+    def _encode_new_lines(self, text):
+        """
+        Encodes newline characters and tags into internal tokens for preservation during processing.
+
+        Args:
+            text (str): The input text containing newlines.
+
+        Returns:
+            str: Text with encoded newline tokens.
+"""
+        value = "" if text is None else str(text)
+        value = value.replace("\r\n", "\n").replace("\r", "\n")
+        value = value.replace("[NEW LINE]", f" {self._new_line_token} ")
+        value = value.replace("\n", f" {self._new_line_token} ")
+        return value
+
+    def _tokenize_preserving_new_lines(self, text):
+        """
+        Tokenizes input text while preserving newline tokens.
+
+        Args:
+            text (str): The input text to tokenize.
+
+        Returns:
+            list: List of extracted tokens/words.
+        """
+
+        return [token for token in self._encode_new_lines(text).split() if token]
+
+    def _decode_new_lines(self, text, new_lines_system: bool = True):
+        """
+        Decodes internal newline tokens back into standard system newlines or spaces.
+
+        Args:
+            text (str): Text containing internal newline tokens.
+            new_lines_system (bool, optional): Whether to convert to real newlines. Defaults to True.
+
+        Returns:
+            str: Decoded text.
+        """
+
+        value = "" if text is None else str(text)
+        value = value.replace("[NEW LINE]", self._new_line_token)
+        if new_lines_system:
+            value = value.replace(self._new_line_token, "\n")
+            value = re.sub(r"[ \t]*\n[ \t]*", "\n", value)
+            return value
+        value = value.replace(self._new_line_token, " ")
+        value = value.replace("\n", " ")
+        return re.sub(r"\s+", " ", value).strip()
+
+    def _strip_diacritics_for_censorship(self, text):
+        """
+        Strips diacritics from text to normalize words for censorship checks.
+
+        Args:
+            text (str): Input text containing diacritics.
+
+        Returns:
+            str: Normalized lowercase text without diacritics.
+        """
+
+        return ''.join(
+            ch for ch in unicodedata.normalize('NFKD', str(text))
+            if not unicodedata.combining(ch)
+        ).lower()
+
+    def _apply_censored_words(self, text, censored_words=None):
+        """
+        Applies word censorship replacements to the generated text.
+
+        Args:
+            text (str): The text to censor.
+            censored_words (dict, optional): Dictionary mapping forbidden words to replacements.
+
+        Returns:
+            str: Censored text.
+        """
+
+        value = "" if text is None else str(text)
+        if not censored_words:
+            return value
+
+        normalized_map = {}
+        try:
+            for bad_word, replacement in dict(censored_words).items():
+                normalized_bad = self._strip_diacritics_for_censorship(bad_word).strip()
+                if not normalized_bad:
+                    continue
+                normalized_map[normalized_bad] = "" if replacement is None else str(replacement)
+        except Exception:
+            return value
+
+        if not normalized_map:
+            return value
+
+        parts = re.findall(r"\w+|[^\w]+", value, flags=re.UNICODE)
+        if not parts:
+            return value
+
+        censored_parts = []
+        for part in parts:
+            if re.fullmatch(r"\w+", part, flags=re.UNICODE):
+                normalized_part = self._strip_diacritics_for_censorship(part)
+                censored_parts.append(normalized_map.get(normalized_part, part))
+            else:
+                censored_parts.append(part)
+
+        return "".join(censored_parts)
+
+    def reset(self):
+        """
+        Resets the chatbot state, clearing vocabulary, training dataset, history, and metadata.
+        """
+        self.total_vocabulary = {}
+        self.training_dataset = []
+        self.tokens = []
+        self.chatbot_name = ""
+        self.chatbot_description = ""
+
+        self.translated_input_and_output_examples = []
+        self.last_user_prompt = ""
+        self.last_bot_output = ""
+        self.conversation_history = []
+
+    def _normalize_memory_limit(self, max_inflenced_memory=3):
+        """
+        Normalizes the maximum influenced conversation memory limit.
+
+        Args:
+            max_inflenced_memory (int, optional): The raw memory limit value. Defaults to 3.
+
+        Returns:
+            int: Valid non-negative integer memory limit.
+        """
+        try:
+            memory_limit = int(max_inflenced_memory)
+        except Exception:
+            memory_limit = 3
+        return max(0, memory_limit)
+
+    def _get_recent_conversation_turns(self, max_inflenced_memory=3):
+        """
+        Retrieves recent conversation turns from memory history.
+
+        Args:
+            max_inflenced_memory (int, optional): Number of recent turns to retrieve. Defaults to 3.
+
+        Returns:
+            list: List of recent conversation turn dictionaries.
+        """
+        memory_limit = self._normalize_memory_limit(max_inflenced_memory)
+        history = getattr(self, "conversation_history", []) or []
+        if memory_limit <= 0:
+            return []
+        if history:
+            return history[-memory_limit:]
+
+        last_user = str(getattr(self, "last_user_prompt", "") or "")
+        last_bot = str(getattr(self, "last_bot_output", "") or "")
+        if last_user or last_bot:
+            return [{
+                "user_prompt": last_user,
+                "bot_output": last_bot,
+                "user_words": [word for word in last_user.lower().split() if word],
+                "bot_words": [word for word in last_bot.lower().split() if word],
+                "created_on": "",
+            }]
+
+        return []
+
+    def _get_recent_conversation_words(self, max_inflenced_memory=3):
+        """
+        Extracts words from recent conversation turns for context weighting.
+
+        Args:
+            max_inflenced_memory (int, optional): Memory limit of turns to consider. Defaults to 3.
+
+        Returns:
+            tuple: Lists of user words and bot words from recent history.
+        """
+        recent_turns = self._get_recent_conversation_turns(max_inflenced_memory)
+        user_words = []
+        bot_words = []
+
+        if recent_turns:
+            for turn in recent_turns:
+                if not isinstance(turn, dict):
+                    continue
+                user_words.extend([
+                    str(word) for word in turn.get("user_words", [])
+                    if str(word).strip()
+                ])
+                bot_words.extend([
+                    str(word) for word in turn.get("bot_words", [])
+                    if str(word).strip()
+                ])
+        else:
+            last_user = str(getattr(self, "last_user_prompt", "") or "")
+            last_bot = str(getattr(self, "last_bot_output", "") or "")
+            user_words = [word for word in last_user.lower().split() if word]
+            bot_words = [word for word in last_bot.lower().split() if word]
+
+        return user_words, bot_words
+
+    def _remember_conversation_turn(self, user_prompt, bot_output, with_memory: bool = True):
+        """
+        Records a new conversation turn into history and updates last prompt/output states.
+
+        Args:
+            user_prompt (str): The user's input prompt.
+            bot_output (str): The bot's generated response.
+            with_memory (bool, optional): Whether to store the turn. Defaults to True.
+        """
+        if not with_memory:
+            return
+
+        if not hasattr(self, "conversation_history") or self.conversation_history is None:
+            self.conversation_history = []
+
+        user_text = "" if user_prompt is None else str(user_prompt)
+        bot_text = "" if bot_output is None else str(bot_output)
+        entry = {
+            "user_prompt": user_text,
+            "bot_output": bot_text,
+            "user_words": [word for word in user_text.lower().split() if word],
+            "bot_words": [word for word in bot_text.lower().split() if word],
+            "created_on": datetime.now().isoformat(timespec="seconds"),
+        }
+        self.conversation_history.append(entry)
+
+        self.last_user_prompt = user_text
+        self.last_bot_output = bot_text
+
+    def reply_at(
+            self, 
+            prompt: str, 
+            engine_name="modern", 
+            sensitivity: int = 1, 
+            with_memory: bool = True, 
+            max_inflenced_memory: int = 3,
+            fallback_language="english", 
+            fallback_empty_string_message="", 
+            fallback_no_understanded_message="", 
+            fallback_not_sure_message="", 
+            temperature: float = 0.0,
+            show_thinking=False,
+            allow_long_text_thinking=True,
+            show_debug=False,
+            new_lines_system: bool = True,
+            censored_words: dict = {}):
+        """
+        Generates a reply from the chatbot based on a user prompt using a specified engine.
+
+        Args:
+            prompt (str): The input text from the user.
+            engine_name (str, optional): The engine to use ('modern', 'stable', 'chaos', etc.). Defaults to "modern".
+            sensitivity (int, optional): Response sensitivity level. Defaults to 1.
+            with_memory (bool, optional): Whether to record conversation memory. Defaults to True.
+            max_inflenced_memory (int, optional): Number of past turns influencing context. Defaults to 3.
+            fallback_language (string, optional): Language for fallbacks. Defaults to "english".
+            fallback_empty_string_message (str, optional): Message when prompt is empty.
+            fallback_no_understanded_message (str, optional): Message when input is not understood.
+            fallback_not_sure_message (str, optional): Message when unsure.
+            temperature (float, optional): Sampling temperature. Defaults to 0.0.
+            show_thinking (bool, optional): Print thinking steps. Defaults to False.
+            allow_long_text_thinking (bool, optional): Allow full thinking output. Defaults to True.
+            show_debug (bool, optional): Print debug logs. Defaults to False.
+            new_lines_system (bool, optional): Preserve system newlines. Defaults to True.
+            censored_words (dict, optional): Dictionary of words to censor.
+
+        Returns:
+            str: The generated chatbot response.
+        """
+        # Convertire parametru 'temperature', pentru a fi compatibil cu logica engine-urilor
+        import math
+        import random
+
+        def _choose_by_temperature(candidates, temp):
+            """
+            Helper method for temperature-based sampling of candidate responses.
+
+            Args:
+                candidates (list): List of candidate tuples or scores.
+                temp (float): Temperature value for sampling randomness.
+
+            Returns:
+                Any: The selected candidate based on temperature probability.
+            """
+
+            # candidates: list of (score, response_obj)
+            if not candidates:
+                return None
+            # deterministic if temp is None or 0.0
+            try:
+                t = float(temp)
+            except Exception:
+                t = 0.0
+            if t <= 0.0:
+                # choose max score (stable behaviour)
+                best = max(candidates, key=lambda x: x[0])
+                return best[1]
+
+            # convert scores into probabilities via softmax(score / temp)
+            scores = [c[0] for c in candidates]
+            # numerical stability: subtract max
+            max_score = max(scores)
+            exps = [math.exp((s - max_score) / t) for s in scores]
+            ssum = sum(exps)
+            if ssum <= 0:
+                return candidates[0][1]
+            probs = [e / ssum for e in exps]
+            idx = random.choices(range(len(candidates)), weights=probs, k=1)[0]
+            return candidates[idx][1]
+
+        def _thinking(message: str):
+            """
+            Helper method to print thinking messages to the console during generation.
+
+            Args:
+                message (str): The thinking process message.
+                show_thinking (bool): Flag indicating whether to show thinking.
+                allow_long_text_thinking (bool): Flag indicating whether to allow long thinking text.
+            """
+
+            if not show_thinking:
+                return
+            msg = str(message)
+            if allow_long_text_thinking:
+                print(f"[THINKING] {msg}")
+            else:
+                short = msg.splitlines()[0] if msg else ""
+                if len(short) > 180:
+                    short = short[:177] + "..."
+                print(f"[THINKING] {short}")
+
+        def _debug(category: str, message: str, show_debug: bool):
+            """
+            Helper method to print debug messages to the console.
+
+            Args:
+                category (str): The debug category.
+                message (str): The debug message.
+                show_debug (bool): Flag indicating whether to show debug messages.
+            """
+
+            if not show_debug:
+                return
+            print(f"[DEBUG] {category}: {message}")
+
+        def _stop_thinking():
+            """
+            Helper method to end the thinking output sequence in the console.
+
+            Args:
+                show_thinking (bool): Flag indicating whether thinking was active.
+            """
+
+            if show_thinking:
+                print("[STOP THINKING]")
+                print("---")
+
+        if show_debug and show_thinking:
+            from .errors import SameNotAllowedError
+            raise SameNotAllowedError("The parameters 'show_debug' and 'show_thinking' should not have the value 'True' at the same time. Please set one of the parameters mentioned to the value 'False' and try again.")
+        if show_thinking == True:
+            print("---\n")
+            print("[START THINKING] \n\n")
+        
+        if show_debug == True:
+            print("---\n")
+            print("[START DEBUG] \n\n")
+
+        if engine_name.lower() == "stable":
+            
+            from .Reply_Engines import stable
+
+            try:
+                result = stable.use_engine(self, 
+                    prompt=prompt, 
+                    sensitivity=sensitivity, 
+                    with_memory=with_memory, 
+                    max_inflenced_memory=max_inflenced_memory,
+                    new_lines_system=new_lines_system,
+                    fallback_language=fallback_language, 
+                    fallback_empty_string_message=fallback_empty_string_message, 
+                    fallback_no_understanded_message=fallback_no_understanded_message, 
+                    fallback_not_sure_message=fallback_not_sure_message, 
+                    temperature=temperature,
+                    show_thinking=show_thinking,
+                    allow_long_text_thinking=allow_long_text_thinking,
+                    show_debug=show_debug
+                )
+                result = self._decode_new_lines(result, new_lines_system=new_lines_system)
+                result = self._apply_censored_words(result, censored_words=censored_words)
+                self._remember_conversation_turn(prompt, result, with_memory=with_memory)
+                return result
+            
+            except Exception as e:
+                raise("An error occurred: {e}")
+
+
+        elif engine_name.lower() == "chaos":
+            from .Reply_Engines import chaos
+
+            try:
+                result = chaos.use_engine(self, 
+                    prompt=prompt, 
+                    sensitivity=sensitivity, 
+                    with_memory=with_memory, 
+                    max_inflenced_memory=max_inflenced_memory,
+                    new_lines_system=new_lines_system,
+                    fallback_language=fallback_language, 
+                    fallback_empty_string_message=fallback_empty_string_message, 
+                    fallback_no_understanded_message=fallback_no_understanded_message, 
+                    fallback_not_sure_message=fallback_not_sure_message, 
+                    temperature=temperature,
+                    show_thinking=show_thinking,
+                    allow_long_text_thinking=allow_long_text_thinking,
+                    show_debug=show_debug
+                )
+                result = self._decode_new_lines(result, new_lines_system=new_lines_system)
+                result = self._apply_censored_words(result, censored_words=censored_words)
+                self._remember_conversation_turn(prompt, result, with_memory=with_memory)
+                return result
+            
+            except Exception as e:
+                raise("An error occurred: {e}")
+
+        elif engine_name.lower() == "modern":
+            from .Reply_Engines import modern
+
+            try:
+                result = modern.use_engine(self, 
+                    prompt=prompt, 
+                    sensitivity=sensitivity, 
+                    with_memory=with_memory, 
+                    max_inflenced_memory=max_inflenced_memory,
+                    new_lines_system=new_lines_system,
+                    fallback_language=fallback_language, 
+                    fallback_empty_string_message=fallback_empty_string_message, 
+                    fallback_no_understanded_message=fallback_no_understanded_message, 
+                    fallback_not_sure_message=fallback_not_sure_message, 
+                    temperature=temperature,
+                    show_thinking=show_thinking,
+                    allow_long_text_thinking=allow_long_text_thinking,
+                    show_debug=show_debug
+                )
+                result = self._decode_new_lines(result, new_lines_system=new_lines_system)
+                result = self._apply_censored_words(result, censored_words=censored_words)
+                self._remember_conversation_turn(prompt, result, with_memory=with_memory)
+                return result
+            
+            except Exception as e:
+                raise("An error occurred: {e}")
+
+        elif engine_name.lower() == "optimized":
+            from .Reply_Engines import optimized
+
+            try:
+                result = optimized.use_engine(self, 
+                    prompt=prompt, 
+                    sensitivity=sensitivity, 
+                    with_memory=with_memory, 
+                    max_inflenced_memory=max_inflenced_memory,
+                    new_lines_system=new_lines_system,
+                    fallback_language=fallback_language, 
+                    fallback_empty_string_message=fallback_empty_string_message, 
+                    fallback_no_understanded_message=fallback_no_understanded_message, 
+                    fallback_not_sure_message=fallback_not_sure_message, 
+                    temperature=temperature,
+                    show_thinking=show_thinking,
+                    allow_long_text_thinking=allow_long_text_thinking,
+                    show_debug=show_debug
+                )
+                result = self._decode_new_lines(result, new_lines_system=new_lines_system)
+                result = self._apply_censored_words(result, censored_words=censored_words)
+                self._remember_conversation_turn(prompt, result, with_memory=with_memory)
+                return result
+            
+            except Exception as e:
+                raise("An error occurred: {e}")
+            
+        elif engine_name.lower() == "unsmarty":
+            from .Reply_Engines import unsmarty
+
+            try:
+                result = unsmarty.use_engine(self, 
+                    prompt=prompt, 
+                    sensitivity=sensitivity, 
+                    with_memory=with_memory, 
+                    max_inflenced_memory=max_inflenced_memory,
+                    new_lines_system=new_lines_system,
+                    fallback_language=fallback_language, 
+                    fallback_empty_string_message=fallback_empty_string_message, 
+                    fallback_no_understanded_message=fallback_no_understanded_message, 
+                    fallback_not_sure_message=fallback_not_sure_message, 
+                    temperature=temperature,
+                    show_thinking=show_thinking,
+                    allow_long_text_thinking=allow_long_text_thinking,
+                    show_debug=show_debug
+                )
+                result = self._decode_new_lines(result, new_lines_system=new_lines_system)
+                result = self._apply_censored_words(result, censored_words=censored_words)
+                self._remember_conversation_turn(prompt, result, with_memory=with_memory)
+                return result
+            
+            except Exception as e:
+                raise("An error occurred: {e}")
+
+
+    def reply_with_audio(self, prompt, engine_name="modern", sensitivity: int = 1, with_memory: bool = True, max_inflenced_memory: int = 3, fallback_language="english", fallback_empty_string_message="", fallback_no_understanded_message="", fallback_not_sure_message="", temperature: float = 0.0, show_thinking=False, allow_long_text_thinking=True, show_debug=False, new_lines_system: bool = True, censored_words: dict = {},
+                         audio_engine="gTTS", audio_language='en', elevenlabs_voice_id="21m00Tcm4TlvDq8ikWAM", elevenlabs_api_key="", elevenlabs_model_id="eleven_multilingual_v2"):
+        """
+        Generates a text reply and converts it to speech using external audio synthesis engines.
+
+        Args:
+            prompt (str): The input prompt for the chatbot.
+            audio_engine (str, optional): TTS engine name. Defaults to "gTTS".
+            audio_language (str, optional): Language code for audio. Defaults to 'en'.
+            elevenlabs_voice_id (str, optional): Voice ID for ElevenLabs.
+            elevenlabs_api_key (str, optional): API key for ElevenLabs.
+            elevenlabs_model_id (str, optional): Model ID for ElevenLabs.
+            (Plus all parameters accepted by reply_at).
+
+        Returns:
+            str: The generated text response that was spoken.
+        """
+        from pyrospeak import speak
+
+        # Text generat de chatbot, salvat într-o variabilă
+        text = self.reply_at(
+            prompt=prompt,
+            engine_name=engine_name,
+            sensitivity=sensitivity,
+            with_memory=with_memory,
+            max_inflenced_memory=max_inflenced_memory,
+            new_lines_system=new_lines_system,
+            temperature=temperature,
+            fallback_language=fallback_language,
+            fallback_empty_string_message=fallback_empty_string_message,
+            fallback_no_understanded_message=fallback_no_understanded_message,
+            fallback_not_sure_message=fallback_not_sure_message,
+            show_thinking=show_thinking,
+            allow_long_text_thinking=allow_long_text_thinking,
+            show_debug=show_debug,
+            censored_words=censored_words,
+        )
+
+        speak(
+            text_to_procces=text,
+            engine=audio_engine,
+            language=audio_language,
+            elevenlabs_api_key=elevenlabs_api_key,
+            elevenlabs_model_id=elevenlabs_model_id,
+            elevenlabs_voice_id=elevenlabs_voice_id
+        )
+
+        return text
+
+
+
+
+
+
+
+
+
+class RealChatbot:
+    def __init__(
+        self,
+        chatbot_name: str = "Chatbot",
+        chatbot_description: str = "This chatbot does not yet have a description.",
+        d_model: int = 32,
+        num_heads: int = 2,
+        num_layers: int = 2,
+        max_len: int = 512,
+        dropout: float = 0.1,
+        block_size: int = 64,
+        tokenizer_type: str = "char-level"
+    ):
+        """
+        Initializes the RealChatbot PyTorch transformer model with specified architecture hyperparameters.
+
+        Args:
+            chatbot_name (str, optional): Name of the chatbot. Defaults to "Chatbot".
+            chatbot_description (str, optional): Description of the model.
+            d_model (int, optional): Embedding dimension size. Defaults to 32.
+            num_heads (int, optional): Number of attention heads. Defaults to 2.
+            num_layers (int, optional): Number of transformer blocks. Defaults to 2.
+            max_len (int, optional): Maximum sequence length. Defaults to 512.
+            dropout (float, optional): Dropout probability. Defaults to 0.1.
+            block_size (int, optional): Context block size. Defaults to 64.
+            tokenizer_type (str, optional): Tokenizer type ('char-level', 'word-level', or 'semiwords-level'). Defaults to "char-level".
+
+        Raises:
+            ImportError: If PyTorch is not installed.
+        """
+        try:
+            import torch
+            import torch.nn as nn
+            import torch.nn.functional as F
+        except ImportError as exc:
+            raise ImportError("PyTorch is required to use RealChatbot. Install it with 'pip install torch'.") from exc
+
+        self.torch = torch
+        self.nn = nn
+        self.F = F
+
+        self.chatbot_name = chatbot_name
+        self.chatbot_description = chatbot_description
+        self.block_size = block_size
+        self.created_on = datetime.now().strftime("%Y/%m/%d")
+        
+        self.d_model = d_model
+        self.num_heads = num_heads
+        self.num_layers = num_layers
+        self.max_len = max_len
+        self.dropout = dropout
+
+        # Tokeni speciali ca unități atomice (accesibili ca bot.SPECIAL_TOKENS)
+        self.SPECIAL_TOKENS = (
+            "<example_type=Q&A>",
+            "<END_QA>",
+            "<example_type=RAW>",
+            "<END_RAW>"
+        )
+
+        # Listă locală și temporală pentru răspunsurile banate de utilizator în sesiunea curentă
+        self.banned_replies_by_the_user = []
+
+        self.vocabulary = set()
+        self.vocabulary_size = max(1, len(self.vocabulary))
+        self.char_to_index = {char: index for index, char in enumerate(self.vocabulary)}
+        self.index_to_char = {index: char for index, char in enumerate(self.vocabulary)}
+
+        self.qa_pairs  = []
+        self.raw_texts = []
+        self.training_text = ""
+        self.tokenizer_type = tokenizer_type
+        self.final_loss = 0
+        self.total_trained_epochs = 0
+        self.last_used_datetime = datetime.now().strftime("%Y/%m/%d")
+
+        self.device = self.torch.device("cuda" if self.torch.cuda.is_available() else "cpu")
+
+        self.MultiHeadAttention = self._build_multi_head_attention_class()(
+            d_model=d_model, num_heads=num_heads, dropout=dropout
+        )
+        self.FeedForward = self._build_feed_forward_class()(
+            d_model=d_model, dropout=dropout
+        )
+        self.TransformerBlock = self._build_transformer_block_class()(
+            d_model=d_model, num_heads=num_heads, dropout=dropout, max_len=max_len
+        )
+
+        self.trainer           = self.Train(self)
+        self.prepared_datasets = self.Datasets(self)
+        self.storage           = self.Storage(self)
+
+    def _tokenize(self, text: str):
+        """
+        Tokenizes input text based on the configured tokenizer type (character-level, word-level, or semiwords-level),
+        ensuring special tokens are extracted cleanly as atomic units.
+
+        Args:
+            text (str): Input text to tokenize.
+
+        Returns:
+            list: List of character, word, or semi-word tokens.
+        """
+        if not text:
+            return []
+
+        # Izolarea tokenilor speciali ca unități atomice
+        special_escaped = [re.escape(tok) for tok in self.SPECIAL_TOKENS]
+        special_pattern = "|".join(special_escaped)
+        
+        parts = re.split(f"({special_pattern})", text) if special_pattern else [text]
+        tokens = []
+
+        for part in parts:
+            if not part:
+                continue
+            if part in self.SPECIAL_TOKENS:
+                tokens.append(part)
+            else:
+                if self.tokenizer_type == "word-level":
+                    tokens.extend(re.findall(r"\w+|[^\w\s]|\s+", part, flags=re.UNICODE))
+                elif self.tokenizer_type == "semiwords-level":
+                    # Tokenizer inteligent bazat pe regex pentru sub-cuvinte (semiwords)
+                    tokens.extend(re.findall(r"[a-zA-ZșțăîâȘȚĂÎÂ0-9]{1,3}|\w+|[^\w\s]|\s+", part, flags=re.UNICODE))
+                else:
+                    # Fallback implicit pe char-level
+                    tokens.extend(list(part))
+        return tokens
+    
+    def _build_multi_head_attention_class(self):
+        """
+        Builds and returns a PyTorch MultiHeadAttention PyTorch module class.
+
+        Returns:
+            nn.Module: The Multi-Head Attention neural network module class.
+        """
+        nn = self.nn
+        torch = self.torch
+        F = self.F
+
+        class _MultiHeadAttention(nn.Module):
+            def __init__(self, d_model, num_heads, dropout=0.1, max_len=512):
+                super().__init__()
+                self.num_heads = num_heads
+                self.d_head = d_model // num_heads
+                self.W_q = nn.Linear(d_model, d_model, bias=False)
+                self.W_k = nn.Linear(d_model, d_model, bias=False)
+                self.W_v = nn.Linear(d_model, d_model, bias=False)
+                self.W_o = nn.Linear(d_model, d_model, bias=False)
+                self.attn_dropout = nn.Dropout(dropout)
+                self.register_buffer("mask", torch.tril(torch.ones(max_len, max_len)))
+
+            def forward(self, x):
+                B, T, C = x.shape
+                Q = self.W_q(x).view(B, T, self.num_heads, self.d_head).transpose(1, 2)
+                K = self.W_k(x).view(B, T, self.num_heads, self.d_head).transpose(1, 2)
+                V = self.W_v(x).view(B, T, self.num_heads, self.d_head).transpose(1, 2)
+                scores = Q @ K.transpose(-2, -1) / (self.d_head ** 0.5)
+                scores = scores.masked_fill(self.mask[:T, :T] == 0, float("-inf"))
+                weights = self.attn_dropout(F.softmax(scores, dim=-1))
+                out = weights @ V
+                return self.W_o(out.transpose(1, 2).contiguous().view(B, T, C))
+
+        return _MultiHeadAttention
+
+    def _build_feed_forward_class(self):
+        """
+        Builds and returns a FeedForward neural network module class.
+
+        Returns:
+            nn.Module: The FeedForward neural network module class.
+        """
+        nn = self.nn
+
+        class _FeedForward(nn.Module):
+            def __init__(self, d_model, dropout=0.1):
+                super().__init__()
+                self.net = nn.Sequential(
+                    nn.Linear(d_model, 4 * d_model),
+                    nn.ReLU(),
+                    nn.Dropout(dropout),
+                    nn.Linear(4 * d_model, d_model),
+                )
+
+            def forward(self, x):
+                return self.net(x)
+
+        return _FeedForward
+
+    def _build_transformer_block_class(self):
+        """
+        Builds and returns a Transformer block module combining attention, feed-forward, and layer normalization.
+
+        Returns:
+            nn.Module: The Transformer block module class.
+        """
+        nn = self.nn
+        MultiHeadAttention = self._build_multi_head_attention_class()
+        FeedForward = self._build_feed_forward_class()
+
+        class _TransformerBlock(nn.Module):
+            def __init__(self, d_model, num_heads, dropout=0.1, max_len=512):
+                super().__init__()
+                self.attention = MultiHeadAttention(d_model, num_heads, dropout, max_len)
+                self.ffn = FeedForward(d_model, dropout)
+                self.ln1 = nn.LayerNorm(d_model)
+                self.ln2 = nn.LayerNorm(d_model)
+                self.dropout = nn.Dropout(dropout)
+
+            def forward(self, x):
+                x = x + self.dropout(self.attention(self.ln1(x)))
+                x = x + self.dropout(self.ffn(self.ln2(x)))
+                return x
+
+        return _TransformerBlock
+
+    def _build_llm_model_class(self):
+        """
+        Builds and returns the complete autoregressive LLM model class incorporating embeddings and stacked transformer blocks.
+
+        Returns:
+            nn.Module: The LLM PyTorch module class.
+        """
+        nn = self.nn
+        torch = self.torch
+        F = self.F
+        TransformerBlock = self._build_transformer_block_class()
+
+        class _LLMModel(nn.Module):
+            def __init__(self, vocab_size, d_model, num_heads, num_layers, dropout=0.1, max_len=512):
+                super().__init__()
+                self.embedding = nn.Embedding(vocab_size, d_model)
+                self.pos_enc = nn.Embedding(max_len, d_model)
+                self.drop_emb = nn.Dropout(dropout)
+                self.blocks = nn.Sequential(
+                    *[TransformerBlock(d_model, num_heads, dropout, max_len) for _ in range(num_layers)]
+                )
+                self.ln_final = nn.LayerNorm(d_model)
+                self.lm_head = nn.Linear(d_model, vocab_size, bias=False)
+
+            def forward(self, x):
+                B, T = x.shape
+                x = self.drop_emb(self.embedding(x) + self.pos_enc(torch.arange(T, device=x.device)))
+                return self.lm_head(self.ln_final(self.blocks(x)))
+
+            def generate(self, start_tokens, max_new_tokens=100, stop_token=None, temperature=1.0):
+                self.eval()
+                tokens = start_tokens
+                for _ in range(max_new_tokens):
+                    tokens_cond = tokens[:, -self.pos_enc.num_embeddings:]
+                    logits = self(tokens_cond)[:, -1, :]
+                    scores = F.softmax(logits / temperature, dim=-1)
+                    next_tok = torch.multinomial(scores, 1)
+                    tokens = torch.cat([tokens, next_tok], dim=1)
+
+                    if stop_token is not None and next_tok.item() == stop_token:
+                        break
+
+                return tokens
+
+        return _LLMModel
+
+    def _strip_diacritics_for_censorship(self, text):
+        """ 
+        Normalize text for case-insensitive, diacritic-insensitive word matching. Converts the input to a string, applies Unicode NFKD normalization, removes combining characters, and converts the result to lowercase. 
+        
+        Args: 
+            text (str): The input value to normalize. 
+            
+        Returns: 
+            str: The normalized text with combining characters removed and all letters converted to lowercase. 
+        """
+        return ''.join(
+            ch for ch in unicodedata.normalize('NFKD', str(text))
+            if not unicodedata.combining(ch)
+        ).lower()
+
+    def _apply_censored_words(self, text, censored_words=None):
+        """ 
+        Replace whole words matching a censorship dictionary. Matches words case-insensitively and without diacritic distinctions, while preserving the original text's punctuation, whitespace, and uncensored words. Replacement values of None are treated as empty strings. If the censorship dictionary is missing or invalid, the original text is returned unchanged, except that None is converted to an empty string. 
+        
+        Args: 
+            text: The input text to process. 
+            censored_words (dict, optional): A mapping of words to their replacement strings. Matching ignores case and diacritics. 
+        
+        Returns: 
+            str: The processed text with matching words replaced. 
+        """
+        value = "" if text is None else str(text)
+        if not censored_words:
+            return value
+
+        normalized_map = {}
+        try:
+            for bad_word, replacement in dict(censored_words).items():
+                normalized_bad = self._strip_diacritics_for_censorship(bad_word).strip()
+                if not normalized_bad:
+                    continue
+                normalized_map[normalized_bad] = "" if replacement is None else str(replacement)
+        except Exception:
+            return value
+
+        if not normalized_map:
+            return value
+
+        parts = re.findall(r"\w+|[^\w]+", value, flags=re.UNICODE)
+        if not parts:
+            return value
+
+        censored_parts = []
+        for part in parts:
+            if re.fullmatch(r"\w+", part, flags=re.UNICODE):
+                normalized_part = self._strip_diacritics_for_censorship(part)
+                censored_parts.append(normalized_map.get(normalized_part, part))
+            else:
+                censored_parts.append(part)
+
+        return "".join(censored_parts)
+
+    def _single_generation_step(self, prompt: str, max_new_tokens: int, temperature: float, auto_write_prompt_on_default_QA_formating: bool, censored_words: dict):
+        """
+        Executes a single generation attempt for the given prompt.
+
+        Args:
+            prompt (str): Input prompt.
+            max_new_tokens (int): Max tokens to generate.
+            temperature (float): Sampling temperature.
+            auto_write_prompt_on_default_QA_formating (bool): Whether to wrap prompt in Q&A format.
+            censored_words (dict): Words to censor.
+
+        Returns:
+            str: The generated text response.
+        """
+        if auto_write_prompt_on_default_QA_formating:
+            prompt = f"<example_type=Q&A>\nQ: {prompt}\nA:"
+        
+        prompt_tokens = self._tokenize(prompt)
+        input_indices = [self.char_to_index[tok] for tok in prompt_tokens if tok in self.char_to_index]
+        
+        if not input_indices:
+            input_indices = [0]
+            
+        input_tensor = self.torch.tensor([input_indices], dtype=self.torch.long).to(self.device)
+        
+        with self.torch.no_grad():
+            generated_tokens = self.LLMModel.generate(
+                start_tokens=input_tensor, 
+                max_new_tokens=max_new_tokens, 
+                temperature=temperature
+            )
+        
+        generated_indices = generated_tokens[0].tolist()
+        output_text = "".join([self.index_to_char.get(idx, "") for idx in generated_indices])
+
+        end_token = "<END_QA>"
+        if end_token in output_text:
+            output_text = output_text.split(end_token)[0]
+
+        answer_marker = "A:"
+        if answer_marker in output_text:
+            output_text = output_text.split(answer_marker, 1)[1]
+
+        output_text = self._apply_censored_words(output_text, censored_words=censored_words)
+        return output_text.strip()
+
+    def reply_at(
+        self, 
+        prompt: str, 
+        max_new_tokens: int = 150, 
+        temperature: float = 0.8, 
+        auto_write_prompt_on_default_QA_formating: bool = True, 
+        censored_words: dict = {},
+        feedback_mode: bool = False,
+        max_allowed_similarity_procent_with_banned_replies: float = 0.8,
+        max_attempts_to_regenerate_in_feedback_mode: int = 3
+    ):
+        """
+        Generates a response from the trained transformer model given a prompt, 
+        with optional interactive user feedback mode and similarity filtering against banned replies.
+
+        Args:
+            prompt (str): The input prompt from the user.
+            max_new_tokens (int, optional): Maximum new tokens to generate. Defaults to 150.
+            temperature (float, optional): Sampling temperature. Defaults to 0.8.
+            auto_write_prompt_on_default_QA_formating (bool, optional): Whether to wrap prompt in Q&A format. Defaults to True.
+            censored_words (dict, optional): Dictionary of words to censor. Defaults to {}.
+            feedback_mode (bool, optional): Enables interactive y/n feedback loop. Defaults to False.
+            max_allowed_similarity_procent_with_banned_replies (float, optional): Max similarity threshold with banned replies. Defaults to 0.8.
+            max_attempts_to_regenerate_in_feedback_mode (int, optional): Max regeneration attempts in feedback mode. Defaults to 3.
+            
+        Returns:
+            str: The generated response text.
+        """
+        if not hasattr(self, 'LLMModel') or self.LLMModel is None:
+            print("WARNING: The model has not been trained yet. Run 'bot.trainer.start()' first.")
+            return ""
+
+        self.LLMModel.eval()
+        self.last_used_datetime = datetime.now().strftime("%Y/%m/%d")
+
+        generated_responses_pool = []
+
+        for attempt in range(max_attempts_to_regenerate_in_feedback_mode):
+            output_text = self._single_generation_step(
+                prompt=prompt,
+                max_new_tokens=max_new_tokens,
+                temperature=temperature,
+                auto_write_prompt_on_default_QA_formating=auto_write_prompt_on_default_QA_formating,
+                censored_words=censored_words
+            )
+
+            # Salvăm textul generat în pool-ul de încercări ale acestei rulări
+            generated_responses_pool.append(output_text)
+
+            # Calculăm similaritatea maximă la nivel de caracter față de lista de răspunsuri interzise
+            max_sim = 0.0
+            if self.banned_replies_by_the_user:
+                similarities = [
+                    difflib.SequenceMatcher(None, output_text, banned).ratio() 
+                    for banned in self.banned_replies_by_the_user
+                ]
+                max_sim = max(similarities) if similarities else 0.0
+
+            if feedback_mode:
+                # Dacă similaritatea depășește pragul maxim permis, reîncercăm generarea direct (fără prompt consola)
+                if max_sim >= max_allowed_similarity_procent_with_banned_replies:
+                    continue
+
+                print(output_text)
+                user_feedback = input("Does this answer seem correct to you? (y/n) \n>>> ").strip().lower()
+
+                if user_feedback in ("", "y", "yes"):
+                    return output_text
+                elif user_feedback in ("n", "no"):
+                    # Adăugăm răspunsul respins în lista locală
+                    self.banned_replies_by_the_user.append(output_text)
+            else:
+                return output_text
+
+        # Dacă s-au epuizat toate încercările fără ca utilizatorul să aleagă 'y' sau dacă s-au respins toate cu 'n':
+        if generated_responses_pool:
+            if self.banned_replies_by_the_user:
+                # Evaluăm fiecare răspuns generat în raport cu lista completă actualizată de banned_replies
+                scored_responses = []
+                for resp in generated_responses_pool:
+                    sims = [
+                        difflib.SequenceMatcher(None, resp, banned).ratio() 
+                        for banned in self.banned_replies_by_the_user
+                    ]
+                    max_score = max(sims) if sims else 0.0
+                    scored_responses.append((resp, max_score))
+
+                # Returnăm răspunsul cu cea mai MICĂ similaritate maximă față de răspunsurile interzise
+                best_response = min(scored_responses, key=lambda x: x[1])[0]
+                return best_response
+            else:
+                return generated_responses_pool[-1]
+
+        return ""
+
+    def show_number_of_parameters(self, with_print: bool=True):
+        """
+        Calculates and prints or returns the total number of trainable parameters in the LLM model.
+
+        Args:
+            with_print (bool, optional): Whether to print to console. Defaults to True.
+
+        Returns:
+            int or str: Parameter count if with_print is False, or empty string if untrained.
+        """
+        if not hasattr(self, 'LLMModel') or self.LLMModel is None:
+            print("WARNING: The model has not been trained yet. Run 'bot.trainer.start()' first.")
+            return ""
+        else:
+            num_parameters = sum(p.numel() for p in self.LLMModel.parameters())
+            if with_print:
+                print(num_parameters)
+            else:
+                return num_parameters
+
+    def show_current_training_text(self, with_print: bool=True):
+        """
+        Prints or returns the current raw training text corpus.
+
+        Args:
+            with_print (bool, optional): Whether to print to console. Defaults to True.
+
+        Returns:
+            str: Training text corpus if with_print is False.
+        """
+        if with_print:
+            print(self.training_text)
+        else:
+            return self.training_text
+
+    def reset(self):
+        """
+        Resets the RealChatbot architecture, weights, vocabulary, and training history to default states.
+        """
+        self.chatbot_name = "Chatbot"
+        self.chatbot_description = "This chatbot does not yet have a description."
+        self.block_size = 64
+        self.created_on = datetime.now().strftime("%Y/%m/%d")
+                
+        self.d_model = 32
+        self.num_heads = 2
+        self.num_layers = 2
+        self.max_len = 512
+        self.dropout = 0.1
+
+        self.SPECIAL_TOKENS = (
+            "<example_type=Q&A>",
+            "<END_QA>",
+            "<example_type=RAW>",
+            "<END_RAW>"
+        )
+        self.banned_replies_by_the_user = []
+        
+        self.vocabulary = set()
+        self.vocabulary_size = max(1, len(self.vocabulary))
+        self.char_to_index = {char: index for index, char in enumerate(self.vocabulary)}
+        self.index_to_char = {index: char for index, char in enumerate(self.vocabulary)}
+        
+        self.qa_pairs  = [] 
+        self.raw_texts = []
+        self.training_text = ""
+        self.tokenizer_type = "char-level"
+        self.final_loss = 0
+        self.total_trained_epochs = 0
+        self.last_used_datetime = datetime.now().strftime("%Y/%m/%d")
+
+        self.LLMModel = self._build_llm_model_class()(
+                        vocab_size=self.vocabulary_size,
+                        d_model=self.d_model,
+                        num_heads=self.num_heads,
+                        num_layers=self.num_layers,
+                        max_len=self.max_len,
+                        dropout=self.dropout,
+                    )
+
+        for module in self.LLMModel.modules():
+            if hasattr(module, "reset_parameters"):
+                module.reset_parameters()
+
+    def show_basic_specs(self):
+        """
+        Displays comprehensive specifications, architecture details, training status, and dataset metrics in the console.
+        """
+        new_text = ""
+        temp_training_text_detected = self.training_text
+
+        if len(self.qa_pairs) >= 1:
+            new_text = " ".join(f"<example_type=Q&A>\nQ: {p['q']}\nA: {p['a']}\n<END_QA>\n" for p in self.qa_pairs)
+
+        if len(self.raw_texts) >= 1:
+            new_text = " " + " ".join(f"<example_type=RAW>\n{p}\n<END_RAW>" for p in self.raw_texts)
+        
+            if new_text:
+                if temp_training_text_detected:
+                    temp_training_text_detected += "\n" + new_text
+                else:
+                    temp_training_text_detected = new_text
+
+        total_words_detected = len(temp_training_text_detected.split())
+        total_chars_detected = len(temp_training_text_detected)
+
+        print("\nIDENTITY:")
+        print(f"chatbot name:        {self.chatbot_name}")
+        print(f"chatbot description: {self.chatbot_description}")
+        print(f"created on:          {self.created_on}")
+        print(f"last used:           {self.last_used_datetime}")
+
+        print("\nARHITECTURE:")
+        print(f"d_model:        {self.d_model}")
+        print(f"num_heads:      {self.num_heads}")
+        print(f"num_layers:     {self.num_layers}")
+        print(f"max_len:        {self.max_len}")
+        print(f"block_size:     {self.block_size}")
+        print(f"dropout:        {self.dropout}")
+        print(f"tokenizer_type: {self.tokenizer_type}")
+
+        print("\nTRAINING PROCESS:")
+        print(f"training status:      {'TRAINED' if self.total_trained_epochs > 0 else 'UNTRAINED'}")
+        print(f"final loss:           {self.final_loss}")
+        print(f"total epochs trained: {self.total_trained_epochs}")
+
+        print("\nTRAINING EXAMPLES INFO:")
+        print(f"total different tokens (understood by the chatbot): {len(self.vocabulary)}")
+        print(f"total Q&A examples (loaded this session):           {len(self.qa_pairs)}")
+        print(f"total chars (learned):                              {len(self.training_text)}")
+        print(f"total words (learned):                              {len(self.training_text.split())}")
+        print(f"total chars (learned + loaded):                     {total_chars_detected}")
+        print(f"total words (learned + loaded):                     {total_words_detected}")
+        try:
+            print(f"average chars per word (learned):                   {len(self.training_text) / len(self.training_text.split()):.2f}")
+        except ZeroDivisionError:
+            print(f"average chars per word (learned):                   0")
+
+        try:
+            print(f"average chars per word (learned + loaded):          {len(temp_training_text_detected) / len(temp_training_text_detected.split()):.2f}")
+        except ZeroDivisionError:
+            print(f"average chars per word (learned + loaded):          0")
+
+        print(f"total different chars (learned):                    {len(set(self.training_text))}")
+        print(f"total different words (learned):                    {len(set(self.training_text.split()))}")
+        print(f"total different chars (learned + loaded):           {len(set(temp_training_text_detected))}")
+        print(f"total different words (learned + loaded):           {len(set(temp_training_text_detected.split()))}")
+        print("\n")
+
+    class Storage:
+        def __init__(self, parent):
+            """
+            Initializes Storage with a reference to the parent RealChatbot.
+
+            Args:
+                parent (RealChatbot): The parent transformer chatbot instance.
+            """
+            self.parent = parent
+
+        def save_on_file(self, file_name: str="my_chatbot", file_location: str=""):
+            """
+            Saves model weights, vocabulary mappings, and configuration to a PyTorch checkpoint file.
+
+            Args:
+                file_name (str, optional): Name of the checkpoint file. Defaults to "my_chatbot".
+                file_location (str, optional): Directory folder path. Defaults to "".
+            """
+            import os
+            file_name = f"{file_name}.pt"
+            file_path = os.path.join(file_location, file_name) if file_location else file_name
+
+            self.parent.torch.save(
+                {
+                    "model": self.parent.LLMModel.state_dict() if self.parent.LLMModel is not None else None,
+                    "chatbot_name": self.parent.chatbot_name,
+                    "chatbot_description": self.parent.chatbot_description,
+                    "char_to_index": self.parent.char_to_index,
+                    "index_to_char": self.parent.index_to_char,
+                    "vocabulary": list(self.parent.vocabulary),
+                    "vocab_size": self.parent.vocabulary_size,
+                    "d_model": self.parent.d_model,
+                    "num_heads": self.parent.num_heads,
+                    "num_layers": self.parent.num_layers,
+                    "max_len": self.parent.max_len,
+                    "dropout": self.parent.dropout,
+                    "created_on": self.parent.created_on,
+                    "total_trained_epochs": self.parent.total_trained_epochs,
+                    "final_loss": self.parent.final_loss,
+                    "last_used_datetime": self.parent.last_used_datetime,
+                    "tokenizer_type": self.parent.tokenizer_type,
+                    "qa_pairs": self.parent.qa_pairs,
+                    "raw_texts": self.parent.raw_texts,
+                    "training_text": self.parent.training_text,
+                }, file_path
+            )
+
+        def load_from_file(self, file_name: str="my_chatbot", file_location: str=""):
+            """
+            Loads model weights, vocabulary, and training state from a PyTorch checkpoint file.
+
+            Args:
+                file_name (str, optional): Name of the checkpoint file. Defaults to "my_chatbot".
+                file_location (str, optional): Directory folder path. Defaults to "".
+
+            Raises:
+                FileNotFoundError: If the checkpoint file is not found.
+            """
+            import os
+            file_name = f"{file_name}.pt"
+            file_path = os.path.join(file_location, file_name) if file_location else file_name
+
+            if not os.path.exists(file_path):
+                raise FileNotFoundError(f"Fișierul '{file_path}' nu a fost găsit. Verifică ruta!")
+
+            device = getattr(self.parent, 'device', 'cuda' if self.parent.torch.cuda.is_available() else 'cpu')
+            ckpt = self.parent.torch.load(file_path, map_location=device, weights_only=False)
+
+            self.parent.char_to_index        = ckpt["char_to_index"]
+            self.parent.index_to_char        = ckpt["index_to_char"]
+            self.parent.chatbot_name         = ckpt["chatbot_name"]
+            self.parent.chatbot_description  = ckpt["chatbot_description"]
+            self.parent.vocabulary           = set(ckpt["vocabulary"])
+            self.parent.vocabulary_size      = ckpt["vocab_size"]
+            self.parent.d_model              = ckpt["d_model"]
+            self.parent.num_heads            = ckpt["num_heads"]
+            self.parent.num_layers           = ckpt["num_layers"]
+            self.parent.max_len              = ckpt["max_len"]
+            self.parent.dropout              = ckpt["dropout"]
+            self.parent.created_on           = ckpt["created_on"]
+            self.parent.final_loss           = ckpt["final_loss"]
+            self.parent.total_trained_epochs = ckpt["total_trained_epochs"]
+            self.parent.last_used_datetime   = ckpt["last_used_datetime"]
+            self.parent.tokenizer_type       = ckpt["tokenizer_type"]
+            
+            self.parent.qa_pairs             = ckpt.get("qa_pairs", [])
+            self.parent.raw_texts            = ckpt.get("raw_texts", [])
+            self.parent.training_text        = ckpt.get("training_text", "")
+            self.parent.vocabulary_size      = len(self.parent.char_to_index)
+
+            self.parent.LLMModel = self.parent._build_llm_model_class()(
+                vocab_size=self.parent.vocabulary_size,
+                d_model=self.parent.d_model,
+                num_heads=self.parent.num_heads,
+                num_layers=self.parent.num_layers,
+                max_len=self.parent.max_len,
+                dropout=self.parent.dropout,
+            )
+            if ckpt["model"] is not None:
+                self.parent.LLMModel.load_state_dict(ckpt["model"])
+
+            self.parent.LLMModel.to(device)
+
+    class Train:
+        def __init__(self, parent):
+            """
+            Initializes Train helper with a reference to the parent RealChatbot.
+
+            Args:
+                parent (RealChatbot): The parent transformer chatbot instance.
+            """
+            self.parent = parent
+
+        def add_data(self, training_input_example, training_output_example: str=" ", example_type="qa", **kwargs):
+            """
+            Adds a Q&A pair or a raw text as a training example.
+
+            Args:
+                training_input_example (str): Question or input text.
+                training_output_example (str, optional): Answer or output text.
+                example_type (str, optional): Specify the type of training example. "qa" or "raw" is accepted. Defaults to "qa".
+            """
+            if example_type.lower() in ("qa", "question-answer", "qa-example", "qa example", "q&a"):
+                qa_example = {"q": training_input_example, "a": training_output_example}
+                self.parent.qa_pairs.append(qa_example)
+            elif example_type.lower() in ("raw", "raw-text", "raw text", "brute", "brute-text", "brute text"):
+                self.parent.raw_texts.append(training_input_example)
+
+        def create_personalized_dataset(self, dataset_text_content: str=""):
+            """
+            Sets a custom raw text string as the training dataset corpus.
+
+            Args:
+                dataset_text_content (str, optional): Raw training text. Defaults to "".
+            """
+            self.parent.training_text = dataset_text_content
+
+        def start(
+            self, 
+            epochs: int=100, 
+            show_loss_every_x_epochs: int=10, 
+            show_loss_process: bool=True, 
+            use_gpu_if_is_available: bool=True, 
+            learn_rate: float=1e-3, 
+            min_learn_rate: float=1e-5, 
+            batch_size: int=32, 
+            ask_to_stop_every_x_epochs: int=0, 
+            auto_checkpoint_every_x_epochs: int=0, 
+            checkpoint_file_name: str="my_chatbot_checkpoint", 
+            checkpoint_file_location: str="",
+            fine_tune_only_new_data: bool=True,
+            freeze_base_layers: bool=None,
+            show_suplimentary_info_in_console: bool=False,
+            show_total_time_of_training_when_ends: bool=False,
+            weight_decay: float=0.0,
+            optimizer_type: str="adamw"
+        ):
+            """
+            Executes the training loop, updating vocabulary, building tensors, optimizing weights, and applying learning rate decay.
+
+            Args:
+                epochs (int, optional): Number of training epochs. Defaults to 100.
+                show_loss_every_x_epochs (int, optional): Frequency of printing training loss. Defaults to 10.
+                show_loss_process (bool, optional): Whether to display loss progress. Defaults to True.
+                use_gpu_if_is_available (bool, optional): Whether to utilize CUDA GPU if available. Defaults to True.
+                learn_rate (float, optional): Initial learning rate. Defaults to 1e-3.
+                min_learn_rate (float, optional): Minimum learning rate for scheduler. Defaults to 1e-5.
+                batch_size (int, optional): Training batch size. Defaults to 32.
+                ask_to_stop_every_x_epochs (int, optional): Prompt user to continue training periodically. Defaults to 0.
+                auto_checkpoint_every_x_epochs (int, optional): Auto-save checkpoint frequency. Defaults to 0.
+                checkpoint_file_name (str, optional): Checkpoint filename. Defaults to "my_chatbot_checkpoint".
+                checkpoint_file_location (str, optional): Checkpoint directory location. Defaults to "".
+                fine_tune_only_new_data (bool, optional): Speed optimization to train only on new data. Defaults to True.
+                freeze_base_layers (bool, optional): Whether to freeze transformer base layers during fine-tuning. Defaults to None.
+                show_suplimentary_info_in_console (bool, optional): Print supplementary info logs. Defaults to False.
+                show_total_time_of_training_when_ends (bool, optional): Shows total training time in seconds. Defaults to False.
+                weight_decay (float, optional): Weight decay coefficient. Defaults to 0.0.
+                optimizer_type (str, optional): Optimizer type ('adamw' or 'adam'). Defaults to "adamw".
+            """
+            is_pretrained = hasattr(self.parent, 'LLMModel') and self.parent.LLMModel is not None and len(self.parent.char_to_index) > 0
+            
+            new_text = ""
+            if len(self.parent.qa_pairs) >= 1:
+                new_text = " ".join(f"<example_type=Q&A>\nQ: {p['q']}\nA: {p['a']}\n<END_QA>\n" for p in self.parent.qa_pairs)
+
+            if len(self.parent.raw_texts) >= 1 and len(self.parent.qa_pairs) == 0:
+                new_text = " ".join(f"<example_type=RAW>\n{p}\n<END_RAW>\n" for p in self.parent.raw_texts)
+            elif len(self.parent.raw_texts) >= 1:
+                new_text += " " + " ".join(f"<example_type=RAW>\n{p}\n<END_RAW>\n" for p in self.parent.raw_texts)
+
+            if new_text:
+                if self.parent.training_text:
+                    self.parent.training_text += "\n" + new_text
+                else:
+                    self.parent.training_text = new_text
+                self.parent.qa_pairs = []  
+                self.parent.raw_texts = []
+
+            if freeze_base_layers is None:
+                if not is_pretrained:
+                    freeze_base_layers = False
+                else:
+                    total_len = len(self.parent.training_text)
+                    new_len = len(new_text)
+                    ratio = new_len / max(1, total_len)
+                    freeze_base_layers = ratio < 0.3
+
+            if show_suplimentary_info_in_console == True:
+                print(f"INFO: Auto-selected freeze_base_layers = {freeze_base_layers}")
+
+            all_tokens = self.parent._tokenize(self.parent.training_text)
+            new_vocab = sorted(list(set(all_tokens)))
+
+            if set(new_vocab) != self.parent.vocabulary or not is_pretrained:
+                self.parent.vocabulary = new_vocab
+                self.parent.vocabulary_size = len(self.parent.vocabulary)
+                self.parent.char_to_index = {token: index for index, token in enumerate(self.parent.vocabulary)}
+                self.parent.index_to_char = {index: token for index, token in enumerate(self.parent.vocabulary)}
+
+                old_model = getattr(self.parent, 'LLMModel', None)
+                self.parent.LLMModel = self.parent._build_llm_model_class()(
+                    vocab_size=self.parent.vocabulary_size,
+                    d_model=self.parent.d_model,
+                    num_heads=self.parent.num_heads,
+                    num_layers=self.parent.num_layers,
+                    max_len=self.parent.max_len,
+                    dropout=self.parent.dropout,
+                )
+
+                if old_model is not None:
+                    with self.parent.torch.no_grad():
+                        old_vocab_size = old_model.embedding.weight.shape[0]
+                        self.parent.LLMModel.embedding.weight[:old_vocab_size] = old_model.embedding.weight
+                        self.parent.LLMModel.lm_head.weight[:old_vocab_size] = old_model.lm_head.weight
+                        self.parent.LLMModel.blocks.load_state_dict(old_model.blocks.state_dict())
+
+            if is_pretrained and new_text and fine_tune_only_new_data:
+                tokens_for_training = self.parent._tokenize(new_text)
+            else:
+                tokens_for_training = all_tokens
+
+            training_tensor_data = self.parent.torch.tensor(
+                [self.parent.char_to_index[t] for t in tokens_for_training], 
+                dtype=self.parent.torch.long
+            )
+
+            try:
+                train_x = self.parent.torch.stack([training_tensor_data[i:i+self.parent.block_size] for i in range(len(training_tensor_data)-self.parent.block_size)])
+                train_y = self.parent.torch.stack([training_tensor_data[i+1:i+self.parent.block_size+1] for i in range(len(training_tensor_data)-self.parent.block_size)])
+            except Exception as e:
+                if len(training_tensor_data) <= self.parent.block_size:
+                    raise ValueError("Your training dataset is too small. Try adding more training examples.")
+                else:
+                    raise Exception(f"ERROR: An unexpected error occurred. INFO: {e}")
+
+            if use_gpu_if_is_available:
+                train_x, train_y = train_x.to(self.parent.device), train_y.to(self.parent.device)
+                self.parent.LLMModel = self.parent.LLMModel.to(self.parent.device)
+
+            if is_pretrained and freeze_base_layers:
+                for param in self.parent.LLMModel.parameters():
+                    param.requires_grad = False
+                for param in self.parent.LLMModel.lm_head.parameters():
+                    param.requires_grad = True
+                for param in self.parent.LLMModel.embedding.parameters():
+                    param.requires_grad = True
+                optimizer_params = filter(lambda p: p.requires_grad, self.parent.LLMModel.parameters())
+            else:
+                for param in self.parent.LLMModel.parameters():
+                    param.requires_grad = True
+                optimizer_params = self.parent.LLMModel.parameters()
+
+            if optimizer_type == "adamw":
+                optimizer = self.parent.torch.optim.AdamW(optimizer_params, lr=learn_rate, weight_decay=weight_decay)
+            elif optimizer_type == "adam":
+                optimizer = self.parent.torch.optim.Adam(optimizer_params, lr=learn_rate, weight_decay=weight_decay)
+                
+            scheduler = self.parent.torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs, eta_min=min_learn_rate)
+            timer_start = time.perf_counter()
+            
+            for step in range(epochs):
+                self.parent.LLMModel.train()
+                total_loss = 0
+                num_batches = 0
+                indices = self.parent.torch.randperm(len(train_x))
+                
+                for i in range(0, len(train_x), batch_size):
+                    batch_idx = indices[i : i + batch_size]
+                    batch_x = train_x[batch_idx]
+                    batch_y = train_y[batch_idx]
+                    
+                    logits = self.parent.LLMModel(batch_x)
+                    loss   = self.parent.F.cross_entropy(logits.view(-1, self.parent.vocabulary_size), batch_y.view(-1))
+                    
+                    optimizer.zero_grad()
+                    loss.backward()
+                    optimizer.step()
+                    
+                    total_loss += loss.item()
+                    num_batches += 1
+
+                scheduler.step()
+                self.parent.total_trained_epochs += 1
+
+                if show_loss_process and step % show_loss_every_x_epochs == 0:
+                    avg_loss = total_loss / num_batches if num_batches > 0 else 0
+                    self.parent.final_loss = avg_loss
+                    print(f"Step {step:4d} | Average Loss: {avg_loss:.4f}")
+
+                if ask_to_stop_every_x_epochs > 0 and step % ask_to_stop_every_x_epochs == 0:
+                    user_answer = input("Do you want to continue training the chatbot? (y/n): ")
+                    if user_answer.lower() in ("n", "no", "nope"):
+                        break
+
+                if auto_checkpoint_every_x_epochs > 0 and step % auto_checkpoint_every_x_epochs == 0:
+                    self.parent.storage.save_on_file(checkpoint_file_name, checkpoint_file_location)
+
+            timer_end = time.perf_counter()
+            if show_total_time_of_training_when_ends == True:
+                total_training_seconds = timer_end - timer_start
+                print(f"[TIMER] Training completed successfully. The process took {total_training_seconds:.3f} seconds.")
+
+    class Datasets:
+        def __init__(self, parent):
+            """
+            Initializes Datasets helper and language submodules.
+
+            Args:
+                parent (RealChatbot): The parent transformer chatbot instance.
+            """
+            self.parent = parent
+            self.romanian = self.Romanian(self)
+            self.english = self.English(self)
+
+        class English:
+            def __init__(self, parent):
+                """
+                Initializes English dataset loader.
+
+                Args:
+                    parent (Datasets): Parent datasets helper instance.
+                """
+                self.parent = parent
+
+            def load_prepared_dataset(self, dataset_name: str):
+                """
+                Loads a pre-prepared English dataset into the transformer chatbot.
+
+                Args:
+                    dataset_name (str): Identifier of the dataset to load.
+                """
+                if dataset_name.lower() in ("low", "low-end-dataset", "low-end", "low-dataset", "low dataset"):
+                    try:
+                        from .Datasets import Default_English_Dataset_LOW_END
+                        Default_English_Dataset_LOW_END.load_dataset(self.parent.parent)
+                        print("INFO: Dataset 'Default English Dataset: LOW-END' loaded successfully.")
+                    except ImportError as e:
+                        print(f"MINOR ERROR: Could not import dataset 'Default English Dataset: LOW-END' module. Reason: {e}")
+                    except Exception as e:
+                        print(f"ERROR: An error occurred while loading 'Default English Dataset: LOW-END' dataset: {e}")
+
+                if dataset_name.lower() in ("mid", "mid-range-dataset", "mid-range", "mid-dataset", "mid dataset"):
+                    try:
+                        from .Datasets import Default_English_Dataset_MID_RANGE
+                        Default_English_Dataset_MID_RANGE.load_dataset(self.parent.parent)
+                        print("INFO: Dataset 'Default English Dataset: MID-RANGE' loaded successfully.")
+                    except ImportError as e:
+                        print(f"MINOR ERROR: Could not import dataset 'Default English Dataset: MID-RANGE' module. Reason: {e}")
+                    except Exception as e:
+                        print(f"ERROR: An error occurred while loading 'Default English Dataset: MID-RANGE' dataset: {e}")
+
+                if dataset_name.lower() in ("high", "high-end-dataset", "high-end", "high-dataset", "high dataset"):
+                    try:
+                        from .Datasets import Default_English_Dataset_HIGH_END
+                        Default_English_Dataset_HIGH_END.load_dataset(self.parent.parent)
+                        print("INFO: Dataset 'Default English Dataset: HIGH-END' loaded successfully.")
+                    except ImportError as e:
+                        print(f"MINOR ERROR: Could not import dataset 'Default English Dataset: HIGH-END' module. Reason: {e}")
+                    except Exception as e:
+                        print(f"ERROR: An error occurred while loading 'Default English Dataset: HIGH-END' dataset: {e}")
+
+        class Romanian:
+            def __init__(self, parent):
+                """
+                Initializes Romanian dataset loader.
+
+                Args:
+                    parent (Datasets): Parent datasets helper instance.
+                """
+                self.parent = parent
+            
+            def load_prepared_dataset(self, dataset_name: str):
+                """
+                Loads a pre-prepared Romanian dataset into the transformer chatbot.
+
+                Args:
+                    dataset_name (str): Identifier of the dataset to load.
+                """
+                if dataset_name.lower() in ["low", "low end", "low-end", 'low-dataset', 'low dataset']:
+                    try:
+                        from .Datasets import Default_Romanian_Dataset_LOW_END
+                        Default_Romanian_Dataset_LOW_END.load_dataset(self.parent.parent) 
+                        print("INFO: Dataset 'Default Romanian Dataset: LOW-END' loaded successfully.")
+                    except ImportError as e:
+                        print(f"MINOR ERROR: Could not import dataset 'Default Romanian Dataset: LOW-END' module. Reason: {e}")
+                    except Exception as e:
+                        print(f"ERROR: An error occurred while loading 'Default Romanian Dataset: LOW-END' dataset: {e}")
+
+                if dataset_name.lower() in ['mid', 'mid-range', 'mid range', 'mid-dataset', 'mid dataset']:
+                    try:
+                        from .Datasets import Default_Romanian_Dataset_MID_RANGE
+                        Default_Romanian_Dataset_MID_RANGE.load_dataset(self.parent.parent)
+                        print("INFO: Dataset 'Default Romanian Dataset: MID-RANGE' loaded successfully.")
+                    except ImportError as e:
+                        print(f"MINOR ERROR: Could not import dataset 'Default Romanian Dataset: MID-RANGE' module. Reason: {e}")
+                    except Exception as e:
+                        print(f"ERROR: An error occurred while loading 'Default Romanian Dataset: MID-RANGE' dataset: {e}")
+
+                if dataset_name.lower() in ('high', 'high-end', 'high end', 'high-dataset', 'high dataset'):
+                    try:
+                        from .Datasets import Default_Romanian_Dataset_HIGH_END
+                        Default_Romanian_Dataset_HIGH_END.load_dataset(self.parent.parent)
+                        print("INFO: Dataset 'Default Romanian Dataset: HIGH-END' loaded successfully.")                    
+                    except ImportError as e:                        
+                        print(f"MINOR ERROR: Could not import dataset 'Default Romanian Dataset: HIGH-END' module. Reason: {e}")
+                    except Exception as e:                        
+                        print(f"ERROR: An error occurred while loading 'Default Romanian Dataset: HIGH-END' dataset: {e}")
+
+                if dataset_name.lower() in ('high quality very low quantity', 'high-quality-very-low-quantity', 'high quality 1', 'high-quality-1'):
+                    try:
+                        from .Datasets import High_Quality_Very_Low_Quantity_Romanian_Dataset
+                        High_Quality_Very_Low_Quantity_Romanian_Dataset.load_dataset(self.parent.parent)
+                        print("INFO: Dataset 'High Quality, Very Low Quantity Romanian Dataset' loaded successfully.")
+                    except ImportError as e:
+                        print(f"MINOR ERROR: Could not import dataset 'High Quality, Very Low Quantity Romanian Dataset' module. Reason: {e}")
+                    except Exception as e:
+                        print(f"ERROR: An error occurred while loading 'High Quality, Very Low Quantity Romanian Dataset' dataset: {e}")
+
+                if dataset_name.lower() in ('high quality low quantity', 'high-quality-low-quantity', 'high quality 2', 'high-quality-2'):
+                    try:
+                        from .Datasets import High_Quality_Low_Quantity_Romanian_Dataset
+                        High_Quality_Low_Quantity_Romanian_Dataset.load_dataset(self.parent.parent)
+                        print("INFO: Dataset 'High Quality, Low Quantity Romanian Dataset' loaded successfully.")                    
+                    except ImportError as e:                        
+                        print(f"MINOR ERROR: Could not import dataset 'High Quality, Low Quantity Romanian Dataset' module. Reason: {e}")
+                    except Exception as e:                        
+                        print(f"ERROR: An error occurred while loading 'High Quality, Low Quantity Romanian Dataset' dataset: {e}")
+
+
+                if dataset_name.lower() in ('teacher', 'pyromusa ai tutorial', 'pyromusa ai teacher', 'pyromusa-ai-teacher', 'pyromusa-ai-tutorial'):
+                    try:
+                        from .Datasets import Teacher_for_PyRomusa_AI
+                        Teacher_for_PyRomusa_AI.load_dataset(self.parent.parent)
+                        print("INFO: Dataset 'Teacher for PyRomusa AI' loaded successfully.")
+                    except ImportError as e:
+                        print(f"MINOR ERROR: Could not import dataset 'Teacher for PyRomusa AI' module. Reason: {e}")
+                    except Exception as e:
+                        print(f"ERROR: An error occurred while loading 'Teacher for PyRomusa AI' dataset: {e}")

@@ -229,3 +229,31 @@ Here you will find all updates maked at PyRomusa AI of all time (STABLE & BETA v
 - ✨ **_|`RealChatbot()` object|_ Optimized the fine-tuning training speed:** Previously, when fine-tuning, you had to retrain the chatbot from 0 _(with new + old data)_, which was an inefficient and time-consuming process. Now it is possible to train it strictly on new data only, reducing training time.
 
 - ✨ **Update to the Romanian language dataset, 'Teacher for PyRomusa AI':** It has been added more training examples to be able to answer more prompts. It is now a better dataset than in the previous version.
+
+---
+
+### `v0.11.0 STABLE` (2026/10/25)
+
+- ❓ **Docstrings for all available functions:** Now, to find out in an instant what a specific function does and what role each of its parameters plays, you simply need to hover your cursor over that function; you will then see a description of the function along with all the available parameters. _(works on VSCode)_
+
+- ➕ **_|`RealChatbot()` object|_ Raw text as training example:** Do you want your chatbot to learn how the language you’re training it on works, or perhaps you simply lack question-answer pairs? Well, you can now use the `bot.trainer.start()` function: set the `example_type` parameter to `"raw"` and provide your raw text in the `training_input_example` parameter—it’s as simple as that.
+
+- ➕ **_|`RealChatbot()` object|_ Timer on training loop:** Find out how many seconds your training session lasted by setting the `show_total_time_of_training_when_ends` parameter to `True`. The result will appear when the training session ends.
+
+- ➕ **_|`RealChatbot()` object|_ Censored words system:** This system has actually been in place within `Chatbot()` for some time now. If you aren't yet familiar with it, its purpose is to replace certain words with others, thereby helping to reduce the use of vulgar language in the responses.
+
+- ➕ **_|`RealChatbot()` object|_ New parameters added (`weight_decay` & `optimizer_type`) in `bot.trainer.start()` function:** For greater flexibility, you can now change the optimizer type _(currently AdamW or Adam)_ for training. The `weight_decay` parameter serves the exact same purpose as it does in PyTorch optimizers.
+
+- 🔧 **_|`RealChatbot()` object|_ Specified value type for all parameters available on `bot.trainer.start()` function:** Each parameter here should accept only one type of value _(integer, string, float, or boolean)_. To prevent future errors and avoid running code unnecessarily, you can now receive an error before the code executes, allowing you to correct the mistake immediately.
+
+- ➕ **_|`RealChatbot()` object|_ New tokenizer type option, `"semiwords-level"`:** Are you looking for something between a word and a character—a balance between the quality of the responses and the flexibility of generation? Well, this tokenizer groups about 2–3 letters _(on average)_ into a single token.
+
+- ➕ **_|`RealChatbot()` object|_ A optional feedback system (with y/n) while you are talking to the chatbot:** This system is recommended if you call the `bot.reply_at()` function multiple times during a single execution. It serves to refine the chatbot's final responses based on user preferences by calculating the similarity between the most recently generated response and a list of previously rejected responses. If the similarity exceeds the value defined by the `max_allowed_similarity_procent_with_banned_replies` parameter _(a float representing a percentage)_, the system will attempt to regenerate the response until one with a lower similarity score is produced, subject to a specified maximum number of attempts.
+
+- ✨ **_|`RealChatbot()` object|_ Clear separation between special tokens and normal tokens:** In case you didn't know, special tokens form an important part of the training text structure, while normal tokens are those entered by the user to help the chatbot converse more naturally. Well, chatbots can now generate special tokens directly and fully; this positively influences the quality of the generated response, making it less likely that the chatbot will say things unrelated to the prompt _(though this also depends on the training examples)_.
+
+- ❓**_|`RealChatbot()` object|_ Removing unnecessary comments from the code:** To keep the source code cleaner, I have removed many unnecessary comments. This does not, in any way, affect the practical use of the framework.
+
+- ✨ **Update to the Romanian language dataset, 'Teacher for PyRomusa AI':** It has been added more training examples to be able to answer more prompts. It is now a better dataset than in the previous version.
+
+---

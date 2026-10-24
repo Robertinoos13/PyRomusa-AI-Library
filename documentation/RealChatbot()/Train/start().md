@@ -22,6 +22,9 @@ Start training the chatbot so that, once invoked, it can generate human-like tex
 |`fine_tune_only_new_data`|Regarding training on new examples, specify whether you want to adapt strictly to the new training data (which is less stable) or train it as if starting from scratch (which takes longer but is more stable).|`True`|
 |`freeze_base_layers`|Specify if you do not wish to modify certain parts of the chatbot's architecture. Leave the value as `None` if you want the decision to be made automatically based on the situation.|`None` (if modify manually, needs a `boolean` value)|
 |`show_suplimentary_info_in_console`|Specify whether you want to see less important details in the output.|`False`|
+|`show_total_time_of_training_when_ends`|Shows the number of seconds spent in the training loop when the process finishes|`False`|
+|`weight_decay`|A parameter found in PyTorch optimizers. Within the context of this framework, it helps the chatbot generalize better and reduces overfitting.|`0.0`|
+|`optimizer_type`|Change the optimizer used to adjust the chatbot's parameters during training.|`"adamw"`|
 
 
 ## Returns
@@ -59,6 +62,6 @@ print(f"BOT: {bot.reply_at(prompt=input("USER: "))}")
 
 ---
 
-_**last updated for `PyRomusa AI` version:** 0.10.1_
+_**last updated for `PyRomusa AI` version:** 0.11.0_
 
 _(Keep in mind: an older version means this documentation is more likely not to be 100% accurate for the latest available version.)_
