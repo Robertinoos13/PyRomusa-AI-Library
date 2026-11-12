@@ -452,11 +452,13 @@ print(bot.reply_at(
 ---
 ## Contact me 📩🌐
 
-Do you want to give me a new idea for functionality for `PyRomusa AI`, have you detected a bug in a particular version, want to ask me something, give me feedback, need help, a tutorial from `📁tutorials/` is not cleary or just want to say hello? Anything friendly message and/or about `PyRomusa AI` is welcome!
+Do you want to give me a new idea for functionality for `PyRomusa AI`, have you detected a bug in a particular version, want to ask me something, give me feedback, need help, a tutorial from `📁tutorials/` is not cleary or just want to say hello? Anything friendly message and/or about `PyRomusa AI` is welcome! You can write this in the comments on social media _(YouTube, TikTok)_ or, completely privately, via email.
 
 - e-mail: pyromusa.ai@gmail.com
 
 - TikTok: [@pyromusa_ai](https://www.tiktok.com/@pyromusa_ai?is_from_webapp=1&sender_device=pc)
+
+- YouTube: [@PyRomusa_AI](https://www.youtube.com/@PyRomusa_AI)
 
 ---
 
